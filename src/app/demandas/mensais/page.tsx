@@ -56,7 +56,7 @@ export default function DemandasMensaisPage() {
           );
           return (
             <div key={cat} className="card p-5 md:p-6 text-center space-y-3">
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cfg.gradient} mx-auto flex items-center justify-center shadow-lg`}>
+              <div className={`w-12 h-12 bg-gradient-to-br ${cfg.gradient} mx-auto flex items-center justify-center shadow-lg`}>
                 <Icon className="w-6 h-6 text-white" />
               </div>
               <p className="text-text-primary font-extrabold text-3xl">{count}</p>
@@ -100,7 +100,7 @@ export default function DemandasMensaisPage() {
           return (
             <div key={meta.id} className="card card-hover p-5 md:p-6 flex flex-col gap-4">
               <div className="flex items-start gap-3.5">
-                <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                <div className={`w-11 h-11 bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0 shadow-sm`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -117,7 +117,7 @@ export default function DemandasMensaisPage() {
               <div className="flex items-center justify-between text-xs pt-2 border-t border-surface-border">
                 <div className="flex items-center gap-2">
                   {setor && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: setor.cor + '15', color: setor.cor }}>
+                    <span className="px-2.5 py-1 text-xs font-semibold" style={{ backgroundColor: setor.cor + '15', color: setor.cor }}>
                       {setor.nome}
                     </span>
                   )}

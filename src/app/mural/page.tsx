@@ -173,7 +173,7 @@ function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: b
 
       {/* Footer */}
       <div className="flex items-center gap-2 pt-3 border-t border-surface-border mt-auto">
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center flex-shrink-0">
+        <div className="w-7 h-7 bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center flex-shrink-0">
           <span className="text-white text-[10px] font-bold">{pub.avatarAutor}</span>
         </div>
         <div className="flex-1 min-w-0">

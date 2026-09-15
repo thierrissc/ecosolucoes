@@ -41,7 +41,7 @@ export default function NotificacoesPage() {
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl flex items-center gap-3 tracking-tight">
             Notificações
             {naoLidasCount > 0 && (
-              <span className="bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">
+              <span className="bg-brand text-white text-xs font-bold px-3 py-1">
                 {naoLidasCount} novas
               </span>
             )}
@@ -88,7 +88,7 @@ export default function NotificacoesPage() {
               >
                 <div className="flex items-start gap-4">
                   {/* Icon */}
-                  <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                  <div className={`w-10 h-10 bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0 shadow-sm`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>
 
@@ -102,7 +102,7 @@ export default function NotificacoesPage() {
                       </div>
                       <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                         {!notif.lida && (
-                          <span className="w-2.5 h-2.5 rounded-full bg-brand animate-pulse" />
+                          <span className="w-2.5 h-2.5 bg-brand animate-pulse" />
                         )}
                         <span className="text-text-muted text-[11px] whitespace-nowrap">{timeAgo(notif.timestamp)}</span>
                       </div>

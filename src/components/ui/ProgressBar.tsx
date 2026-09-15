@@ -31,10 +31,10 @@ export default function ProgressBar({
           <span className="text-xs font-bold text-text-primary">{clamped}%</span>
         </div>
       )}
-      <div className={cn('w-full bg-surface-2 rounded-full overflow-hidden', sizeClasses[size])}>
+      <div className={cn('w-full bg-surface-2 overflow-hidden', sizeClasses[size])}>
         <div
           className={cn(
-            'h-full rounded-full transition-all duration-1000 ease-out progress-shine',
+            'h-full transition-all duration-1000 ease-out progress-shine',
             !color && 'bg-gradient-to-r from-brand to-emerald-400'
           )}
           style={{

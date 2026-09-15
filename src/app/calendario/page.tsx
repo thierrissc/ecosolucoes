@@ -58,10 +58,10 @@ export default function CalendarioPage() {
               {MONTHS[month]} {year}
             </h2>
             <div className="flex gap-1.5">
-              <button onClick={prevMonth} className="w-9 h-9 rounded-xl bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
+              <button onClick={prevMonth} className="w-9 h-9 bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <button onClick={nextMonth} className="w-9 h-9 rounded-xl bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
+              <button onClick={nextMonth} className="w-9 h-9 bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -89,7 +89,7 @@ export default function CalendarioPage() {
                 <button
                   key={day}
                   onClick={() => setSelectedDay(day)}
-                  className={`aspect-square rounded-2xl flex flex-col items-center justify-start p-1.5 transition-all cal-cell ${
+                  className={`aspect-square flex flex-col items-center justify-start p-1.5 transition-all cal-cell ${
                     isSelected
                       ? 'bg-brand text-white shadow-md shadow-brand/20'
                       : isToday
@@ -103,7 +103,7 @@ export default function CalendarioPage() {
                       {dayEvents.slice(0, 3).map((e) => (
                         <span
                           key={e.id}
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          className="w-1.5 h-1.5 flex-shrink-0"
                           style={{ backgroundColor: isSelected ? 'white' : tipoEventoColor[e.tipo] }}
                         />
                       ))}
@@ -121,7 +121,7 @@ export default function CalendarioPage() {
           <div className="flex items-center gap-5 mt-6 pt-4 border-t border-surface-border flex-wrap">
             {Object.entries(tipoEventoLabel).map(([tipo, label]) => (
               <div key={tipo} className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tipoEventoColor[tipo] }} />
+                <span className="w-2.5 h-2.5" style={{ backgroundColor: tipoEventoColor[tipo] }} />
                 <span className="text-text-secondary text-xs font-medium">{label}</span>
               </div>
             ))}
@@ -135,14 +135,14 @@ export default function CalendarioPage() {
             <div className="card p-5">
               <h3 className="text-text-primary font-bold text-base mb-4 flex items-center justify-between">
                 <span>{selectedDay} de {MONTHS[month]}</span>
-                <span className="text-text-muted text-xs font-medium bg-surface-2 px-3 py-1 rounded-full">
+                <span className="text-text-muted text-xs font-medium bg-surface-2 px-3 py-1">
                   {selectedEvents.length} {selectedEvents.length === 1 ? 'evento' : 'eventos'}
                 </span>
               </h3>
               {selectedEvents.length > 0 ? (
                 <div className="space-y-3">
                   {selectedEvents.map((e) => (
-                    <div key={e.id} className="bg-surface-2 rounded-2xl p-4">
+                    <div key={e.id} className="bg-surface-2 p-4">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <p className="text-text-primary text-sm font-semibold">{e.titulo}</p>
                         <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
@@ -180,7 +180,7 @@ export default function CalendarioPage() {
                 return (
                   <div key={e.id} className="flex items-center gap-3 group">
                     <div
-                      className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
+                      className="w-10 h-10 flex-shrink-0 flex items-center justify-center"
                       style={{ backgroundColor: tipoEventoColor[e.tipo] + '18' }}
                     >
                       <span className="text-sm font-bold" style={{ color: tipoEventoColor[e.tipo] }}>{d.getDate()}</span>

@@ -87,7 +87,7 @@ const statCards = [
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color: string }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="card p-3 text-sm !rounded-xl">
+      <div className="card p-3 text-sm">
         <p className="text-text-primary font-semibold mb-1">{label}</p>
         {payload.map((p) => (
           <p key={p.name} style={{ color: p.color }} className="text-xs">
@@ -112,15 +112,15 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
       {/* ─── Hero Banner ─── */}
-      <div className="relative overflow-hidden rounded-3xl gradient-mesh p-7 md:p-10">
+      <div className="relative overflow-hidden gradient-mesh p-7 md:p-10">
         {/* Decorative orbs */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 blur-2xl translate-y-1/2 -translate-x-1/4" />
 
         <div className="relative flex items-center justify-between flex-wrap gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-white/90 text-xs font-medium backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 text-white/90 text-xs font-medium backdrop-blur-sm">
                 <Activity className="w-3 h-3" />
                 {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
               </span>
@@ -133,8 +133,8 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-            <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center animate-float">
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md p-4 border border-white/10">
+            <div className="w-12 h-12 bg-white/15 flex items-center justify-center animate-float">
               <Flame className="w-6 h-6 text-yellow-300" />
             </div>
             <div className="text-right">
@@ -156,7 +156,7 @@ export default function DashboardPage() {
               className="card card-hover p-5 md:p-6 flex flex-col justify-between gap-4"
             >
               <div className="flex items-center justify-between">
-                <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${card.gradient} flex items-center justify-center shadow-lg`}>
+                <div className={`w-10 h-10 bg-gradient-to-br ${card.gradient} flex items-center justify-center shadow-lg`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
                 <div className="w-16 h-8 opacity-40">
@@ -186,7 +186,7 @@ export default function DashboardPage() {
               <h3 className="text-text-primary font-bold text-base">Demandas por Setor</h3>
               <p className="text-text-muted text-xs mt-0.5">Volume acumulado de tarefas</p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-surface-2 flex items-center justify-center text-text-muted">
+            <div className="w-9 h-9 bg-surface-2 flex items-center justify-center text-text-muted">
               <BarChart2 className="w-4 h-4" />
             </div>
           </div>
@@ -200,13 +200,13 @@ export default function DashboardPage() {
                   contentStyle={{
                     backgroundColor: 'var(--surface-1)',
                     border: '1px solid var(--surface-border)',
-                    borderRadius: '14px',
+                    borderRadius: '0px',
                     color: 'var(--text-primary)',
                     boxShadow: 'var(--shadow-lg)',
                   }}
                   cursor={{ fill: 'var(--surface-hover)' }}
                 />
-                <Bar dataKey="tarefas" radius={[8, 8, 0, 0]}>
+                <Bar dataKey="tarefas" radius={[0, 0, 0, 0]}>
                   {barData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
                   ))}
@@ -223,7 +223,7 @@ export default function DashboardPage() {
               <h3 className="text-text-primary font-bold text-base">Status das Tarefas</h3>
               <p className="text-text-muted text-xs mt-0.5">Visão geral do progresso</p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-surface-2 flex items-center justify-center text-text-muted">
+            <div className="w-9 h-9 bg-surface-2 flex items-center justify-center text-text-muted">
               <PieChartIcon className="w-4 h-4" />
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function DashboardPage() {
                   contentStyle={{
                     backgroundColor: 'var(--surface-1)',
                     border: '1px solid var(--surface-border)',
-                    borderRadius: '14px',
+                    borderRadius: '0px',
                     color: 'var(--text-primary)',
                     boxShadow: 'var(--shadow-lg)',
                   }}
@@ -265,12 +265,12 @@ export default function DashboardPage() {
               return (
                 <div key={item.name} className="flex items-center justify-between py-1.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[idx] }} />
+                    <span className="w-2.5 h-2.5 flex-shrink-0" style={{ backgroundColor: COLORS[idx] }} />
                     <span className="text-text-secondary text-xs font-medium">{item.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-text-primary text-xs font-bold">{item.value}</span>
-                    <span className="text-text-muted text-[11px] font-medium bg-surface-2 px-2 py-0.5 rounded-full">{pct}%</span>
+                    <span className="text-text-muted text-[11px] font-medium bg-surface-2 px-2 py-0.5">{pct}%</span>
                   </div>
                 </div>
               );
@@ -288,7 +288,7 @@ export default function DashboardPage() {
               <CalendarClock className="w-5 h-5 text-brand" />
               Próximos Prazos
             </h3>
-            <span className="text-xs bg-brand/10 text-brand px-3 py-1 rounded-full font-semibold">
+            <span className="text-xs bg-brand/10 text-brand px-3 py-1 font-semibold">
               Esta semana
             </span>
           </div>
@@ -297,10 +297,10 @@ export default function DashboardPage() {
             {proximosPrazos.map((t, i) => {
               const days = getDaysUntil(t.prazo);
               return (
-                <div key={t.id} className="flex items-center gap-4 py-3 px-3 rounded-2xl hover:bg-surface-hover transition-colors group">
+                <div key={t.id} className="flex items-center gap-4 py-3 px-3 hover:bg-surface-hover transition-colors group">
                   {/* Timeline dot + line */}
                   <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                    <div className={`w-3 h-3 rounded-full border-2 ${
+                    <div className={`w-3 h-3 border-2 ${
                       days <= 1 ? 'border-red-500 bg-red-500/30' :
                       days <= 3 ? 'border-amber-500 bg-amber-500/30' : 'border-blue-500 bg-blue-500/30'
                     }`} />
@@ -318,7 +318,7 @@ export default function DashboardPage() {
                     <Badge variant={prioridadeVariant(t.prioridade)} dot>
                       {prioridadeLabel(t.prioridade)}
                     </Badge>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                    <span className={`text-xs font-bold px-2 py-0.5 ${
                       days <= 1 ? 'bg-red-500/10 text-red-500' :
                       days <= 3 ? 'bg-amber-500/10 text-amber-500' : 'bg-blue-500/10 text-blue-500'
                     }`}>
@@ -347,7 +347,7 @@ export default function DashboardPage() {
             {setores.map((s) => (
               <div key={s.id} className="flex items-center gap-3.5 py-2 group">
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold text-white shadow-sm"
+                  className="w-9 h-9 flex items-center justify-center flex-shrink-0 text-xs font-bold text-white shadow-sm"
                   style={{ backgroundColor: s.cor }}
                 >
                   {s.avatar}
@@ -357,9 +357,9 @@ export default function DashboardPage() {
                     <p className="text-text-primary text-sm font-medium truncate group-hover:text-brand transition-colors">{s.nome}</p>
                     <p className="text-text-primary text-sm font-bold ml-2">{s.desempenho}%</p>
                   </div>
-                  <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-surface-2 overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-1000 ease-out"
+                      className="h-full transition-all duration-1000 ease-out"
                       style={{ width: `${s.desempenho}%`, backgroundColor: s.cor }}
                     />
                   </div>

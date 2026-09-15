@@ -90,7 +90,7 @@ export default function PerfilPage() {
             <div className="px-6 pb-6 -mt-14 relative flex flex-col items-center text-center">
               {/* Avatar */}
               <div className="relative group mb-4">
-                <div className="w-28 h-28 rounded-3xl border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg">
+                <div className="w-28 h-28 border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg">
                   {data.avatarUrl ? (
                     <img src={data.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
                   ) : (
@@ -99,7 +99,7 @@ export default function PerfilPage() {
                     </div>
                   )}
 
-                  <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center backdrop-blur-sm rounded-3xl">
+                  <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center backdrop-blur-sm">
                     <Camera className="w-5 h-5 text-white mb-1" />
                     <span className="text-white text-[11px] font-medium">Alterar</span>
                     <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />

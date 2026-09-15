@@ -110,7 +110,7 @@ export default function DemandasSemanaisPage() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-text-muted text-xs">{t.responsavel}</span>
                       {setor && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: setor.cor + '15', color: setor.cor }}>
+                        <span className="text-[11px] px-2 py-0.5 font-semibold" style={{ backgroundColor: setor.cor + '15', color: setor.cor }}>
                           {setor.nome.split(' ')[0]}
                         </span>
                       )}
@@ -156,7 +156,7 @@ export default function DemandasSemanaisPage() {
                 <div className="p-5 md:p-6 flex-1">
                   <div className="flex items-center justify-between mb-5">
                     <h3 className="text-text-primary font-bold text-sm">{col.label}</h3>
-                    <span className="bg-surface-2 text-text-secondary text-xs font-bold px-2.5 py-1 rounded-full">
+                    <span className="bg-surface-2 text-text-secondary text-xs font-bold px-2.5 py-1">
                       {colTarefas.length}
                     </span>
                   </div>
@@ -166,14 +166,14 @@ export default function DemandasSemanaisPage() {
                       const statusOrdem: Status[] = ['nao_iniciada', 'em_andamento', 'concluida'];
                       const currentIdx = statusOrdem.indexOf(t.status);
                       return (
-                        <div key={t.id} className="bg-surface-2 rounded-2xl p-4 hover:shadow-sm transition-all group">
+                        <div key={t.id} className="bg-surface-2 p-4 hover:shadow-sm transition-all group">
                           <div className="flex items-start justify-between gap-2 mb-2">
                             <p className="text-text-primary text-sm font-medium leading-snug group-hover:text-brand transition-colors">{t.nome}</p>
                             <Badge variant={prioridadeVariant(t.prioridade)} dot />
                           </div>
                           <p className="text-text-muted text-xs line-clamp-2 mb-3">{t.descricao}</p>
                           <div className="flex items-center gap-2 mb-3">
-                            <div className="w-6 h-6 rounded-full bg-brand/15 flex items-center justify-center flex-shrink-0">
+                            <div className="w-6 h-6 bg-brand/15 flex items-center justify-center flex-shrink-0">
                               <span className="text-brand text-[10px] font-bold">{t.avatarResponsavel}</span>
                             </div>
                             <p className="text-text-muted text-xs truncate">{t.responsavel}</p>
@@ -186,7 +186,7 @@ export default function DemandasSemanaisPage() {
                               {currentIdx > 0 && (
                                 <button
                                   onClick={() => moverStatus(t.id, statusOrdem[currentIdx - 1])}
-                                  className="text-text-muted hover:text-text-primary text-xs p-1 rounded-lg border border-surface-border hover:border-text-muted transition-all rotate-180"
+                                  className="text-text-muted hover:text-text-primary text-xs p-1 border border-surface-border hover:border-text-muted transition-all rotate-180"
                                 >
                                   <ChevronRight className="w-3 h-3" />
                                 </button>
@@ -194,7 +194,7 @@ export default function DemandasSemanaisPage() {
                               {currentIdx < statusOrdem.length - 1 && (
                                 <button
                                   onClick={() => moverStatus(t.id, statusOrdem[currentIdx + 1])}
-                                  className="text-brand hover:text-white text-xs p-1 rounded-lg border border-brand/30 hover:bg-brand hover:border-brand transition-all"
+                                  className="text-brand hover:text-white text-xs p-1 border border-brand/30 hover:bg-brand hover:border-brand transition-all"
                                 >
                                   <ChevronRight className="w-3 h-3" />
                                 </button>

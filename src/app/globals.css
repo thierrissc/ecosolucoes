@@ -13,7 +13,7 @@
   --surface-1: #ffffff;
   --surface-2: #f8fafc;
   --surface-3: #eef2f7;
-  --surface-border: rgba(0, 0, 0, 0.06);
+  --surface-border: rgba(0, 0, 0, 0.08);
   --surface-hover: rgba(0, 0, 0, 0.03);
 
   /* Text */
@@ -35,7 +35,7 @@
   --surface-1: #111827;
   --surface-2: #1a2234;
   --surface-3: #222f43;
-  --surface-border: rgba(255, 255, 255, 0.06);
+  --surface-border: rgba(255, 255, 255, 0.08);
   --surface-hover: rgba(255, 255, 255, 0.04);
 
   /* Text */
@@ -64,6 +64,16 @@
   --color-text-muted: var(--text-muted);
   --font-family-sans: 'Outfit', system-ui, sans-serif;
 
+  /* Force all radius tokens to 0 (square borders everywhere) */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 0px;
+
   --animate-fade-up: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-scale-in: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-slide-right: slideRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -84,33 +94,38 @@
   }
 }
 
-/* ─── Base Reset ─── */
+/* ─── Global Square Borders without exception ─── */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  *, ::before, ::after {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    transition: background-color 0.4s ease, color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Outfit', system-ui, sans-serif;
-  background: var(--surface-0);
-  color: var(--text-primary);
-  transition: background-color 0.4s ease, color 0.4s ease;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+*, *::before, *::after {
+  border-radius: 0 !important;
 }
 
 /* ─── Scrollbar ─── */
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -119,19 +134,19 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--surface-3);
-  border-radius: 99px;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--brand);
 }
 
-/* ─── Card System ─── */
+/* ─── Card System — Square Sharp Edges ─── */
 
 .card {
   background: var(--surface-1);
   border: 1px solid var(--surface-border);
-  border-radius: 20px;
+  border-radius: 0;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -139,7 +154,7 @@ body {
 .card-hover:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
-  border-color: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.25);
 }
 
 .card-interactive {
@@ -149,7 +164,7 @@ body {
 .card-interactive:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-3px);
-  border-color: rgba(22, 163, 74, 0.2);
+  border-color: rgba(22, 163, 74, 0.3);
 }
 
 .card-interactive:active {
@@ -161,7 +176,7 @@ body {
   box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-/* ─── Buttons ─── */
+/* ─── Buttons — Square Sharp Edges ─── */
 
 .btn-primary {
   display: inline-flex;
@@ -171,7 +186,7 @@ body {
   background: linear-gradient(135deg, var(--brand), var(--brand-light));
   color: white;
   border: none;
-  border-radius: 14px;
+  border-radius: 0;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -199,7 +214,7 @@ body {
   background: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--surface-border);
-  border-radius: 12px;
+  border-radius: 0;
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
@@ -300,11 +315,11 @@ body {
   position: absolute;
   top: -2px;
   right: -2px;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background: #ef4444;
-  border-radius: 50%;
-  border: 2px solid var(--surface-1);
+  border-radius: 0;
+  border: 1.5px solid var(--surface-1);
 }
 
 .notif-dot-pulse::before {
@@ -312,10 +327,10 @@ body {
   position: absolute;
   top: -2px;
   right: -2px;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background: #ef4444;
-  border-radius: 50%;
+  border-radius: 0;
   animation: pulse-ring 1.5s ease-out infinite;
 }
 
@@ -325,14 +340,14 @@ body {
   display: inline-flex;
   background: var(--surface-2);
   border: 1px solid var(--surface-border);
-  border-radius: 14px;
-  padding: 4px;
+  border-radius: 0;
+  padding: 3px;
   gap: 2px;
 }
 
 .segmented-btn {
   padding: 0.5rem 1rem;
-  border-radius: 11px;
+  border-radius: 0;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-muted);
@@ -359,7 +374,7 @@ body {
   width: 100%;
   background: var(--surface-2);
   border: 1px solid var(--surface-border);
-  border-radius: 14px;
+  border-radius: 0;
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
   color: var(--text-primary);
@@ -374,7 +389,7 @@ body {
 
 .input:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--brand-glow);
+  box-shadow: 0 0 0 2px var(--brand-glow);
 }
 
 .input-select {
@@ -392,7 +407,7 @@ body {
   align-items: center;
   gap: 0.375rem;
   padding: 0.375rem 0.875rem;
-  border-radius: 999px;
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
   border: 1px solid var(--surface-border);
@@ -419,7 +434,7 @@ body {
 /* ─── Recharts tooltip ─── */
 
 .recharts-tooltip-wrapper {
-  border-radius: 14px !important;
+  border-radius: 0 !important;
   overflow: hidden;
 }
 
@@ -427,7 +442,7 @@ body {
 
 .cal-cell {
   transition: all 0.2s ease;
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 .cal-cell:hover {

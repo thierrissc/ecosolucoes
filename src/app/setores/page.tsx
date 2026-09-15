@@ -32,7 +32,7 @@ export default function SetoresPage() {
           { label: 'Desempenho Médio', value: `${Math.round(setores.reduce((a, s) => a + s.desempenho, 0) / setores.length)}%`, color: 'from-emerald-500 to-teal-400' },
         ].map((item) => (
           <div key={item.label} className="card p-5 md:p-6 text-center">
-            <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${item.color} mx-auto mb-3 flex items-center justify-center shadow-lg`}>
+            <div className={`w-10 h-10 bg-gradient-to-br ${item.color} mx-auto mb-3 flex items-center justify-center shadow-lg`}>
               <span className="text-white text-sm font-bold">#</span>
             </div>
             <p className="text-text-primary text-3xl md:text-4xl font-extrabold">{item.value}</p>
@@ -60,7 +60,7 @@ export default function SetoresPage() {
                 {/* Top */}
                 <div className="flex items-start gap-3.5 mb-5">
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105"
+                    className="w-12 h-12 flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105"
                     style={{ backgroundColor: setor.cor + '18' }}
                   >
                     <Icon className="w-6 h-6" style={{ color: setor.cor }} />
@@ -69,7 +69,7 @@ export default function SetoresPage() {
                     <h3 className="text-text-primary font-bold text-base truncate">{setor.nome}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       <div
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-offset-1 ring-offset-surface-1"
+                        className="w-6 h-6 flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-offset-1 ring-offset-surface-1"
                         style={{ backgroundColor: setor.cor }}
                       >
                         {setor.avatar}
@@ -86,7 +86,7 @@ export default function SetoresPage() {
                     { label: 'Semanais', value: setor.demandasSemanais, color: 'text-amber-500' },
                     { label: 'Mensais', value: setor.demandasMensais, color: 'text-violet-500' },
                   ].map((s) => (
-                    <div key={s.label} className="bg-surface-2 rounded-xl p-2.5 text-center">
+                    <div key={s.label} className="bg-surface-2 p-2.5 text-center">
                       <p className={`text-lg font-extrabold ${s.color}`}>{s.value}</p>
                       <p className="text-text-muted text-[10px] font-medium mt-0.5">{s.label}</p>
                     </div>
