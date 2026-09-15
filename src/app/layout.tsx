@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   title: 'Eco Soluções — Plataforma Corporativa',
   description: 'Plataforma corporativa digital para gestão interna e comunicação entre setores.',
   keywords: 'gestão corporativa, mural digital, demandas, setores, produtividade',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({

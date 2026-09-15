@@ -25,25 +25,25 @@ export default function NotificacoesPage() {
   });
 
   return (
-    <div className="space-y-5 animate-fade-in max-w-3xl">
+    <div className="space-y-8 md:space-y-10 animate-fade-in w-full">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-white font-bold text-xl flex items-center gap-2">
-            <Bell className="w-5 h-5 text-brand-green-light" />
+          <h2 className="text-white font-extrabold text-2xl md:text-3xl flex items-center gap-3 tracking-tight">
+            <Bell className="w-6 h-6 text-brand-green-light" />
             Notificações
             {naoLidasCount > 0 && (
-              <span className="bg-brand-green text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                {naoLidasCount}
+              <span className="bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-lg whitespace-nowrap flex-shrink-0">
+                {naoLidasCount} novas
               </span>
             )}
           </h2>
-          <p className="text-slate-400 text-sm">{filtered.length} notificações</p>
+          <p className="text-slate-400 text-sm mt-1">{filtered.length} notificações encontradas</p>
         </div>
         {naoLidasCount > 0 && (
           <button
             onClick={marcarTodasLidas}
-            className="flex items-center gap-2 text-brand-green-light hover:text-white text-sm border border-brand-green/30 hover:border-brand-green px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-2 text-brand-green-light hover:text-white text-sm border border-brand-green/30 hover:border-brand-green px-5 py-2.5 rounded-xl transition-all font-semibold"
           >
             <CheckCheck className="w-4 h-4" />
             Marcar todas como lidas
@@ -52,7 +52,7 @@ export default function NotificacoesPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2.5 flex-wrap">
         {(['todas', 'nao_lidas', 'aviso', 'tarefa', 'prazo', 'meta'] as const).map((f) => {
           const labels: Record<string, string> = {
             todas: 'Todas',
@@ -66,9 +66,9 @@ export default function NotificacoesPage() {
             <button
               key={f}
               onClick={() => setFiltro(f)}
-              className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-all ${
+              className={`px-4.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex-shrink-0 ${
                 filtro === f
-                  ? 'bg-brand-green text-white'
+                  ? 'bg-brand-green text-white shadow-md shadow-brand-green/20'
                   : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border'
               }`}
             >
@@ -79,7 +79,7 @@ export default function NotificacoesPage() {
       </div>
 
       {/* Notifications list */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filtered.map((notif) => {
           const cfg = tipoConfig[notif.tipo];
           const Icon = cfg.icon;
@@ -87,9 +87,9 @@ export default function NotificacoesPage() {
             <div
               key={notif.id}
               onClick={() => marcarLida(notif.id)}
-              className={`glass-card rounded-2xl p-4 border transition-all cursor-pointer hover-lift ${
+              className={`glass-card rounded-2xl p-5 md:p-6 border transition-all cursor-pointer hover-lift ${
                 !notif.lida
-                  ? 'border-brand-green/30 bg-brand-green/5'
+                  ? 'border-brand-green/40 bg-brand-green/5'
                   : 'border-brand-navy-border'
               }`}
             >
@@ -107,7 +107,7 @@ export default function NotificacoesPage() {
                     </div>
                     <div className="flex flex-col items-end gap-1 flex-shrink-0">
                       {!notif.lida && (
-                        <span className="w-2 h-2 rounded-full bg-brand-green pulse-dot" />
+                        <span className="w-2 h-2 rounded-sm bg-brand-green pulse-dot" />
                       )}
                       <span className="text-slate-500 text-xs whitespace-nowrap">{timeAgo(notif.timestamp)}</span>
                     </div>

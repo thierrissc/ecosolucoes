@@ -44,8 +44,8 @@ export default function Sidebar() {
       {/* Logo and Collapse Button */}
       <div className="flex items-center justify-between px-4 py-6 border-b border-brand-navy-border min-h-[80px]">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-brand-green flex items-center justify-center shadow-lg shadow-brand-green/30">
-            <Leaf className="w-5 h-5 text-white" />
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-white/10 p-1 flex items-center justify-center border border-white/10 shadow-md">
+            <img src="/logo.png" alt="Eco Soluções Logo" className="w-full h-full object-contain" />
           </div>
           {!sidebarCollapsed && (
             <span className="text-white font-bold text-lg whitespace-nowrap tracking-tight">
@@ -97,7 +97,7 @@ export default function Sidebar() {
                   <span className="text-lg font-medium truncate">{label}</span>
                 )}
                 {isActive && !sidebarCollapsed && (
-                  <div className="ml-auto w-1 h-4 rounded-full bg-brand-green-light flex-shrink-0" />
+                  <div className="ml-auto w-1 h-4 rounded-sm bg-brand-green-light flex-shrink-0" />
                 )}
               </Link>
             );
@@ -110,7 +110,7 @@ export default function Sidebar() {
         <div className="px-4 py-4 border-t border-brand-navy-border">
           <Link href="/perfil" className="flex items-center gap-3 p-2.5 rounded-md hover:bg-white/5 cursor-pointer transition-colors block">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-sm font-bold">ME</span>
               </div>
               <div className="overflow-hidden">

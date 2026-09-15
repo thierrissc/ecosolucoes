@@ -48,27 +48,27 @@ export default function CalendarioPage() {
     .slice(0, 5);
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <div className="space-y-8 md:space-y-10 animate-fade-in">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* Calendar Grid */}
-        <div className="xl:col-span-2 glass-card rounded-lg p-6 border border-brand-navy-border">
+        <div className="lg:col-span-7 xl:col-span-8 glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col justify-between">
           {/* Month Nav */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white font-bold text-xl">
+            <h2 className="text-white font-extrabold text-xl md:text-2xl">
               {MONTHS[month]} {year}
             </h2>
             <div className="flex gap-2">
               <button
                 onClick={prevMonth}
-                className="w-9 h-9 rounded-xl bg-brand-navy-light border border-brand-navy-border flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                className="w-10 h-10 rounded-xl bg-brand-navy-light border border-brand-navy-border flex items-center justify-center text-slate-400 hover:text-white transition-all"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={nextMonth}
-                className="w-9 h-9 rounded-xl bg-brand-navy-light border border-brand-navy-border flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                className="w-10 h-10 rounded-xl bg-brand-navy-light border border-brand-navy-border flex items-center justify-center text-slate-400 hover:text-white transition-all"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -76,12 +76,12 @@ export default function CalendarioPage() {
           {/* Weekday headers */}
           <div className="grid grid-cols-7 gap-1 mb-2">
             {WEEKDAYS.map((d) => (
-              <div key={d} className="text-center text-slate-500 text-xs font-semibold py-2">{d}</div>
+              <div key={d} className="text-center text-slate-400 text-xs font-bold uppercase tracking-wider py-2">{d}</div>
             ))}
           </div>
 
           {/* Days */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-1.5">
             {Array.from({ length: firstDay }).map((_, i) => (
               <div key={`empty-${i}`} className="aspect-square" />
             ))}
@@ -95,17 +95,17 @@ export default function CalendarioPage() {
                 <button
                   key={day}
                   onClick={() => setSelectedDay(day)}
-                  className={`aspect-square rounded-xl flex flex-col items-center justify-start p-1 transition-all cal-day ${
+                  className={`aspect-square rounded-xl flex flex-col items-center justify-start p-1.5 transition-all cal-day ${
                     isSelected
-                      ? 'bg-brand-green text-white'
+                      ? 'bg-brand-green text-white shadow-lg shadow-brand-green/20'
                       : isToday
-                      ? 'border border-brand-green/50 text-brand-green-light'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'border border-brand-green/60 text-brand-green-light bg-brand-green/10'
+                      : 'text-slate-400 hover:text-white bg-brand-navy/30'
                   }`}
                 >
-                  <span className="text-xs font-semibold">{day}</span>
+                  <span className="text-xs font-bold">{day}</span>
                   {dayEvents.length > 0 && (
-                    <div className="flex flex-col gap-1 mt-1 w-full px-1 overflow-hidden">
+                    <div className="flex flex-col gap-1 mt-1 w-full px-0.5 overflow-hidden">
                       {dayEvents.slice(0, 3).map((e) => (
                         <div
                           key={e.id}
@@ -126,63 +126,63 @@ export default function CalendarioPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-brand-navy-border flex-wrap">
+          <div className="flex items-center gap-6 mt-6 pt-5 border-t border-brand-navy-border/60 flex-wrap">
             {Object.entries(tipoEventoLabel).map(([tipo, label]) => (
-              <div key={tipo} className="flex items-center gap-1.5">
-                <span className={`w-2.5 h-2.5 rounded-full ${tipoEventoColor[tipo]}`} />
-                <span className="text-slate-400 text-xs">{label}</span>
+              <div key={tipo} className="flex items-center gap-2">
+                <span className={`w-3 h-3 rounded-full ${tipoEventoColor[tipo]}`} />
+                <span className="text-slate-300 text-xs font-medium">{label}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Side Panel */}
-        <div className="space-y-4">
+        <div className="lg:col-span-5 xl:col-span-4 space-y-6">
           {/* Selected Day Events */}
           {selectedDay && (
-            <div className="glass-card rounded-lg p-5 border border-brand-navy-border">
-              <h3 className="text-white font-semibold mb-3">
-                {selectedDay} de {MONTHS[month]}
-                <span className="text-slate-400 text-sm font-normal ml-2">
+            <div className="glass-card rounded-2xl p-6 border border-brand-navy-border">
+              <h3 className="text-white font-bold text-base mb-4 flex items-center justify-between">
+                <span>{selectedDay} de {MONTHS[month]}</span>
+                <span className="text-slate-400 text-xs font-medium bg-brand-navy-light px-3 py-1 rounded-lg border border-brand-navy-border">
                   {selectedEvents.length} {selectedEvents.length === 1 ? 'evento' : 'eventos'}
                 </span>
               </h3>
               {selectedEvents.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {selectedEvents.map((e) => (
-                    <div key={e.id} className="bg-brand-navy/50 rounded-xl p-3 border border-brand-navy-border/50">
+                    <div key={e.id} className="bg-brand-navy/60 rounded-xl p-4 border border-brand-navy-border/60">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <p className="text-white text-sm font-medium">{e.titulo}</p>
+                        <p className="text-white text-sm font-semibold">{e.titulo}</p>
                         <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
                       </div>
                       {e.hora && (
-                        <p className="text-slate-400 text-xs flex items-center gap-1 mb-1">
-                          <Clock className="w-3 h-3" /> {e.hora}
+                        <p className="text-slate-400 text-xs flex items-center gap-1.5 mb-1">
+                          <Clock className="w-3.5 h-3.5" /> {e.hora}
                         </p>
                       )}
                       {e.local && (
-                        <p className="text-slate-400 text-xs flex items-center gap-1 mb-1">
-                          <MapPin className="w-3 h-3" /> {e.local}
+                        <p className="text-slate-400 text-xs flex items-center gap-1.5 mb-1">
+                          <MapPin className="w-3.5 h-3.5" /> {e.local}
                         </p>
                       )}
                       {e.participantes && (
-                        <p className="text-slate-400 text-xs flex items-center gap-1">
-                          <Users className="w-3 h-3" /> {e.participantes.slice(0, 2).join(', ')}{e.participantes.length > 2 && ` +${e.participantes.length - 2}`}
+                        <p className="text-slate-400 text-xs flex items-center gap-1.5">
+                          <Users className="w-3.5 h-3.5" /> {e.participantes.slice(0, 2).join(', ')}{e.participantes.length > 2 && ` +${e.participantes.length - 2}`}
                         </p>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 text-sm text-center py-4">Nenhum evento neste dia.</p>
+                <p className="text-slate-500 text-sm text-center py-6">Nenhum evento agendado para este dia.</p>
               )}
             </div>
           )}
 
           {/* Upcoming Events */}
-          <div className="glass-card rounded-lg p-5 border border-brand-navy-border">
-            <h3 className="text-white font-semibold mb-3">Próximos Eventos</h3>
-            <div className="space-y-3">
+          <div className="glass-card rounded-2xl p-6 border border-brand-navy-border">
+            <h3 className="text-white font-bold text-base mb-4">Próximos Eventos</h3>
+            <div className="space-y-3.5">
               {nextEvents.map((e) => {
                 const d = new Date(e.data + 'T00:00:00');
                 return (

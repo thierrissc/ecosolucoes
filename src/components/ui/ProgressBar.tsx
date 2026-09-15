@@ -41,9 +41,9 @@ export default function ProgressBar({
           <span className="text-xs font-semibold text-white">{clamped}%</span>
         </div>
       )}
-      <div className={cn('w-full bg-brand-navy-border rounded-full overflow-hidden', sizeClasses[size])}>
+      <div className={cn('w-full bg-brand-navy-border rounded-sm overflow-hidden', sizeClasses[size])}>
         <div
-          className={cn('h-full rounded-full transition-all duration-700 ease-out', barColor)}
+          className={cn('h-full rounded-sm transition-all duration-700 ease-out', barColor)}
           style={{ width: `${clamped}%` }}
         />
       </div>

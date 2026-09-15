@@ -54,13 +54,13 @@ export default function Badge({ variant = 'slate', className, children, dot }: B
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border',
+        'inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border whitespace-nowrap flex-shrink-0 tracking-wide',
         variantClasses[variant],
         className
       )}
     >
       {dot && (
-        <span className="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0" />
+        <span className="w-1.5 h-1.5 rounded-sm bg-current flex-shrink-0" />
       )}
       {children}
     </span>

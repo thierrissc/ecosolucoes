@@ -72,22 +72,22 @@ export default function PerfilPage() {
   if (!isClient) return null; // Avoid hydration mismatch
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
+    <div className="space-y-8 md:space-y-10 animate-fade-in w-full">
       <div>
-        <h2 className="text-white font-bold text-xl">Perfil da Empresa</h2>
-        <p className="text-slate-400 text-sm">Gerencie as informações corporativas que aparecerão na plataforma.</p>
+        <h2 className="text-white font-extrabold text-2xl md:text-3xl tracking-tight">Perfil da Empresa</h2>
+        <p className="text-slate-400 text-sm mt-1">Gerencie as informações corporativas que aparecerão na plataforma.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* Sidebar Profile Card */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col items-center text-center">
-            <div className="relative group mb-4">
-              <div className="w-28 h-28 rounded-full border-4 border-brand-navy-border overflow-hidden bg-brand-navy-light flex items-center justify-center relative">
+        <div className="lg:col-span-5 xl:col-span-4 space-y-6">
+          <div className="glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col items-center text-center">
+            <div className="relative group mb-5">
+              <div className="w-32 h-32 rounded-2xl border-4 border-brand-navy-border overflow-hidden bg-brand-navy-light flex items-center justify-center relative shadow-lg">
                 {data.avatarUrl ? (
                   <img src={data.avatarUrl} alt="Logo da Empresa" className="w-full h-full object-cover" />
                 ) : (
-                  <Building className="w-10 h-10 text-slate-500" />
+                  <Building className="w-12 h-12 text-slate-500" />
                 )}
                 
                 <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center backdrop-blur-sm">
@@ -98,30 +98,30 @@ export default function PerfilPage() {
               </div>
             </div>
 
-            <h3 className="text-white font-bold text-lg">{data.nomeEmpresa || 'Sua Empresa'}</h3>
-            <p className="text-brand-green-light text-sm font-medium mb-1">
+            <h3 className="text-white font-bold text-xl">{data.nomeEmpresa || 'Sua Empresa'}</h3>
+            <p className="text-brand-green-light text-sm font-semibold mb-2">
               {data.arrobaEmpresa ? (data.arrobaEmpresa.startsWith('@') ? data.arrobaEmpresa : `@${data.arrobaEmpresa}`) : '@usuario'}
             </p>
-            <p className="text-slate-400 text-xs mb-4 line-clamp-3">
+            <p className="text-slate-400 text-xs leading-relaxed mb-6 line-clamp-3">
               {data.descricao || 'Adicione uma breve descrição sobre a sua empresa aqui.'}
             </p>
 
-            <div className="w-full space-y-2 text-left pt-4 border-t border-brand-navy-border">
+            <div className="w-full space-y-3 text-left pt-5 border-t border-brand-navy-border/60">
               {data.setorAtuacao && (
-                <div className="flex items-center gap-2 text-slate-400 text-xs">
-                  <Briefcase className="w-3.5 h-3.5 flex-shrink-0" />
+                <div className="flex items-center gap-2.5 text-slate-300 text-xs font-medium">
+                  <Briefcase className="w-4 h-4 text-slate-400 flex-shrink-0" />
                   <span className="truncate">{data.setorAtuacao}</span>
                 </div>
               )}
               {data.email && (
-                <div className="flex items-center gap-2 text-slate-400 text-xs">
-                  <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                <div className="flex items-center gap-2.5 text-slate-300 text-xs font-medium">
+                  <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
                   <span className="truncate">{data.email}</span>
                 </div>
               )}
               {data.site && (
-                <div className="flex items-center gap-2 text-slate-400 text-xs">
-                  <Globe className="w-3.5 h-3.5 flex-shrink-0" />
+                <div className="flex items-center gap-2.5 text-slate-300 text-xs font-medium">
+                  <Globe className="w-4 h-4 text-slate-400 flex-shrink-0" />
                   <span className="truncate">{data.site}</span>
                 </div>
               )}
@@ -130,7 +130,7 @@ export default function PerfilPage() {
         </div>
 
         {/* Form Card */}
-        <div className="lg:col-span-2 glass-card rounded-2xl p-6 border border-brand-navy-border">
+        <div className="lg:col-span-7 xl:col-span-8 glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border">
           <form onSubmit={handleSave} className="space-y-6">
             <div>
               <h3 className="text-white font-semibold mb-4 border-b border-brand-navy-border pb-2">Informações Básicas</h3>

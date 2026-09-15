@@ -46,16 +46,16 @@ export default function MuralPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-8 md:space-y-10 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-white font-bold text-xl">Publicações do Mural</h2>
-          <p className="text-slate-400 text-sm">{filtered.length} publicações encontradas</p>
+          <h2 className="text-white font-extrabold text-2xl md:text-3xl tracking-tight">Publicações do Mural</h2>
+          <p className="text-slate-400 text-sm mt-1">{filtered.length} publicações encontradas</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-dark text-white px-4 py-2.5 rounded-md font-medium text-sm transition-all shadow-lg shadow-brand-green/20 hover:shadow-brand-green/30 flex-shrink-0 whitespace-nowrap"
+          className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-dark text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-brand-green/20 hover:shadow-brand-green/30 flex-shrink-0 whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
           Nova Publicação
@@ -63,40 +63,40 @@ export default function MuralPage() {
       </div>
 
       {/* Filters */}
-      <div className="glass-card rounded-2xl p-4 border border-brand-navy-border">
-        <div className="flex items-center gap-3 flex-wrap">
+      <div className="glass-card rounded-2xl p-6 md:p-7 border border-brand-navy-border">
+        <div className="flex items-center gap-4 flex-wrap">
           <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
           <input
             type="text"
             placeholder="Buscar publicação..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="bg-brand-navy-light border border-brand-navy-border rounded-lg px-3 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-green/50 w-48"
+            className="bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-green/50 w-64"
           />
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2.5 flex-wrap">
             {tiposOptions.map((t) => (
               <button
                 key={t}
                 onClick={() => setFiltroTipo(t)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize ${
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all capitalize whitespace-nowrap flex-shrink-0 ${
                   filtroTipo === t
-                    ? 'bg-brand-green text-white'
-                    : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border'
+                    ? 'bg-brand-green text-white shadow-md shadow-brand-green/20 border border-brand-green-light'
+                    : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border hover:border-slate-500'
                 }`}
               >
                 {t === 'todos' ? 'Todos' : tipoMuralLabel(t)}
               </button>
             ))}
           </div>
-          <div className="flex gap-2 ml-auto">
+          <div className="flex gap-2.5 ml-auto flex-wrap">
             {prioridadesOptions.map((p) => (
               <button
                 key={p}
                 onClick={() => setFiltroPrioridade(p)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize ${
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all capitalize whitespace-nowrap flex-shrink-0 ${
                   filtroPrioridade === p
-                    ? 'bg-brand-green text-white'
-                    : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border'
+                    ? 'bg-brand-green text-white shadow-md shadow-brand-green/20 border border-brand-green-light'
+                    : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border hover:border-slate-500'
                 }`}
               >
                 {p === 'todas' ? 'Todas' : prioridadeLabel(p)}
@@ -108,11 +108,11 @@ export default function MuralPage() {
 
       {/* Fixadas */}
       {fixadas.length > 0 && (
-        <div>
-          <h3 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Pin className="w-3.5 h-3.5" /> Fixadas
+        <div className="space-y-4 mb-8">
+          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+            <Pin className="w-3.5 h-3.5 text-brand-green-light" /> Fixadas
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
             {fixadas.map((pub) => (
               <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
             ))}
@@ -121,15 +121,22 @@ export default function MuralPage() {
       )}
 
       {/* Normais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {normais.map((pub) => (
-          <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
-        ))}
-        {filtered.length === 0 && (
-          <div className="col-span-3 glass-card rounded-2xl p-12 border border-brand-navy-border text-center">
-            <p className="text-slate-400 text-lg">Nenhuma publicação encontrada.</p>
-          </div>
+      <div className="space-y-4">
+        {fixadas.length > 0 && (
+          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+            Todas as Publicações
+          </h3>
         )}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+          {normais.map((pub) => (
+            <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
+          ))}
+          {filtered.length === 0 && (
+            <div className="col-span-3 glass-card rounded-2xl p-12 border border-brand-navy-border text-center">
+              <p className="text-slate-400 text-lg">Nenhuma publicação encontrada.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal */}
@@ -154,9 +161,9 @@ function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: b
   };
 
   return (
-    <div className={`glass-card rounded-2xl p-5 border border-brand-navy-border hover-lift flex flex-col gap-3 border-l-4 ${prioridadeColors[pub.prioridade]}`}>
+    <div className={`glass-card rounded-2xl p-6 md:p-7 border border-brand-navy-border hover-lift flex flex-col justify-between gap-4 border-l-4 ${prioridadeColors[pub.prioridade]}`}>
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Badge variant={tipoMuralVariant(pub.tipo)}>
             {tipoIcons[pub.tipo]} {tipoMuralLabel(pub.tipo)}
           </Badge>
@@ -173,7 +180,7 @@ function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: b
       </div>
 
       <div className="flex items-center gap-2 pt-2 border-t border-brand-navy-border mt-auto">
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
+        <div className="w-7 h-7 rounded-md bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
           <span className="text-white text-xs font-bold">{pub.avatarAutor}</span>
         </div>
         <div className="flex-1 min-w-0">
