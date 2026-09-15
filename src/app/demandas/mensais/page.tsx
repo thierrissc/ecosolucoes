@@ -18,6 +18,7 @@ const categoriaConfig: Record<string, { icon: React.ElementType; label: string; 
 export default function DemandasMensaisPage() {
   const [filtroSetor, setFiltroSetor] = useState('todos');
   const [filtroCategoria, setFiltroCategoria] = useState<'todas' | MetaMensal['categoria']>('todas');
+  const [now] = useState(() => Date.now());
 
   const filtered = metasMensais.filter((m) => {
     const matchSetor = filtroSetor === 'todos' || m.setorId === filtroSetor;
@@ -100,7 +101,7 @@ export default function DemandasMensaisPage() {
           const setor = setores.find((s) => s.id === meta.setorId);
           const cfg = categoriaConfig[meta.categoria];
           const Icon = cfg.icon;
-          const daysLeft = Math.ceil((new Date(meta.prazo).getTime() - Date.now()) / 86400000);
+          const daysLeft = Math.ceil((new Date(meta.prazo).getTime() - now) / 86400000);
 
           return (
             <div key={meta.id} className="glass-card rounded-2xl p-6 border border-brand-navy-border hover-lift">

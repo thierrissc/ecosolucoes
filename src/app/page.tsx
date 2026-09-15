@@ -27,8 +27,8 @@ import Link from 'next/link';
 import { tarefasSemanais } from '@/data/demandas';
 import { setores } from '@/data/setores';
 import { publicacoes } from '@/data/mural';
-import { formatDate, getDaysUntil, prioridadeLabel, statusLabel } from '@/lib/utils';
-import Badge, { prioridadeVariant, statusVariant } from '@/components/ui/Badge';
+import { formatDate, getDaysUntil, prioridadeLabel } from '@/lib/utils';
+import Badge, { prioridadeVariant } from '@/components/ui/Badge';
 
 const pieData = [
   { name: 'Concluída', value: tarefasSemanais.filter((t) => t.status === 'concluida').length, color: '#16a34a' },
