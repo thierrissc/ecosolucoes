@@ -108,7 +108,11 @@ export default function RelatoriosPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-border)" vertical={false} />
                   <XAxis dataKey="setor" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--surface-border)', borderRadius: '0px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--surface-border)', borderRadius: '0px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }}
+                    itemStyle={{ color: 'var(--text-primary)', fontSize: '12px' }}
+                    labelStyle={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '12px', marginBottom: '4px' }}
+                  />
                   <Bar dataKey="Concluídas" fill="#16a34a" radius={[0, 0, 0, 0]} />
                   <Bar dataKey="Pendentes" fill="#64748b" radius={[0, 0, 0, 0]} />
                 </BarChart>
@@ -142,7 +146,11 @@ export default function RelatoriosPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-border)" vertical={false} />
                 <XAxis dataKey="mes" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--surface-border)', borderRadius: '0px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--surface-border)', borderRadius: '0px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }}
+                  itemStyle={{ color: 'var(--text-primary)', fontSize: '12px' }}
+                  labelStyle={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '12px', marginBottom: '4px' }}
+                />
                 <Line type="monotone" dataKey="Concluídas" stroke="#16a34a" strokeWidth={2} dot={{ fill: '#16a34a', r: 3, strokeWidth: 0 }} />
                 <Line type="monotone" dataKey="Pendentes" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6', r: 3, strokeWidth: 0 }} />
               </LineChart>
