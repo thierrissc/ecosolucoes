@@ -118,10 +118,10 @@
 }
 
 *, *::before, *::after {
-  border-radius: 0 !important;
+  border-radius: 0;
 }
 
-.status-dot, .badge-dot, .dot {
+.rounded-full, .status-dot, .badge-dot, .dot {
   border-radius: 9999px !important;
 }
 
