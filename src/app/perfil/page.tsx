@@ -136,40 +136,34 @@ export default function PerfilPage() {
               <h3 className="text-white font-semibold mb-4 border-b border-brand-navy-border pb-2">Informações Básicas</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-400 text-xs block mb-1">Nome da Empresa</label>
-                  <div className="relative">
-                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      name="nomeEmpresa"
-                      value={data.nomeEmpresa}
-                      onChange={handleChange}
-                      placeholder="Ex: Eco Soluções LTDA"
-                      className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50"
-                    />
-                  </div>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">Nome da Empresa</label>
+                  <input
+                    name="nomeEmpresa"
+                    value={data.nomeEmpresa}
+                    onChange={handleChange}
+                    placeholder="Ex: Eco Soluções LTDA"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                  />
                 </div>
                 <div>
-                  <label className="text-slate-400 text-xs block mb-1">Username / @</label>
-                  <div className="relative">
-                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      name="arrobaEmpresa"
-                      value={data.arrobaEmpresa}
-                      onChange={handleChange}
-                      placeholder="Ex: @ecosolucoes"
-                      className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50"
-                    />
-                  </div>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">Username / @</label>
+                  <input
+                    name="arrobaEmpresa"
+                    value={data.arrobaEmpresa}
+                    onChange={handleChange}
+                    placeholder="Ex: @ecosolucoes"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                  />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="text-slate-400 text-xs block mb-1">Breve Descrição</label>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">Breve Descrição</label>
                   <textarea
                     name="descricao"
                     value={data.descricao}
                     onChange={handleChange}
                     rows={3}
                     placeholder="Conte-nos um pouco sobre a empresa..."
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50 resize-none"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white resize-none transition-all"
                   />
                 </div>
               </div>
@@ -179,57 +173,45 @@ export default function PerfilPage() {
               <h3 className="text-white font-semibold mb-4 border-b border-brand-navy-border pb-2">Contato & Localização</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-400 text-xs block mb-1">E-mail Corporativo</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      type="email"
-                      name="email"
-                      value={data.email}
-                      onChange={handleChange}
-                      placeholder="contato@empresa.com"
-                      className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50"
-                    />
-                  </div>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">E-mail Corporativo</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={data.email}
+                    onChange={handleChange}
+                    placeholder="contato@empresa.com"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                  />
                 </div>
                 <div>
-                  <label className="text-slate-400 text-xs block mb-1">Setor de Atuação</label>
-                  <div className="relative">
-                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      name="setorAtuacao"
-                      value={data.setorAtuacao}
-                      onChange={handleChange}
-                      placeholder="Ex: Tecnologia Sustentável"
-                      className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50"
-                    />
-                  </div>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">Setor de Atuação</label>
+                  <input
+                    name="setorAtuacao"
+                    value={data.setorAtuacao}
+                    onChange={handleChange}
+                    placeholder="Ex: Tecnologia Sustentável"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                  />
                 </div>
                 <div>
-                  <label className="text-slate-400 text-xs block mb-1">Website</label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      name="site"
-                      value={data.site}
-                      onChange={handleChange}
-                      placeholder="https://www.empresa.com.br"
-                      className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50"
-                    />
-                  </div>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">Website</label>
+                  <input
+                    name="site"
+                    value={data.site}
+                    onChange={handleChange}
+                    placeholder="https://www.empresa.com.br"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                  />
                 </div>
                 <div>
-                  <label className="text-slate-400 text-xs block mb-1">Sede / Endereço</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      name="endereco"
-                      value={data.endereco}
-                      onChange={handleChange}
-                      placeholder="São Paulo, SP"
-                      className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-green/50"
-                    />
-                  </div>
+                  <label className="text-slate-500 font-medium text-xs block mb-1">Sede / Endereço</label>
+                  <input
+                    name="endereco"
+                    value={data.endereco}
+                    onChange={handleChange}
+                    placeholder="São Paulo, SP"
+                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                  />
                 </div>
               </div>
             </div>
@@ -242,7 +224,7 @@ export default function PerfilPage() {
               )}
               <button
                 type="submit"
-                className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-dark text-white px-6 py-2.5 rounded-xl font-medium text-sm transition-all shadow-lg shadow-brand-green/20"
+                className="flex items-center gap-2 bg-white text-black hover:bg-slate-200 dark:bg-white dark:text-black dark:hover:bg-slate-200 px-6 py-2 rounded-md font-medium text-sm transition-all shadow-sm"
               >
                 <Save className="w-4 h-4" /> Salvar Perfil
               </button>

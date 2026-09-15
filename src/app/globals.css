@@ -1,14 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-@theme {
-  /* Brand colors */
+:root {
+  /* Brand colors (Shared) */
   --color-brand-green: #16a34a;
   --color-brand-green-light: #22c55e;
   --color-brand-green-dark: #15803d;
+  
+  /* Light theme colors */
+  --color-brand-navy: #f8fafc;
+  --color-brand-navy-light: #ffffff;
+  --color-brand-navy-border: #e2e8f0;
+  
+  --bg-body: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(226, 232, 240, 0.8);
+}
+
+.dark {
+  /* Dark theme colors */
   --color-brand-navy: #0f172a;
   --color-brand-navy-light: #1e293b;
   --color-brand-navy-border: #334155;
+  
+  --bg-body: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-bg: rgba(30, 41, 59, 0.8);
+  --glass-border: rgba(51, 65, 85, 0.5);
+}
+
+@theme {
+  /* Map CSS variables to Tailwind colors */
+  --color-brand-green: var(--color-brand-green);
+  --color-brand-green-light: var(--color-brand-green-light);
+  --color-brand-green-dark: var(--color-brand-green-dark);
+  --color-brand-navy: var(--color-brand-navy);
+  --color-brand-navy-light: var(--color-brand-navy-light);
+  --color-brand-navy-border: var(--color-brand-navy-border);
 
   /* Font family */
   --font-family-sans: 'Inter', system-ui, sans-serif;
@@ -42,8 +73,9 @@ html {
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -69,10 +101,11 @@ body {
 
 /* Glass card effect */
 .glass-card {
-  background: rgba(30, 41, 59, 0.8);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  border: 1px solid var(--glass-border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-card-light {
@@ -101,7 +134,7 @@ body {
 
 /* Sidebar gradient */
 .sidebar-gradient {
-  background: linear-gradient(180deg, #0f172a 0%, #0d1b2a 100%);
+  background: linear-gradient(180deg, var(--color-brand-navy) 0%, #0d1b2a 100%);
 }
 
 /* Progress bar animation */
@@ -198,4 +231,9 @@ body {
 
 .cal-day:hover {
   background-color: rgba(22, 163, 74, 0.1);
+}
+
+/* Hide Next.js Dev Indicator completely */
+nextjs-portal, #nextjs-dev-indicator, [data-nextjs-toast] {
+  display: none !important;
 }

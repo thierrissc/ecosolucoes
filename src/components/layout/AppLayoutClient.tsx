@@ -11,11 +11,11 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
   const { sidebarCollapsed } = useApp();
 
   return (
-    <div className="min-h-screen bg-brand-navy dark:bg-brand-navy light:bg-slate-100 flex">
+    <div className="min-h-screen bg-[var(--bg-body)] flex transition-colors duration-300 w-full">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen transition-all duration-300">
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[var(--bg-body)]">
         <Header pathname={pathname} />
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-8 lg:p-12 overflow-auto w-full">
           {children}
         </main>
       </div>

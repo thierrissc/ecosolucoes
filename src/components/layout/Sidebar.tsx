@@ -38,25 +38,32 @@ export default function Sidebar() {
     <aside
       className={cn(
         'sidebar-gradient sticky left-0 top-0 h-screen z-50 flex flex-col flex-shrink-0 transition-all duration-300 border-r border-brand-navy-border',
-        sidebarCollapsed ? 'w-16' : 'w-64'
+        sidebarCollapsed ? 'w-16' : 'w-72'
       )}
     >
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-brand-navy-border min-h-[72px]">
-        <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-brand-green flex items-center justify-center shadow-lg shadow-brand-green/30">
-          <Leaf className="w-5 h-5 text-white" />
-        </div>
-        {!sidebarCollapsed && (
-          <div className="overflow-hidden">
-            <span className="text-white font-bold text-lg leading-tight block">Eco</span>
-            <span className="text-brand-green-light font-semibold text-sm leading-tight block -mt-0.5">Soluções</span>
+      {/* Logo and Collapse Button */}
+      <div className="flex items-center justify-between px-4 py-6 border-b border-brand-navy-border min-h-[80px]">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-brand-green flex items-center justify-center shadow-lg shadow-brand-green/30">
+            <Leaf className="w-5 h-5 text-white" />
           </div>
-        )}
+          {!sidebarCollapsed && (
+            <span className="text-white font-bold text-lg whitespace-nowrap tracking-tight">
+              Eco Soluções
+            </span>
+          )}
+        </div>
+        
+        <button
+          onClick={toggleSidebar}
+          className="w-8 h-8 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+        >
+          <ChevronLeft className={cn("w-4 h-4 transition-transform", sidebarCollapsed && "rotate-180")} />
+        </button>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
-        <div className="px-2 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto py-6 px-3 custom-scrollbar">
+        <div className="px-2 space-y-2">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
             const isNotif = href === '/notificacoes';
@@ -67,13 +74,13 @@ export default function Sidebar() {
                 href={href}
                 title={sidebarCollapsed ? label : undefined}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
+                  'flex items-center gap-4 px-3 py-3 rounded-md transition-all duration-200 group relative',
                   isActive
                     ? 'bg-brand-green/15 text-brand-green-light border border-brand-green/20'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 )}
               >
-                <div className="relative flex-shrink-0">
+                <div className="flex items-center justify-center flex-shrink-0">
                   <Icon
                     className={cn(
                       'w-5 h-5 transition-colors',
@@ -87,10 +94,10 @@ export default function Sidebar() {
                   )}
                 </div>
                 {!sidebarCollapsed && (
-                  <span className="text-base font-medium truncate">{label}</span>
+                  <span className="text-lg font-medium truncate">{label}</span>
                 )}
                 {isActive && !sidebarCollapsed && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-green-light flex-shrink-0" />
+                  <div className="ml-auto w-1 h-4 rounded-full bg-brand-green-light flex-shrink-0" />
                 )}
               </Link>
             );
@@ -100,11 +107,11 @@ export default function Sidebar() {
 
       {/* User */}
       {!sidebarCollapsed && (
-        <div className="px-3 py-3 border-t border-brand-navy-border">
-          <Link href="/perfil" className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/5 cursor-pointer transition-colors block">
+        <div className="px-4 py-4 border-t border-brand-navy-border">
+          <Link href="/perfil" className="flex items-center gap-3 p-2.5 rounded-md hover:bg-white/5 cursor-pointer transition-colors block">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-bold">ME</span>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-sm font-bold">ME</span>
               </div>
               <div className="overflow-hidden">
                 <p className="text-white text-sm font-semibold truncate">Seu Perfil</p>
@@ -115,17 +122,6 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Toggle */}
-      <button
-        onClick={toggleSidebar}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-brand-navy-border border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:bg-brand-green hover:border-brand-green transition-all duration-200 z-10"
-      >
-        {sidebarCollapsed ? (
-          <ChevronRight className="w-3 h-3" />
-        ) : (
-          <ChevronLeft className="w-3 h-3" />
-        )}
-      </button>
     </aside>
   );
 }

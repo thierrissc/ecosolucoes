@@ -9,6 +9,10 @@ import {
   Users,
   ArrowUpRight,
   Zap,
+  Briefcase,
+  AlertCircle,
+  BarChart2,
+  PieChart as PieChartIcon,
 } from 'lucide-react';
 import {
   BarChart,
@@ -30,58 +34,48 @@ import { publicacoes } from '@/data/mural';
 import { formatDate, getDaysUntil, prioridadeLabel } from '@/lib/utils';
 import Badge, { prioridadeVariant } from '@/components/ui/Badge';
 
+const COLORS = ['#16a34a', '#3b82f6', '#475569'];
+const BAR_COLORS = ['#16a34a', '#22c55e', '#4ade80', '#86efac', '#bbf7d0'];
+
 const pieData = [
-  { name: 'Concluída', value: tarefasSemanais.filter((t) => t.status === 'concluida').length, color: '#16a34a' },
-  { name: 'Em Andamento', value: tarefasSemanais.filter((t) => t.status === 'em_andamento').length, color: '#3b82f6' },
-  { name: 'Não Iniciada', value: tarefasSemanais.filter((t) => t.status === 'nao_iniciada').length, color: '#475569' },
+  { name: 'Concluída', value: tarefasSemanais.filter((t) => t.status === 'concluida').length },
+  { name: 'Em Andamento', value: tarefasSemanais.filter((t) => t.status === 'em_andamento').length },
+  { name: 'Não Iniciada', value: tarefasSemanais.filter((t) => t.status === 'nao_iniciada').length },
 ];
 
 const barData = setores.map((s) => ({
-  setor: s.nome.split(' ')[0],
-  Semanais: s.demandasSemanais,
-  Mensais: s.demandasMensais,
+  name: s.nome.split(' ')[0],
+  tarefas: s.demandasSemanais + s.demandasMensais,
 }));
 
 const statCards = [
   {
-    label: 'Tarefas Pendentes',
-    value: tarefasSemanais.filter((t) => t.status !== 'concluida').length,
-    icon: Clock,
-    color: 'text-yellow-400',
-    bg: 'bg-yellow-500/10 border-yellow-500/20',
-    iconBg: 'bg-yellow-500/20',
-    change: '+3 esta semana',
-    changeType: 'neutral',
-  },
-  {
-    label: 'Tarefas Concluídas',
-    value: tarefasSemanais.filter((t) => t.status === 'concluida').length,
-    icon: CheckCircle2,
-    color: 'text-green-400',
+    label: 'Projetos Ativos',
+    value: '12',
+    icon: Briefcase,
+    iconBg: 'bg-green-500/20 text-green-500',
     bg: 'bg-green-500/10 border-green-500/20',
-    iconBg: 'bg-green-500/20',
-    change: '+2 hoje',
-    changeType: 'positive',
   },
   {
-    label: 'Avisos no Mural',
-    value: publicacoes.length,
-    icon: AlertTriangle,
-    color: 'text-orange-400',
+    label: 'Pendências',
+    value: '5',
+    icon: AlertCircle,
+    iconBg: 'bg-orange-500/20 text-orange-500',
     bg: 'bg-orange-500/10 border-orange-500/20',
-    iconBg: 'bg-orange-500/20',
-    change: '2 urgentes',
-    changeType: 'negative',
   },
   {
-    label: 'Total Colaboradores',
-    value: setores.reduce((acc, s) => acc + s.colaboradores, 0),
-    icon: Users,
-    color: 'text-blue-400',
+    label: 'Tarefas Hoje',
+    value: '24',
+    icon: CheckCircle2,
+    iconBg: 'bg-blue-500/20 text-blue-500',
     bg: 'bg-blue-500/10 border-blue-500/20',
-    iconBg: 'bg-blue-500/20',
-    change: '7 setores ativos',
-    changeType: 'neutral',
+  },
+  {
+    label: 'Equipe Online',
+    value: '8',
+    icon: Users,
+    iconBg: 'bg-purple-500/20 text-purple-500',
+    bg: 'bg-purple-500/10 border-purple-500/20',
   },
 ];
 
@@ -112,22 +106,15 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Welcome banner */}
-      <div className="glass-card rounded-2xl p-6 border border-brand-navy-border relative overflow-hidden">
+      <div className="glass-card rounded-lg p-6 border border-brand-navy-border relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-brand-green/5 to-transparent pointer-events-none" />
         <div className="relative flex items-center justify-between flex-wrap gap-4">
           <div>
-            <p className="text-slate-400 text-sm mb-1">Bem-vindo de volta 👋</p>
-            <h2 className="text-white text-2xl font-bold">Painel de Controle</h2>
-            <p className="text-slate-400 text-sm mt-1">
-              Você tem{' '}
-              <span className="text-brand-green-light font-semibold">
-                {tarefasSemanais.filter((t) => t.status !== 'concluida').length} tarefas pendentes
-              </span>{' '}
-              e{' '}
-              <span className="text-orange-400 font-semibold">
-                {publicacoes.filter((p) => p.prioridade === 'alta').length} avisos urgentes
-              </span>{' '}
-              esta semana.
+            <h2 className="text-2xl font-bold text-white mb-1">
+              Bem-vindo de volta 👋
+            </h2>
+            <p className="text-slate-400">
+              Aqui está o resumo das atividades de hoje.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -150,22 +137,17 @@ export default function DashboardPage() {
           return (
             <div
               key={card.label}
-              className={`glass-card rounded-2xl p-5 border hover-lift cursor-default ${card.bg}`}
+              className={`glass-card rounded-lg p-5 border hover-lift cursor-default ${card.bg}`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${card.iconBg}`}>
-                  <Icon className={`w-5 h-5 ${card.color}`} />
+                  <Icon className="w-5 h-5" />
                 </div>
-                <ArrowUpRight className={`w-4 h-4 ${card.color} opacity-60`} />
               </div>
-              <p className="text-3xl font-bold text-white mb-1">{card.value}</p>
-              <p className="text-slate-400 text-sm">{card.label}</p>
-              <p className={`text-xs mt-2 font-medium ${
-                card.changeType === 'positive' ? 'text-green-400' :
-                card.changeType === 'negative' ? 'text-red-400' : 'text-slate-400'
-              }`}>
-                {card.change}
-              </p>
+              <div>
+                <p className="text-slate-400 text-sm font-medium mb-1">{card.label}</p>
+                <h3 className="text-3xl font-bold text-white tracking-tight">{card.value}</h3>
+              </div>
             </div>
           );
         })}
@@ -174,51 +156,66 @@ export default function DashboardPage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Bar Chart */}
-        <div className="xl:col-span-2 glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+        <div className="xl:col-span-2 glass-card rounded-lg p-6 border border-brand-navy-border flex flex-col h-full">
           <div className="flex items-center justify-between mb-6 flex-shrink-0">
             <div>
               <h3 className="text-white font-semibold">Demandas por Setor</h3>
-              <p className="text-slate-400 text-sm">Semanais e Mensais</p>
+              <p className="text-slate-400 text-xs mt-1">Volume de tarefas nos principais setores</p>
             </div>
-            <TrendingUp className="w-5 h-5 text-brand-green-light" />
+            <BarChart2 className="w-5 h-5 text-slate-400" />
           </div>
-          <div className="flex-1 min-h-[260px]">
+          <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} barGap={4}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis dataKey="setor" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="Semanais" fill="#16a34a" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="Mensais" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+              <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '0.5rem', color: '#fff' }}
+                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                />
+                <Bar dataKey="tarefas" radius={[4, 4, 0, 0]}>
+                  {barData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
         {/* Pie Chart */}
-        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+        <div className="glass-card rounded-lg p-6 border border-brand-navy-border flex flex-col h-full">
           <div className="flex items-center justify-between mb-6 flex-shrink-0">
             <div>
               <h3 className="text-white font-semibold">Status das Tarefas</h3>
-              <p className="text-slate-400 text-sm">Distribuição atual</p>
+              <p className="text-slate-400 text-xs mt-1">Visão geral do progresso</p>
             </div>
+            <PieChartIcon className="w-5 h-5 text-slate-400" />
           </div>
-          <div className="flex-1 min-h-[260px]">
+          <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={4} dataKey="value">
-                {pieData.map((entry, index) => (
-                  <Cell key={index} fill={entry.color} />
-                ))}
-              </Pie>
-              <Legend
-                formatter={(value) => (
-                  <span style={{ color: '#94a3b8', fontSize: '11px' }}>{value}</span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '0.5rem', color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
@@ -226,21 +223,21 @@ export default function DashboardPage() {
       {/* Bottom Row */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {/* Próximos Prazos */}
-        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+        <div className="glass-card rounded-lg p-6 border border-brand-navy-border flex flex-col h-full">
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h3 className="text-white font-semibold flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-brand-green-light" />
               Próximos Prazos
             </h3>
-            <Link href="/demandas/semanais" className="text-brand-green-light text-xs hover:underline">
-              Ver todas →
-            </Link>
+            <span className="text-xs bg-brand-green/20 text-brand-green-light px-2 py-1 rounded-full font-medium">
+              Esta semana
+            </span>
           </div>
           <div className="space-y-3">
             {proximosPrazos.map((t) => {
               const days = getDaysUntil(t.prazo);
               return (
-                <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl bg-brand-navy/50 border border-brand-navy-border/50">
+                <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold ${
                     days <= 1 ? 'bg-red-500/20 text-red-400' :
                     days <= 3 ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'
@@ -263,7 +260,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Indicadores por Setor */}
-        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+        <div className="glass-card rounded-lg p-6 border border-brand-navy-border flex flex-col h-full">
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h3 className="text-white font-semibold flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-brand-green-light" />

@@ -45,7 +45,7 @@ export default function DemandasMensaisPage() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {(['meta', 'projeto', 'relatorio'] as MetaMensal['categoria'][]).map((cat) => {
           const cfg = categoriaConfig[cat];
           const Icon = cfg.icon;
@@ -96,7 +96,7 @@ export default function DemandasMensaisPage() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {filtered.map((meta) => {
           const setor = setores.find((s) => s.id === meta.setorId);
           const cfg = categoriaConfig[meta.categoria];

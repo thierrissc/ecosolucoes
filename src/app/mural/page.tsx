@@ -55,7 +55,7 @@ export default function MuralPage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-dark text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all shadow-lg shadow-brand-green/20 hover:shadow-brand-green/30"
+          className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-dark text-white px-4 py-2.5 rounded-md font-medium text-sm transition-all shadow-lg shadow-brand-green/20 hover:shadow-brand-green/30 flex-shrink-0 whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
           Nova Publicação

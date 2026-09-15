@@ -51,7 +51,7 @@ export default function CalendarioPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Calendar Grid */}
-        <div className="xl:col-span-2 glass-card rounded-2xl p-6 border border-brand-navy-border">
+        <div className="xl:col-span-2 glass-card rounded-lg p-6 border border-brand-navy-border">
           {/* Month Nav */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-bold text-xl">
@@ -109,7 +109,7 @@ export default function CalendarioPage() {
                       {dayEvents.slice(0, 3).map((e) => (
                         <div
                           key={e.id}
-                          className={`text-[9px] font-medium px-1 py-0.5 rounded truncate w-full text-left ${tipoEventoColor[e.tipo].replace('bg-', 'bg-').concat('/80')} text-white`}
+                          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md border border-white/10 shadow-sm truncate w-full text-left ${tipoEventoColor[e.tipo].replace('bg-', 'bg-').concat('/90')} text-white`}
                           title={e.titulo}
                         >
                           {e.titulo}
@@ -140,7 +140,7 @@ export default function CalendarioPage() {
         <div className="space-y-4">
           {/* Selected Day Events */}
           {selectedDay && (
-            <div className="glass-card rounded-2xl p-5 border border-brand-navy-border">
+            <div className="glass-card rounded-lg p-5 border border-brand-navy-border">
               <h3 className="text-white font-semibold mb-3">
                 {selectedDay} de {MONTHS[month]}
                 <span className="text-slate-400 text-sm font-normal ml-2">
@@ -180,7 +180,7 @@ export default function CalendarioPage() {
           )}
 
           {/* Upcoming Events */}
-          <div className="glass-card rounded-2xl p-5 border border-brand-navy-border">
+          <div className="glass-card rounded-lg p-5 border border-brand-navy-border">
             <h3 className="text-white font-semibold mb-3">Próximos Eventos</h3>
             <div className="space-y-3">
               {nextEvents.map((e) => {
