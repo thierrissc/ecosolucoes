@@ -453,6 +453,65 @@
   background: var(--surface-hover);
 }
 
+/* ─── Print & PDF Export ─── */
+
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4 portrait;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  header, nav, button, .print\:hidden, .no-print {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 1.25rem !important;
+    overflow: hidden !important;
+  }
+
+  .grid {
+    display: block !important;
+  }
+
+  .grid > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 1rem !important;
+    display: block !important;
+  }
+
+  .recharts-responsive-container,
+  .recharts-wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  svg {
+    max-width: 100% !important;
+  }
+}
+
 /* ─── Hide Next.js Dev Indicator ─── */
 
 nextjs-portal, #nextjs-dev-indicator, [data-nextjs-toast] {

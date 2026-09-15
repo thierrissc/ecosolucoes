@@ -228,8 +228,23 @@ export default function CalendarioPage() {
                         style={{ borderLeftColor: eventColor, borderLeftWidth: '4px' }}
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <p className="text-text-primary text-sm font-semibold pr-6">{e.titulo}</p>
-                          <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-text-primary text-sm font-semibold leading-snug">{e.titulo}</p>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
+                            <button
+                              onClick={() => {
+                                if (confirm(`Deseja excluir o evento "${e.titulo}"?`)) {
+                                  deleteEvento(e.id);
+                                }
+                              }}
+                              className="text-text-muted hover:text-red-500 p-1 hover:bg-red-500/10 transition-colors"
+                              title="Excluir evento"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
                         {e.hora && (
                           <p className="text-text-muted text-xs flex items-center gap-1.5 mb-1">
@@ -246,17 +261,6 @@ export default function CalendarioPage() {
                             <Users className="w-3.5 h-3.5" /> {e.participantes.slice(0, 2).join(', ')}{e.participantes.length > 2 && ` +${e.participantes.length - 2}`}
                           </p>
                         )}
-                        <button
-                          onClick={() => {
-                            if (confirm(`Deseja excluir o evento "${e.titulo}"?`)) {
-                              deleteEvento(e.id);
-                            }
-                          }}
-                          className="absolute top-3 right-3 text-text-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                          title="Excluir evento"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
                       </div>
                     );
                   })}

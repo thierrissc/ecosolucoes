@@ -165,8 +165,8 @@ export default function DashboardPage() {
               className="card card-hover p-5 md:p-6 flex flex-col justify-between gap-4"
             >
               <div className="flex items-center justify-between">
-                <div className={`w-10 h-10 bg-gradient-to-br ${card.gradient} flex items-center justify-center shadow-lg`}>
-                  <Icon className="w-5 h-5 text-white" />
+                <div className="w-9 h-9 border border-surface-border bg-surface-2/40 flex items-center justify-center">
+                  <Icon className="w-4 h-4 text-text-secondary" />
                 </div>
                 <div className="w-16 h-8 opacity-40">
                   <ResponsiveContainer width="100%" height="100%">

@@ -48,6 +48,8 @@ interface AppContextType {
   notificacoes: Notificacao[];
   marcarLida: (id: string) => void;
   marcarTodasLidas: () => void;
+  toggleLidaNotificacao: (id: string) => void;
+  deleteNotificacao: (id: string) => void;
   naoLidasCount: number;
 
   // Gestão de Dados
@@ -71,12 +73,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
 
-  const [setores, setSetores] = useState<Setor[]>(initialSetores);
-  const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>(initialTarefas);
-  const [metasMensais, setMetasMensais] = useState<MetaMensal[]>(initialMetas);
-  const [publicacoes, setPublicacoes] = useState<PublicacaoMural[]>(initialMural);
-  const [eventos, setEventos] = useState<EventoCalendario[]>(initialEventos);
-  const [notificacoes, setNotificacoes] = useState<Notificacao[]>(initialNotificacoes);
+  const [setores, setSetores] = useState<Setor[]>([]);
+  const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>([]);
+  const [metasMensais, setMetasMensais] = useState<MetaMensal[]>([]);
+  const [publicacoes, setPublicacoes] = useState<PublicacaoMural[]>([]);
+  const [eventos, setEventos] = useState<EventoCalendario[]>([]);
+  const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
 
   // Carregar dados persistidos no localStorage
   useEffect(() => {
@@ -250,6 +252,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const toggleLidaNotificacao = (id: string) => {
+    setNotificacoes((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, lida: !n.lida } : n))
+    );
+  };
+
+  const deleteNotificacao = (id: string) => {
+    setNotificacoes((prev) => prev.filter((n) => n.id !== id));
+  };
+
   const marcarTodasLidas = () => {
     setNotificacoes((prev) => prev.map((n) => ({ ...n, lida: true })));
   };
@@ -319,6 +331,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         notificacoes,
         marcarLida,
         marcarTodasLidas,
+        toggleLidaNotificacao,
+        deleteNotificacao,
         naoLidasCount,
 
         limparDadosExemplo,

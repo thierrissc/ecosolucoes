@@ -159,7 +159,7 @@ export default function TopNav({ pathname }: TopNavProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full">
+      <header className="sticky top-0 z-50 w-full print:hidden">
         <div className="bg-surface-1/80 backdrop-blur-xl border-b border-surface-border w-full">
           <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
             <div className="flex items-center justify-between h-16 md:h-[68px]">
