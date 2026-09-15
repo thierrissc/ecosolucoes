@@ -73,9 +73,28 @@ export default function TopNav({ pathname }: TopNavProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileSearchTerm, setMobileSearchTerm] = useState('');
+  const [userAvatar, setUserAvatar] = useState<string>('/icon.png');
 
   useEffect(() => {
     setMounted(true);
+    const updateAvatar = () => {
+      try {
+        const saved = localStorage.getItem('@eco-solucoes:perfil');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.avatarUrl) {
+            setUserAvatar(parsed.avatarUrl);
+          }
+        }
+      } catch (e) {}
+    };
+    updateAvatar();
+    window.addEventListener('storage', updateAvatar);
+    window.addEventListener('perfilUpdated', updateAvatar);
+    return () => {
+      window.removeEventListener('storage', updateAvatar);
+      window.removeEventListener('perfilUpdated', updateAvatar);
+    };
   }, []);
 
   useEffect(() => {
@@ -288,7 +307,7 @@ export default function TopNav({ pathname }: TopNavProps) {
                   title="Perfil"
                 >
                   <img
-                    src="/icon.png"
+                    src={userAvatar || '/icon.png'}
                     alt="Perfil"
                     className="w-full h-full object-cover"
                   />
@@ -481,6 +500,24 @@ export default function TopNav({ pathname }: TopNavProps) {
                     </Link>
                   );
                 })}
+
+                <div className="pt-2 mt-2 border-t border-surface-border">
+                  <Link
+                    href="/perfil"
+                    onClick={closeMobileMenu}
+                    className={cn(
+                      'flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all',
+                      isActive('/perfil')
+                        ? 'text-brand bg-brand/8'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+                    )}
+                  >
+                    <div className="w-5 h-5 border border-surface-border bg-surface-2 overflow-hidden flex-shrink-0">
+                      <img src={userAvatar || '/icon.png'} alt="Perfil" className="w-full h-full object-cover" />
+                    </div>
+                    Perfil da Empresa
+                  </Link>
+                </div>
               </nav>
             </div>
           </div>

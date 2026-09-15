@@ -65,10 +65,9 @@ export default function DashboardPage() {
     .sort((a, b) => new Date(a.prazo).getTime() - new Date(b.prazo).getTime())
     .slice(0, 5);
 
-  const setorMaisAtivo = [...setores].sort((a, b) => b.desempenho - a.desempenho)[0] || {
-    nome: 'Geral',
-    desempenho: 100,
-  };
+  const setorMaisAtivo = setores.length > 0
+    ? [...setores].sort((a, b) => b.desempenho - a.desempenho)[0]
+    : null;
 
   const concluidasCount = tarefasSemanais.filter((t) => t.status === 'concluida').length;
   const andamentoCount = tarefasSemanais.filter((t) => t.status === 'em_andamento').length;
@@ -142,16 +141,18 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md p-4 border border-white/10">
-            <div className="w-12 h-12 bg-white/15 flex items-center justify-center animate-float">
-              <Flame className="w-6 h-6 text-yellow-300" />
+          {setorMaisAtivo && (
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md p-4 border border-white/10">
+              <div className="w-12 h-12 bg-white/15 flex items-center justify-center animate-float">
+                <Flame className="w-6 h-6 text-yellow-300" />
+              </div>
+              <div className="text-right">
+                <p className="text-white/60 text-xs font-medium uppercase tracking-wider">Setor Destaque</p>
+                <p className="text-white font-bold text-base">{setorMaisAtivo.nome}</p>
+                <p className="text-emerald-300 text-sm font-semibold">{setorMaisAtivo.desempenho}%</p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-white/60 text-xs font-medium uppercase tracking-wider">Setor Destaque</p>
-              <p className="text-white font-bold text-base">{setorMaisAtivo.nome}</p>
-              <p className="text-emerald-300 text-sm font-semibold">{setorMaisAtivo.desempenho}%</p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 

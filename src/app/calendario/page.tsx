@@ -105,7 +105,7 @@ export default function CalendarioPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
         {/* Calendar Grid */}
-        <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7 flex flex-col">
+        <div className="lg:col-span-7 xl:col-span-8 card p-4 sm:p-5 md:p-7 flex flex-col overflow-x-auto">
           {/* Month Nav */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-text-primary font-extrabold text-xl md:text-2xl">
@@ -115,83 +115,88 @@ export default function CalendarioPage() {
               <button onClick={prevMonth} className="w-9 h-9 bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
                 <ChevronLeft className="w-4 h-4" />
               </button>
+              <button onClick={() => setCurrentDate(new Date())} className="px-3 text-xs font-semibold bg-surface-2 border border-surface-border text-text-secondary hover:text-text-primary hover:border-brand transition-all">
+                Hoje
+              </button>
               <button onClick={nextMonth} className="w-9 h-9 bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Weekday headers */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {WEEKDAYS.map((d) => (
-              <div key={d} className="text-center text-text-muted text-xs font-bold uppercase tracking-wider py-2">{d}</div>
-            ))}
-          </div>
+          <div className="min-w-[340px]">
+            {/* Weekday headers */}
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {WEEKDAYS.map((d) => (
+                <div key={d} className="text-center text-text-muted text-xs font-bold uppercase tracking-wider py-2">{d}</div>
+              ))}
+            </div>
 
-          {/* Days Grid */}
-          <div className="grid grid-cols-7 gap-1.5">
-            {Array.from({ length: firstDay }).map((_, i) => (
-              <div key={`empty-${i}`} className="min-h-[85px] md:min-h-[105px] bg-surface-2/20 border border-transparent" />
-            ))}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1;
-              const dayEvents = getEventosForDay(day);
-              const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-              const isSelected = day === selectedDay;
+            {/* Days Grid */}
+            <div className="grid grid-cols-7 gap-1.5">
+              {Array.from({ length: firstDay }).map((_, i) => (
+                <div key={`empty-${i}`} className="min-h-[85px] md:min-h-[105px] bg-surface-2/20 border border-transparent" />
+              ))}
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const day = i + 1;
+                const dayEvents = getEventosForDay(day);
+                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                const isSelected = day === selectedDay;
 
-              return (
-                <button
-                  key={day}
-                  onClick={() => setSelectedDay(day)}
-                  className={`min-h-[85px] md:min-h-[105px] flex flex-col items-stretch justify-start p-1.5 transition-all text-left relative overflow-hidden border ${
-                    isSelected
-                      ? isToday
-                        ? 'border-sky-400 bg-sky-500/20 shadow-sm'
-                        : 'border-brand bg-brand/10 shadow-sm'
-                      : isToday
-                      ? 'border-sky-400/90 bg-sky-500/10'
-                      : 'border-surface-border bg-surface-1 hover:border-text-muted/40 hover:bg-surface-hover'
-                  }`}
-                >
-                  <div className="flex items-center justify-between w-full mb-1">
-                    <span className={`text-xs font-bold ${isToday ? 'text-sky-400 font-extrabold' : isSelected ? 'text-brand' : 'text-text-primary'}`}>
-                      {day}
-                    </span>
-                    {dayEvents.length > 0 && (
-                      <span className="text-[10px] text-text-muted font-medium">
-                        {dayEvents.length}
+                return (
+                  <button
+                    key={day}
+                    onClick={() => setSelectedDay(day)}
+                    className={`min-h-[85px] md:min-h-[105px] flex flex-col items-stretch justify-start p-1.5 transition-all text-left relative overflow-hidden border ${
+                      isSelected
+                        ? isToday
+                          ? 'border-sky-400 bg-sky-500/20 shadow-sm'
+                          : 'border-brand bg-brand/10 shadow-sm'
+                        : isToday
+                        ? 'border-sky-400/90 bg-sky-500/10'
+                        : 'border-surface-border bg-surface-1 hover:border-text-muted/40 hover:bg-surface-hover'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full mb-1">
+                      <span className={`text-xs font-bold ${isToday ? 'text-sky-400 font-extrabold' : isSelected ? 'text-brand' : 'text-text-primary'}`}>
+                        {day}
                       </span>
-                    )}
-                  </div>
+                      {dayEvents.length > 0 && (
+                        <span className="text-[10px] text-text-muted font-medium">
+                          {dayEvents.length}
+                        </span>
+                      )}
+                    </div>
 
-                  {/* Tags com cores dos eventos */}
-                  <div className="w-full space-y-1 overflow-hidden">
-                    {dayEvents.slice(0, 2).map((e) => {
-                      const eventColor = e.cor || tipoEventoColor[e.tipo] || '#16a34a';
-                      return (
-                        <div
-                          key={e.id}
-                          className="w-full text-[10px] font-semibold px-1.5 py-0.5 truncate border leading-tight"
-                          style={{
-                            backgroundColor: eventColor + '20',
-                            borderColor: eventColor + '80',
-                            color: eventColor,
-                          }}
-                          title={`${e.titulo}${e.hora ? ` às ${e.hora}` : ''}`}
-                        >
-                          {e.titulo}
+                    {/* Tags com cores dos eventos */}
+                    <div className="w-full space-y-1 overflow-hidden">
+                      {dayEvents.slice(0, 2).map((e) => {
+                        const eventColor = e.cor || tipoEventoColor[e.tipo] || '#16a34a';
+                        return (
+                          <div
+                            key={e.id}
+                            className="w-full text-[10px] font-semibold px-1.5 py-0.5 truncate border leading-tight"
+                            style={{
+                              backgroundColor: eventColor + '20',
+                              borderColor: eventColor + '80',
+                              color: eventColor,
+                            }}
+                            title={`${e.titulo}${e.hora ? ` às ${e.hora}` : ''}`}
+                          >
+                            {e.titulo}
+                          </div>
+                        );
+                      })}
+                      {dayEvents.length > 2 && (
+                        <div className="text-[9px] font-bold text-text-muted text-center pt-0.5">
+                          +{dayEvents.length - 2} mais
                         </div>
-                      );
-                    })}
-                    {dayEvents.length > 2 && (
-                      <div className="text-[9px] font-bold text-text-muted text-center pt-0.5">
-                        +{dayEvents.length - 2} mais
-                      </div>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Legend */}

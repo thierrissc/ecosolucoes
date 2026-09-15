@@ -153,69 +153,73 @@ export default function DemandasSemanaisPage() {
           </button>
         </div>
       ) : visualizacao === 'lista' ? (
-        <div className="card overflow-hidden">
-          <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-3 bg-surface-2 text-text-muted text-xs font-bold uppercase tracking-wider border-b border-surface-border">
-            <div className="col-span-5">Tarefa / Setor</div>
-            <div className="col-span-2">Prazo</div>
-            <div className="col-span-2">Prioridade</div>
-            <div className="col-span-3">Status / Ações</div>
-          </div>
-          <div className="divide-y divide-surface-border">
-            {filtered.map((t) => {
-              const days = getDaysUntil(t.prazo);
-              const setor = setores.find((s) => s.id === t.setorId);
-              return (
-                <div key={t.id} className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 hover:bg-surface-hover transition-colors items-center group">
-                  <div className="col-span-5">
-                    <p className="text-text-primary text-sm font-semibold truncate group-hover:text-brand transition-colors">{t.nome}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-text-muted text-xs">{t.responsavel}</span>
-                      {setor && (
-                        <span className="text-[11px] px-2 py-0.5 font-semibold" style={{ backgroundColor: setor.cor + '15', color: setor.cor }}>
-                          {setor.nome.split(' ')[0]}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <p className={`text-sm font-semibold ${days <= 1 ? 'text-red-500' : days <= 3 ? 'text-amber-500' : 'text-text-secondary'}`}>
-                      {formatDate(t.prazo)}
-                    </p>
-                    <p className="text-text-muted text-xs mt-0.5">{days <= 0 ? 'Vencido!' : `${days}d restantes`}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <Badge variant={prioridadeVariant(t.prioridade)} dot>
-                      {prioridadeLabel(t.prioridade)}
-                    </Badge>
-                  </div>
-                  <div className="col-span-3 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-[100px] flex-shrink-0">
-                        <Badge variant={statusVariant(t.status)}>
-                          {statusLabel(t.status)}
-                        </Badge>
+        <div className="card overflow-hidden overflow-x-auto">
+          <div className="min-w-[720px]">
+            <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-3 bg-surface-2 text-text-muted text-xs font-bold uppercase tracking-wider border-b border-surface-border">
+              <div className="col-span-5">Tarefa / Setor</div>
+              <div className="col-span-2">Prazo</div>
+              <div className="col-span-2">Prioridade</div>
+              <div className="col-span-3">Status / Ações</div>
+            </div>
+            <div className="divide-y divide-surface-border">
+              {filtered.map((t) => {
+                const days = getDaysUntil(t.prazo);
+                const setor = setores.find((s) => s.id === t.setorId);
+                return (
+                  <div key={t.id} className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 hover:bg-surface-hover transition-colors items-center group">
+                    <div className="col-span-5">
+                      <p className="text-text-primary text-sm font-semibold truncate group-hover:text-brand transition-colors">{t.nome}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-text-muted text-xs">{t.responsavel}</span>
+                        {setor && (
+                          <span className="text-[11px] px-2 py-0.5 font-semibold" style={{ backgroundColor: setor.cor + '15', color: setor.cor }}>
+                            {setor.nome.split(' ')[0]}
+                          </span>
+                        )}
                       </div>
-                      <select
-                        value={t.status}
-                        onChange={(e) => updateTarefaStatus(t.id, e.target.value as Status)}
-                        className="input input-select w-[140px] text-xs py-1.5 px-2 flex-shrink-0"
-                      >
-                        <option value="nao_iniciada">Não Iniciada</option>
-                        <option value="em_andamento">Em Andamento</option>
-                        <option value="concluida">Concluída</option>
-                      </select>
                     </div>
-                    <button
-                      onClick={() => setDeletingId(t.id)}
-                      title="Excluir tarefa"
-                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1.5 transition-all flex-shrink-0"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="col-span-2">
+                      <p className="text-text-primary text-xs font-medium">{formatDate(t.prazo)}</p>
+                      <p className={`text-[11px] font-semibold mt-0.5 ${
+                        days < 0 ? 'text-red-500' : days <= 3 ? 'text-amber-500' : 'text-text-muted'
+                      }`}>
+                        {days < 0 ? `${Math.abs(days)}d atrasada` : days === 0 ? 'Hoje!' : `${days}d restantes`}
+                      </p>
+                    </div>
+                    <div className="col-span-2">
+                      <Badge variant={prioridadeVariant(t.prioridade)} dot>
+                        {prioridadeLabel(t.prioridade)}
+                      </Badge>
+                    </div>
+                    <div className="col-span-3 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-[100px] flex-shrink-0">
+                          <Badge variant={statusVariant(t.status)}>
+                            {statusLabel(t.status)}
+                          </Badge>
+                        </div>
+                        <select
+                          value={t.status}
+                          onChange={(e) => updateTarefaStatus(t.id, e.target.value as Status)}
+                          className="input input-select w-[140px] text-xs py-1.5 px-2 flex-shrink-0"
+                        >
+                          <option value="nao_iniciada">Não Iniciada</option>
+                          <option value="em_andamento">Em Andamento</option>
+                          <option value="concluida">Concluída</option>
+                        </select>
+                      </div>
+                      <button
+                        onClick={() => setDeletingId(t.id)}
+                        title="Excluir tarefa"
+                        className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1.5 transition-all flex-shrink-0"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       ) : (

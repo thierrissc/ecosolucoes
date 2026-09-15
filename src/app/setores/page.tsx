@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Building2, DollarSign, Users, TrendingUp, Megaphone, Monitor, Settings, Plus, X, Trash2 } from 'lucide-react';
+import { Building2, DollarSign, Users, TrendingUp, Megaphone, Monitor, Settings, Plus, X, Trash2, LayoutList, Target } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import ProgressBar from '@/components/ui/ProgressBar';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 const iconMap: Record<string, React.ElementType> = {
   Building2,
@@ -15,26 +16,27 @@ const iconMap: Record<string, React.ElementType> = {
   Settings,
 };
 
-const CORES = [
-  '#3b82f6', // blue
-  '#10b981', // emerald
-  '#f59e0b', // amber
-  '#ec4899', // pink
-  '#8b5cf6', // purple
-  '#06b6d4', // cyan
-  '#f97316', // orange
-  '#64748b', // slate
+const COLOR_PRESETS = [
+  { label: 'Verde', value: '#16a34a' },
+  { label: 'Azul', value: '#3b82f6' },
+  { label: 'Laranja', value: '#f97316' },
+  { label: 'Roxo', value: '#8b5cf6' },
+  { label: 'Vermelho', value: '#ef4444' },
+  { label: 'Amarelo', value: '#eab308' },
+  { label: 'Ciano', value: '#06b6d4' },
+  { label: 'Rosa', value: '#ec4899' },
 ];
 
 export default function SetoresPage() {
   const { setores, addSetor, deleteSetor, tarefasSemanais } = useApp();
   const [showModal, setShowModal] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Form state
   const [nome, setNome] = useState('');
   const [responsavel, setResponsavel] = useState('');
   const [colaboradores, setColaboradores] = useState(1);
-  const [cor, setCor] = useState(CORES[0]);
+  const [cor, setCor] = useState(COLOR_PRESETS[0].value);
   const [icone, setIcone] = useState('Building2');
 
   const handleCreate = (e: React.FormEvent) => {
@@ -86,19 +88,22 @@ export default function SetoresPage() {
       {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
         {[
-          { label: 'Colaboradores', value: totalColaboradores, color: 'from-blue-500 to-indigo-400' },
-          { label: 'Demandas Semanais', value: totalSemanais, color: 'from-amber-500 to-yellow-400' },
-          { label: 'Demandas Mensais', value: totalMensais, color: 'from-violet-500 to-purple-400' },
-          { label: 'Desempenho Médio', value: `${mediaDesempenho}%`, color: 'from-emerald-500 to-teal-400' },
-        ].map((item) => (
-          <div key={item.label} className="card p-5 md:p-6 text-center">
-            <div className={`w-10 h-10 bg-gradient-to-br ${item.color} mx-auto mb-3 flex items-center justify-center shadow-lg`}>
-              <span className="text-white text-sm font-bold">#</span>
+          { label: 'Colaboradores', value: totalColaboradores, icon: Users },
+          { label: 'Demandas Semanais', value: totalSemanais, icon: LayoutList },
+          { label: 'Demandas Mensais', value: totalMensais, icon: Target },
+          { label: 'Desempenho Médio', value: `${mediaDesempenho}%`, icon: TrendingUp },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className="card p-5 md:p-6 text-center">
+              <div className="w-9 h-9 border border-surface-border bg-surface-2/40 mx-auto mb-3 flex items-center justify-center">
+                <Icon className="w-4 h-4 text-text-secondary" />
+              </div>
+              <p className="text-text-primary text-3xl md:text-4xl font-extrabold">{item.value}</p>
+              <p className="text-text-muted text-xs font-medium mt-1">{item.label}</p>
             </div>
-            <p className="text-text-primary text-3xl md:text-4xl font-extrabold">{item.value}</p>
-            <p className="text-text-muted text-xs font-medium mt-1">{item.label}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Cards */}
@@ -142,7 +147,7 @@ export default function SetoresPage() {
                     </div>
 
                     <button
-                      onClick={() => deleteSetor(setor.id)}
+                      onClick={() => setDeletingId(setor.id)}
                       title="Excluir setor"
                       className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1.5 transition-all"
                     >
@@ -261,16 +266,28 @@ export default function SetoresPage() {
 
               <div>
                 <label className="text-text-muted text-xs font-medium block mb-1.5">Cor Temática</label>
-                <div className="flex gap-2 flex-wrap pt-1">
-                  {CORES.map((c) => (
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  {COLOR_PRESETS.map((cp) => (
                     <button
-                      key={c}
+                      key={cp.value}
                       type="button"
-                      onClick={() => setCor(c)}
-                      className={`w-7 h-7 transition-all ${cor === c ? 'ring-2 ring-offset-2 ring-offset-surface-1 scale-110' : 'opacity-70 hover:opacity-100'}`}
-                      style={{ backgroundColor: c }}
+                      onClick={() => setCor(cp.value)}
+                      className={`w-7 h-7 flex items-center justify-center transition-all ${
+                        cor === cp.value
+                          ? 'ring-2 ring-brand ring-offset-2 ring-offset-surface-1 scale-110'
+                          : 'hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: cp.value }}
+                      title={cp.label}
                     />
                   ))}
+                  <input
+                    type="color"
+                    value={cor}
+                    onChange={(e) => setCor(e.target.value)}
+                    className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer ml-1"
+                    title="Cor personalizada"
+                  />
                 </div>
               </div>
 
@@ -286,6 +303,21 @@ export default function SetoresPage() {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deletingId}
+        title="Excluir Setor"
+        message="Tem certeza que deseja excluir este setor? As demandas associadas a ele não serão apagadas, mas perderão a referência de setor."
+        confirmLabel="Excluir Setor"
+        onConfirm={() => {
+          if (deletingId) {
+            deleteSetor(deletingId);
+            setDeletingId(null);
+          }
+        }}
+        onCancel={() => setDeletingId(null)}
+      />
     </div>
   );
 }

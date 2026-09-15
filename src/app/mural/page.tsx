@@ -60,44 +60,42 @@ export default function MuralPage() {
       </div>
 
       {/* Filters */}
-      <div className="card p-4 md:p-5">
-        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
-          <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-            <input
-              type="text"
-              placeholder="Buscar comunicados, avisos ou autores..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="input pl-10"
-            />
-          </div>
+      <div className="card p-4 md:p-5 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+        <div className="relative flex-1 min-w-[240px]">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Buscar comunicados, avisos ou autores..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="input input-with-icon w-full"
+          />
+        </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-text-muted text-xs font-semibold uppercase tracking-wider">Tipo:</span>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <select
+            value={filtroTipo}
+            onChange={(e) => setFiltroTipo(e.target.value)}
+            className="input input-select w-auto min-w-[150px] text-xs py-2 px-3"
+          >
             {tiposOptions.map((t) => (
-              <button
-                key={t}
-                onClick={() => setFiltroTipo(t)}
-                className={`chip ${filtroTipo === t ? 'active' : ''}`}
-              >
-                {t === 'todos' ? 'Todos' : tipoMuralLabel(t)}
-              </button>
+              <option key={t} value={t}>
+                {t === 'todos' ? 'Todos os Tipos' : tipoMuralLabel(t)}
+              </option>
             ))}
-          </div>
+          </select>
 
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-text-muted text-xs font-semibold uppercase tracking-wider">Prioridade:</span>
+          <select
+            value={filtroPrioridade}
+            onChange={(e) => setFiltroPrioridade(e.target.value as any)}
+            className="input input-select w-auto min-w-[140px] text-xs py-2 px-3"
+          >
             {prioridadesOptions.map((p) => (
-              <button
-                key={p}
-                onClick={() => setFiltroPrioridade(p)}
-                className={`chip ${filtroPrioridade === p ? 'active' : ''}`}
-              >
-                {p === 'todas' ? 'Todas' : prioridadeLabel(p)}
-              </button>
+              <option key={p} value={p}>
+                {p === 'todas' ? 'Todas Prioridades' : prioridadeLabel(p)}
+              </option>
             ))}
-          </div>
+          </select>
         </div>
       </div>
 
@@ -253,7 +251,7 @@ function PostCard({
             className={`flex items-center gap-1 text-xs transition-all ${curtida ? 'text-red-500 scale-110' : 'hover:text-red-400'}`}
           >
             <Heart className={`w-3.5 h-3.5 transition-all ${curtida ? 'fill-current' : ''}`} />
-            {pub.curtidas + (curtida ? 1 : 0)}
+            {pub.curtidas}
           </button>
           <span className="flex items-center gap-1 text-xs">
             <Eye className="w-3.5 h-3.5" />

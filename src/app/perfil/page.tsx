@@ -57,6 +57,7 @@ export default function PerfilPage() {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem('@eco-solucoes:perfil', JSON.stringify(data));
+    window.dispatchEvent(new Event('perfilUpdated'));
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
   };
@@ -66,7 +67,13 @@ export default function PerfilPage() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setData((prev) => ({ ...prev, avatarUrl: reader.result as string }));
+        const newUrl = reader.result as string;
+        setData((prev) => {
+          const updated = { ...prev, avatarUrl: newUrl };
+          localStorage.setItem('@eco-solucoes:perfil', JSON.stringify(updated));
+          window.dispatchEvent(new Event('perfilUpdated'));
+          return updated;
+        });
         setSaveSuccess(false);
       };
       reader.readAsDataURL(file);
@@ -213,17 +220,17 @@ export default function PerfilPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={() => setModalAction('limpar')}
-                className="px-4 py-2 text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/30 transition-all"
+                onClick={() => setModalAction('restaurar')}
+                className="px-4 py-2.5 text-xs font-semibold bg-brand/10 text-brand hover:bg-brand/20 border border-brand/30 transition-all flex items-center gap-2"
               >
-                Limpar dados de exemplo (Começar do Zero)
+                <Leaf className="w-4 h-4" /> Iniciar Demonstração (Dados Fictícios)
               </button>
               <button
                 type="button"
-                onClick={() => setModalAction('restaurar')}
-                className="btn-ghost text-xs"
+                onClick={() => setModalAction('limpar')}
+                className="px-4 py-2.5 text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/30 transition-all flex items-center gap-2"
               >
-                Restaurar dados de demonstração
+                Voltar ao Site Zerado (Limpar Tudo)
               </button>
             </div>
           </div>
@@ -232,9 +239,9 @@ export default function PerfilPage() {
 
       <ConfirmModal
         isOpen={modalAction === 'limpar'}
-        title="Limpar Dados de Exemplo"
-        message="Deseja limpar todos os dados de exemplo? O sistema ficará limpo e pronto para o cadastro das informações reais da sua empresa."
-        confirmLabel="Limpar Todos os Dados"
+        title="Voltar ao Site Zerado"
+        message="Deseja limpar todos os dados do sistema e deixar a plataforma completamente zerada para uso real da sua empresa?"
+        confirmLabel="Zerar Plataforma"
         onConfirm={() => {
           limparDadosExemplo();
           setModalAction(null);
@@ -244,9 +251,9 @@ export default function PerfilPage() {
 
       <ConfirmModal
         isOpen={modalAction === 'restaurar'}
-        title="Restaurar Dados de Demonstração"
-        message="Deseja restaurar o conjunto de dados demonstrativos do sistema?"
-        confirmLabel="Restaurar Dados"
+        title="Iniciar Demonstração"
+        message="Deseja carregar dados fictícios para teste? Tarefas, metas, setores e eventos de exemplo serão adicionados para visualização das funcionalidades."
+        confirmLabel="Iniciar Demonstração"
         onConfirm={() => {
           restaurarDadosExemplo();
           setModalAction(null);
