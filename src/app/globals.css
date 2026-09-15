@@ -1,15 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
+@theme {
+  /* Brand colors */
   --color-brand-green: #16a34a;
   --color-brand-green-light: #22c55e;
   --color-brand-green-dark: #15803d;
   --color-brand-navy: #0f172a;
   --color-brand-navy-light: #1e293b;
   --color-brand-navy-border: #334155;
+
+  /* Font family */
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.3s ease-in-out;
+  --animate-slide-in: slideIn 0.3s ease-out;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  /* Keyframes */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
 }
 
 * {
@@ -28,11 +46,6 @@ body {
   color: #f8fafc;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.light body {
-  background-color: #f1f5f9;
-  color: #0f172a;
 }
 
 /* Scrollbar styling */
@@ -109,6 +122,26 @@ body {
 
 .pulse-dot {
   animation: pulseDot 2s ease-in-out infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
 }
 
 /* Chart tooltip */
