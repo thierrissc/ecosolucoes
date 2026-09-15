@@ -134,15 +134,7 @@ export default function SetoresPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-text-primary font-bold text-base truncate">{setor.nome}</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div
-                            className="w-6 h-6 flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-offset-1 ring-offset-surface-1"
-                            style={{ backgroundColor: setor.cor }}
-                          >
-                            {setor.avatar}
-                          </div>
-                          <p className="text-text-muted text-xs truncate">{setor.responsavel}</p>
-                        </div>
+                        <p className="text-text-muted text-xs truncate mt-1">{setor.responsavel}</p>
                       </div>
                     </div>
 
