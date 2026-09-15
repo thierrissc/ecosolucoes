@@ -101,7 +101,7 @@ export default function RelatoriosPage() {
             <h3 className="text-text-primary font-bold text-base">Demandas por Setor</h3>
             <p className="text-text-muted text-xs mt-0.5">Concluídas vs Pendentes</p>
           </div>
-          <div className="h-[260px] min-h-[260px] w-full flex-1">
+          <div className="h-[260px] min-h-[260px] w-full flex-1 print:hidden">
             {barData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -117,6 +117,17 @@ export default function RelatoriosPage() {
               <p className="text-text-muted text-xs text-center py-12">Nenhum setor cadastrado para o gráfico.</p>
             )}
           </div>
+          {barData.length > 0 && (
+            <div className="hidden print:block w-full">
+              <BarChart width={620} height={240} data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" vertical={false} />
+                <XAxis dataKey="setor" tick={{ fill: '#475569', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#475569', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Bar dataKey="Concluídas" fill="#16a34a" />
+                <Bar dataKey="Pendentes" fill="#64748b" />
+              </BarChart>
+            </div>
+          )}
         </div>
 
         {/* Line Chart */}
@@ -125,7 +136,7 @@ export default function RelatoriosPage() {
             <h3 className="text-text-primary font-bold text-base">Evolução Mensal</h3>
             <p className="text-text-muted text-xs mt-0.5">Histórico comparativo</p>
           </div>
-          <div className="h-[260px] min-h-[260px] w-full flex-1">
+          <div className="h-[260px] min-h-[260px] w-full flex-1 print:hidden">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={lineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-border)" vertical={false} />
@@ -136,6 +147,15 @@ export default function RelatoriosPage() {
                 <Line type="monotone" dataKey="Pendentes" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6', r: 3, strokeWidth: 0 }} />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+          <div className="hidden print:block w-full">
+            <LineChart width={620} height={240} data={lineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" vertical={false} />
+              <XAxis dataKey="mes" tick={{ fill: '#475569', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#475569', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <Line type="monotone" dataKey="Concluídas" stroke="#16a34a" strokeWidth={2} dot={{ fill: '#16a34a', r: 3 }} />
+              <Line type="monotone" dataKey="Pendentes" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6', r: 3 }} />
+            </LineChart>
           </div>
         </div>
       </div>
@@ -148,7 +168,7 @@ export default function RelatoriosPage() {
             <h3 className="text-text-primary font-bold text-base">Distribuição por Status</h3>
             <p className="text-text-muted text-xs mt-0.5">Tarefas vigentes</p>
           </div>
-          <div className="h-[220px] min-h-[220px] w-full flex-1">
+          <div className="h-[220px] min-h-[220px] w-full flex-1 print:hidden">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
@@ -159,6 +179,16 @@ export default function RelatoriosPage() {
                 <Legend formatter={(v) => <span style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 500 }}>{v}</span>} />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+          <div className="hidden print:block w-full">
+            <PieChart width={300} height={220}>
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={5} dataKey="value" stroke="none">
+                {pieData.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} />
+                ))}
+              </Pie>
+              <Legend formatter={(v) => <span style={{ color: '#334155', fontSize: '11px', fontWeight: 500 }}>{v}</span>} />
+            </PieChart>
           </div>
         </div>
 
