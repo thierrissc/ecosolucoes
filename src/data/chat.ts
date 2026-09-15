@@ -62,7 +62,7 @@ export const conversas: Conversa[] = [
     participante: 'Lucas Andrade Souza',
     avatar: 'LA',
     cargo: 'Coordenador de TI',
-    ultimaMensagem: 'O deploy foi concluído com sucesso! ✅',
+    ultimaMensagem: 'O deploy foi concluído com sucesso!',
     timestamp: '2026-09-14T17:20:00',
     naoLidas: 0,
     mensagens: [
@@ -89,7 +89,7 @@ export const conversas: Conversa[] = [
         remetenteId: 'la',
         remetente: 'Lucas Andrade Souza',
         avatar: 'LA',
-        texto: 'O deploy foi concluído com sucesso! ✅',
+        texto: 'O deploy foi concluído com sucesso!',
         timestamp: '2026-09-14T17:20:00',
         lida: true,
       },

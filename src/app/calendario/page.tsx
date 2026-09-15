@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, MapPin, Clock, Users } from 'lucide-react';
-import { eventos } from '@/data/calendario';
+import { ChevronLeft, ChevronRight, MapPin, Clock, Users, Plus, Trash2, X } from 'lucide-react';
+import { useApp } from '@/contexts/AppContext';
 import { EventoCalendario } from '@/types';
 import Badge, { tipoEventoVariant } from '@/components/ui/Badge';
 
@@ -24,9 +24,16 @@ const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
 export default function CalendarioPage() {
+  const { eventos, addEvento, deleteEvento } = useApp();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 1));
   const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate());
+  const [showModal, setShowModal] = useState(false);
+
+  const [novoTitulo, setNovoTitulo] = useState('');
+  const [novoTipo, setNovoTipo] = useState<'reuniao' | 'treinamento' | 'entrega' | 'evento'>('reuniao');
+  const [novaHora, setNovaHora] = useState('');
+  const [novoLocal, setNovoLocal] = useState('');
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -41,6 +48,25 @@ export default function CalendarioPage() {
     return eventos.filter((e) => e.data === dateStr);
   };
 
+  const handleCriarEvento = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!novoTitulo.trim() || !selectedDay) return;
+
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+    addEvento({
+      titulo: novoTitulo,
+      tipo: novoTipo,
+      data: dateStr,
+      hora: novaHora || undefined,
+      local: novoLocal || undefined,
+    });
+
+    setNovoTitulo('');
+    setNovaHora('');
+    setNovoLocal('');
+    setShowModal(false);
+  };
+
   const selectedEvents = selectedDay ? getEventosForDay(selectedDay) : [];
   const nextEvents = eventos
     .filter((e) => new Date(e.data + 'T00:00:00') >= new Date(today.toDateString()))
@@ -49,14 +75,26 @@ export default function CalendarioPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
+      {/* Top action header */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Calendário Operacional</h2>
+          <p className="text-text-muted text-sm mt-1">Gerencie cronogramas, reuniões e eventos da empresa.</p>
+        </div>
+        <button onClick={() => setShowModal(true)} className="btn-primary">
+          <Plus className="w-4 h-4" />
+          Novo Evento
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
         {/* Calendar Grid */}
         <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7 flex flex-col">
           {/* Month Nav */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-text-primary font-extrabold text-xl md:text-2xl">
+            <h3 className="text-text-primary font-extrabold text-xl md:text-2xl">
               {MONTHS[month]} {year}
-            </h2>
+            </h3>
             <div className="flex gap-1.5">
               <button onClick={prevMonth} className="w-9 h-9 bg-surface-2 border border-surface-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-brand transition-all">
                 <ChevronLeft className="w-4 h-4" />
@@ -133,18 +171,23 @@ export default function CalendarioPage() {
           {/* Selected Day */}
           {selectedDay && (
             <div className="card p-5">
-              <h3 className="text-text-primary font-bold text-base mb-4 flex items-center justify-between">
-                <span>{selectedDay} de {MONTHS[month]}</span>
-                <span className="text-text-muted text-xs font-medium bg-surface-2 px-3 py-1">
-                  {selectedEvents.length} {selectedEvents.length === 1 ? 'evento' : 'eventos'}
-                </span>
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-text-primary font-bold text-base">
+                  {selectedDay} de {MONTHS[month]}
+                </h3>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="text-xs text-brand hover:underline font-semibold flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Adicionar
+                </button>
+              </div>
               {selectedEvents.length > 0 ? (
                 <div className="space-y-3">
                   {selectedEvents.map((e) => (
-                    <div key={e.id} className="bg-surface-2 p-4">
+                    <div key={e.id} className="bg-surface-2 p-4 border border-surface-border relative group">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <p className="text-text-primary text-sm font-semibold">{e.titulo}</p>
+                        <p className="text-text-primary text-sm font-semibold pr-6">{e.titulo}</p>
                         <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
                       </div>
                       {e.hora && (
@@ -162,11 +205,26 @@ export default function CalendarioPage() {
                           <Users className="w-3.5 h-3.5" /> {e.participantes.slice(0, 2).join(', ')}{e.participantes.length > 2 && ` +${e.participantes.length - 2}`}
                         </p>
                       )}
+                      <button
+                        onClick={() => deleteEvento(e.id)}
+                        className="absolute top-3 right-3 text-text-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                        title="Excluir evento"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-text-muted text-sm text-center py-6">Nenhum evento para este dia.</p>
+                <div className="text-center py-6">
+                  <p className="text-text-muted text-sm mb-3">Nenhum evento para este dia.</p>
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="btn-ghost text-xs py-1.5 px-3"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Adicionar evento em {selectedDay}/{month + 1}
+                  </button>
+                </div>
               )}
             </div>
           )}
@@ -193,10 +251,104 @@ export default function CalendarioPage() {
                   </div>
                 );
               })}
+              {nextEvents.length === 0 && (
+                <p className="text-text-muted text-xs text-center py-4">Nenhum evento futuro agendado.</p>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal Novo Evento */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-up">
+          <div className="card w-full max-w-md p-6 bg-surface-1 border border-surface-border">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-lg font-bold text-text-primary">
+                Novo Evento ({selectedDay} de {MONTHS[month]})
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-text-muted hover:text-text-primary"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCriarEvento} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">
+                  Título do Evento
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Reunião de Planejamento"
+                  value={novoTitulo}
+                  onChange={(e) => setNovoTitulo(e.target.value)}
+                  className="w-full bg-surface-2 border border-surface-border px-3.5 py-2.5 text-sm text-text-primary focus:outline-none focus:border-brand"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">
+                    Tipo
+                  </label>
+                  <select
+                    value={novoTipo}
+                    onChange={(e) => setNovoTipo(e.target.value as any)}
+                    className="w-full bg-surface-2 border border-surface-border px-3 py-2.5 text-sm text-text-primary focus:outline-none focus:border-brand"
+                  >
+                    <option value="reuniao">Reunião</option>
+                    <option value="treinamento">Treinamento</option>
+                    <option value="entrega">Entrega</option>
+                    <option value="evento">Evento</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">
+                    Horário
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 14:00 - 15:30"
+                    value={novaHora}
+                    onChange={(e) => setNovaHora(e.target.value)}
+                    className="w-full bg-surface-2 border border-surface-border px-3.5 py-2.5 text-sm text-text-primary focus:outline-none focus:border-brand"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5">
+                  Local / Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Sala de Reunião 2 / Google Meet"
+                  value={novoLocal}
+                  onChange={(e) => setNovoLocal(e.target.value)}
+                  className="w-full bg-surface-2 border border-surface-border px-3.5 py-2.5 text-sm text-text-primary focus:outline-none focus:border-brand"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-surface-border">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="btn-ghost"
+                >
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  Salvar Evento
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

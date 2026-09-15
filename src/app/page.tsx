@@ -30,59 +30,16 @@ import {
   AreaChart,
 } from 'recharts';
 import Link from 'next/link';
-import { tarefasSemanais } from '@/data/demandas';
-import { setores } from '@/data/setores';
+import { useApp } from '@/contexts/AppContext';
 import { formatDate, getDaysUntil, prioridadeLabel } from '@/lib/utils';
 import Badge, { prioridadeVariant } from '@/components/ui/Badge';
 
 const COLORS = ['#16a34a', '#3b82f6', '#64748b'];
 const BAR_COLORS = ['#16a34a', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
 
-const pieData = [
-  { name: 'Concluída', value: tarefasSemanais.filter((t) => t.status === 'concluida').length },
-  { name: 'Em Andamento', value: tarefasSemanais.filter((t) => t.status === 'em_andamento').length },
-  { name: 'Não Iniciada', value: tarefasSemanais.filter((t) => t.status === 'nao_iniciada').length },
-];
-
-const barData = setores.map((s) => ({
-  name: s.nome.split(' ')[0],
-  tarefas: s.demandasSemanais + s.demandasMensais,
-}));
-
 const sparkData = Array.from({ length: 7 }, (_, i) => ({
   v: Math.floor(Math.random() * 20) + 10,
 }));
-
-const statCards = [
-  {
-    label: 'Projetos Ativos',
-    value: '12',
-    change: '+3 este mês',
-    icon: Briefcase,
-    gradient: 'from-emerald-500 to-teal-400',
-  },
-  {
-    label: 'Pendências',
-    value: '5',
-    change: '-2 vs semana passada',
-    icon: AlertCircle,
-    gradient: 'from-amber-500 to-orange-400',
-  },
-  {
-    label: 'Tarefas Hoje',
-    value: '24',
-    change: '18 concluídas',
-    icon: CheckCircle2,
-    gradient: 'from-blue-500 to-indigo-400',
-  },
-  {
-    label: 'Equipe Online',
-    value: '8',
-    change: 'de 12 colaboradores',
-    icon: Users,
-    gradient: 'from-violet-500 to-purple-400',
-  },
-];
 
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color: string }[]; label?: string }) => {
   if (active && payload && payload.length) {
@@ -101,13 +58,65 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
 };
 
 export default function DashboardPage() {
+  const { tarefasSemanais, setores, metasMensais } = useApp();
+
   const proximosPrazos = tarefasSemanais
     .filter((t) => t.status !== 'concluida')
     .sort((a, b) => new Date(a.prazo).getTime() - new Date(b.prazo).getTime())
     .slice(0, 5);
 
-  const setorMaisAtivo = [...setores].sort((a, b) => b.desempenho - a.desempenho)[0];
+  const setorMaisAtivo = [...setores].sort((a, b) => b.desempenho - a.desempenho)[0] || {
+    nome: 'Geral',
+    desempenho: 100,
+  };
+
+  const concluidasCount = tarefasSemanais.filter((t) => t.status === 'concluida').length;
+  const andamentoCount = tarefasSemanais.filter((t) => t.status === 'em_andamento').length;
+  const naoIniciadaCount = tarefasSemanais.filter((t) => t.status === 'nao_iniciada').length;
+
+  const pieData = [
+    { name: 'Concluída', value: concluidasCount },
+    { name: 'Em Andamento', value: andamentoCount },
+    { name: 'Não Iniciada', value: naoIniciadaCount },
+  ];
+
+  const barData = setores.map((s) => ({
+    name: s.nome.split(' ')[0],
+    tarefas: tarefasSemanais.filter((t) => t.setorId === s.id).length || (s.demandasSemanais + s.demandasMensais),
+  }));
+
   const totalTarefas = pieData.reduce((acc, curr) => acc + curr.value, 0);
+
+  const statCards = [
+    {
+      label: 'Projetos e Metas',
+      value: String(metasMensais.length),
+      change: `${metasMensais.filter((m) => m.progresso >= 100).length} concluídas`,
+      icon: Briefcase,
+      gradient: 'from-emerald-500 to-teal-400',
+    },
+    {
+      label: 'Demandas Pendentes',
+      value: String(tarefasSemanais.filter((t) => t.status !== 'concluida').length),
+      change: `${proximosPrazos.length} prazos próximos`,
+      icon: AlertCircle,
+      gradient: 'from-amber-500 to-orange-400',
+    },
+    {
+      label: 'Demandas Concluídas',
+      value: String(concluidasCount),
+      change: `de ${tarefasSemanais.length} totais`,
+      icon: CheckCircle2,
+      gradient: 'from-blue-500 to-indigo-400',
+    },
+    {
+      label: 'Setores Ativos',
+      value: String(setores.length),
+      change: `${setores.reduce((a, s) => a + (s.colaboradores || 0), 0)} colaboradores`,
+      icon: Users,
+      gradient: 'from-violet-500 to-purple-400',
+    },
+  ];
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
@@ -126,7 +135,7 @@ export default function DashboardPage() {
               </span>
             </div>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1.5 tracking-tight">
-              Bem-vindo de volta 👋
+              Bem-vindo de volta
             </h2>
             <p className="text-white/70 text-sm md:text-base max-w-md">
               Aqui está o resumo das atividades e desempenho de hoje.
@@ -328,6 +337,9 @@ export default function DashboardPage() {
                 </div>
               );
             })}
+            {proximosPrazos.length === 0 && (
+              <p className="text-text-muted text-sm text-center py-8">Nenhuma demanda pendente no momento.</p>
+            )}
           </div>
         </div>
 
@@ -366,6 +378,9 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
+            {setores.length === 0 && (
+              <p className="text-text-muted text-sm text-center py-8">Nenhum setor cadastrado ainda.</p>
+            )}
           </div>
         </div>
       </div>

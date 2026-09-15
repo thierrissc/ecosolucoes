@@ -3,7 +3,7 @@ import { PublicacaoMural } from '@/types';
 export const publicacoes: PublicacaoMural[] = [
   {
     id: 'p1',
-    titulo: '🚨 Reunião Geral Obrigatória — Sexta-feira',
+    titulo: 'Reunião Geral Obrigatória — Sexta-feira',
     descricao: 'Informamos que haverá reunião geral com todos os setores na sexta-feira, dia 20/09, às 14h00, na sala de conferências principal. A presença de todos é obrigatória. Pauta: resultados Q3, metas Q4 e novidades corporativas.',
     autor: 'Carlos Eduardo Mendes',
     avatarAutor: 'CE',

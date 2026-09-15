@@ -36,7 +36,6 @@ const pieData = [
 const setorMaisAtivo = [...setores].sort((a, b) => b.desempenho - a.desempenho)[0];
 
 const medalColors = ['text-yellow-500', 'text-slate-400', 'text-amber-600'];
-const medalEmojis = ['🥇', '🥈', '🥉'];
 
 function handleExport() {
   window.print();
@@ -159,8 +158,10 @@ export default function RelatoriosPage() {
               .sort((a, b) => b.desempenho - a.desempenho)
               .map((s, i) => (
                 <div key={s.id} className="flex items-center gap-3.5 py-2 px-3 hover:bg-surface-hover transition-colors group">
-                  <span className="text-lg w-8 text-center flex-shrink-0">
-                    {i < 3 ? medalEmojis[i] : <span className="text-text-muted text-sm font-bold">{i + 1}</span>}
+                  <span className="w-8 text-center flex-shrink-0">
+                    <span className={`text-xs font-bold px-2 py-0.5 ${i === 0 ? 'bg-amber-500/15 text-amber-500 font-extrabold' : i === 1 ? 'bg-slate-400/15 text-slate-300 font-bold' : i === 2 ? 'bg-amber-700/15 text-amber-600 font-bold' : 'text-text-muted text-xs font-medium'}`}>
+                      #{i + 1}
+                    </span>
                   </span>
                   <div
                     className="w-8 h-8 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 shadow-sm"

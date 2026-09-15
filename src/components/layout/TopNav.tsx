@@ -82,9 +82,11 @@ export default function TopNav({ pathname }: TopNavProps) {
             <div className="flex items-center justify-between h-16 md:h-[68px]">
               {/* Logo */}
               <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-                <div className="w-9 h-9 bg-gradient-to-br from-brand to-brand-light flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:shadow-brand/20 transition-all">
-                  <Leaf className="w-5 h-5 text-white" />
-                </div>
+                <img
+                  src="/logo.png"
+                  alt="EcoSoluções"
+                  className="w-9 h-9 object-contain"
+                />
                 <span className="text-text-primary font-bold text-lg tracking-tight hidden sm:block">
                   Eco<span className="text-brand">Soluções</span>
                 </span>
@@ -199,9 +201,14 @@ export default function TopNav({ pathname }: TopNavProps) {
                 {/* Avatar */}
                 <Link
                   href="/perfil"
-                  className="w-9 h-9 bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center hover:shadow-lg hover:shadow-brand/25 transition-all ml-1"
+                  className="w-9 h-9 flex items-center justify-center hover:shadow-lg hover:shadow-brand/25 transition-all ml-1 border border-surface-border bg-surface-2 overflow-hidden"
+                  title="Perfil"
                 >
-                  <span className="text-white text-xs font-bold">ES</span>
+                  <img
+                    src="/icon.png"
+                    alt="Perfil"
+                    className="w-full h-full object-cover"
+                  />
                 </Link>
 
                 {/* Mobile hamburger */}

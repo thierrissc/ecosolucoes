@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf } from 'lucide-react';
+import { useApp } from '@/contexts/AppContext';
 
 interface PerfilData {
   nomeEmpresa: string;
@@ -28,6 +29,7 @@ const DEFAULT_DATA: PerfilData = {
 };
 
 export default function PerfilPage() {
+  const { limparDadosExemplo, restaurarDadosExemplo } = useApp();
   const [data, setData] = useState<PerfilData>(DEFAULT_DATA);
   const [isClient, setIsClient] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -188,7 +190,7 @@ export default function PerfilPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-4 pt-4">
+            <div className="flex items-center justify-end gap-4 pt-4 border-t border-surface-border">
               {saveSuccess && (
                 <span className="text-brand text-sm font-medium animate-fade-up flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" /> Salvo com sucesso!
@@ -199,6 +201,40 @@ export default function PerfilPage() {
               </button>
             </div>
           </form>
+
+          {/* Gerenciamento de Dados do Sistema */}
+          <div className="mt-8 pt-6 border-t border-surface-border">
+            <h3 className="text-text-primary font-semibold text-base mb-2">Dados do Sistema</h3>
+            <p className="text-text-muted text-xs mb-4">
+              Você pode zerar os dados de exemplo para que os colaboradores da sua empresa comecem a preencher tudo do zero, ou restaurar os dados de demonstração a qualquer momento.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Deseja limpar todos os dados de exemplo? O sistema ficará pronto para o cadastro das informações reais da sua empresa.')) {
+                    limparDadosExemplo();
+                    alert('Dados de exemplo removidos! Agora você pode cadastrar suas informações.');
+                  }
+                }}
+                className="px-4 py-2 text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/30 transition-all"
+              >
+                Limpar dados de exemplo (Começar do Zero)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Deseja restaurar os dados demonstrativos?')) {
+                    restaurarDadosExemplo();
+                    alert('Dados de exemplo restaurados.');
+                  }
+                }}
+                className="btn-ghost text-xs"
+              >
+                Restaurar dados de demonstração
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

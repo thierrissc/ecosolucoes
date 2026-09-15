@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Plus, Pin, Heart, Eye, Search } from 'lucide-react';
-import { publicacoes as allPublicacoes } from '@/data/mural';
+import { useApp } from '@/contexts/AppContext';
 import { PublicacaoMural, Prioridade } from '@/types';
 import Badge, { prioridadeVariant, tipoMuralVariant } from '@/components/ui/Badge';
 import { timeAgo, prioridadeLabel, tipoMuralLabel } from '@/lib/utils';
@@ -10,22 +10,13 @@ import { timeAgo, prioridadeLabel, tipoMuralLabel } from '@/lib/utils';
 const tiposOptions = ['todos', 'comunicado', 'evento', 'aviso_urgente', 'meta', 'mudanca'];
 const prioridadesOptions: ('todas' | Prioridade)[] = ['todas', 'alta', 'media', 'baixa'];
 
-const tipoIcons: Record<string, string> = {
-  aviso_urgente: '🚨',
-  meta: '🎯',
-  evento: '🎉',
-  comunicado: '📢',
-  mudanca: '🔄',
-  treinamento: '📚',
-};
-
 export default function MuralPage() {
-  const [publicacoes, setPublicacoes] = useState<PublicacaoMural[]>(allPublicacoes);
+  const { publicacoes, addPublicacao, toggleCurtidaMural } = useApp();
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [filtroPrioridade, setFiltroPrioridade] = useState<'todas' | Prioridade>('todas');
   const [busca, setBusca] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [curtidas, setCurtidas] = useState<Record<string, boolean>>({});
+  const [curtidasLocais, setCurtidasLocais] = useState<Record<string, boolean>>({});
 
   const filtered = publicacoes.filter((p) => {
     const matchTipo = filtroTipo === 'todos' || p.tipo === filtroTipo;
@@ -41,8 +32,11 @@ export default function MuralPage() {
   const fixadas = filtered.filter((p) => p.fixado);
   const normais = filtered.filter((p) => !p.fixado);
 
-  const toggleCurtida = (id: string) => {
-    setCurtidas((prev) => ({ ...prev, [id]: !prev[id] }));
+  const handleToggleCurtida = (id: string) => {
+    if (!curtidasLocais[id]) {
+      toggleCurtidaMural(id);
+      setCurtidasLocais((prev) => ({ ...prev, [id]: true }));
+    }
   };
 
   return (
@@ -105,7 +99,7 @@ export default function MuralPage() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
             {fixadas.map((pub) => (
-              <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
+              <PostCard key={pub.id} pub={pub} curtida={curtidasLocais[pub.id]} onCurtir={handleToggleCurtida} />
             ))}
           </div>
         </div>
@@ -118,7 +112,7 @@ export default function MuralPage() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
           {normais.map((pub) => (
-            <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
+            <PostCard key={pub.id} pub={pub} curtida={curtidasLocais[pub.id]} onCurtir={handleToggleCurtida} />
           ))}
           {filtered.length === 0 && (
             <div className="col-span-3 card p-12 text-center">
@@ -133,7 +127,7 @@ export default function MuralPage() {
         <NewPostModal
           onClose={() => setShowModal(false)}
           onSubmit={(pub) => {
-            setPublicacoes([pub, ...publicacoes]);
+            addPublicacao(pub);
             setShowModal(false);
           }}
         />
@@ -154,7 +148,6 @@ function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: b
       {/* Top */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-lg">{tipoIcons[pub.tipo]}</span>
           <Badge variant={tipoMuralVariant(pub.tipo)}>
             {tipoMuralLabel(pub.tipo)}
           </Badge>
