@@ -46,7 +46,7 @@ export function tipoEventoVariant(t: string): BadgeVariant {
 interface BadgeProps {
   variant?: BadgeVariant;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   dot?: boolean;
 }
 
