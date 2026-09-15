@@ -72,7 +72,7 @@
   --radius-xl: 0px;
   --radius-2xl: 0px;
   --radius-3xl: 0px;
-  --radius-full: 0px;
+  --radius-full: 9999px;
 
   --animate-fade-up: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-scale-in: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -94,12 +94,11 @@
   }
 }
 
-/* ─── Global Square Borders without exception ─── */
+/* ─── Global Base Setup ─── */
 
 @layer base {
   *, ::before, ::after {
     box-sizing: border-box;
-    border-radius: 0 !important;
   }
 
   html {
@@ -117,11 +116,13 @@
   }
 }
 
-*, *::before, *::after {
-  border-radius: 0;
+/* Sharp edges for cards, buttons, inputs, chips and containers */
+.card, .btn-primary, .btn-ghost, .input, .chip, .segmented-control, .segmented-btn, .cal-cell {
+  border-radius: 0px !important;
 }
 
-.rounded-full, .status-dot, .badge-dot, .dot {
+/* Dots and circular status indicators */
+.rounded-full, .status-dot, .badge-dot, .dot, .ball, [data-dot] {
   border-radius: 9999px !important;
 }
 
