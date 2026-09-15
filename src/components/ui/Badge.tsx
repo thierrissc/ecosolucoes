@@ -60,7 +60,10 @@ export default function Badge({ variant = 'slate', className, children, dot }: B
       )}
     >
       {dot && (
-        <span className="w-1.5 h-1.5 rounded-full dot bg-current flex-shrink-0" />
+        <span
+          className="w-1.5 h-1.5 rounded-full dot bg-current flex-shrink-0"
+          style={{ borderRadius: '9999px' }}
+        />
       )}
       {children}
     </span>
