@@ -3,7 +3,6 @@
 import {
   CheckCircle2,
   Clock,
-  AlertTriangle,
   TrendingUp,
   CalendarClock,
   Users,
@@ -13,6 +12,8 @@ import {
   AlertCircle,
   BarChart2,
   PieChart as PieChartIcon,
+  Activity,
+  Flame,
 } from 'lucide-react';
 import {
   BarChart,
@@ -25,17 +26,17 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
+  Area,
+  AreaChart,
 } from 'recharts';
 import Link from 'next/link';
 import { tarefasSemanais } from '@/data/demandas';
 import { setores } from '@/data/setores';
-import { publicacoes } from '@/data/mural';
 import { formatDate, getDaysUntil, prioridadeLabel } from '@/lib/utils';
 import Badge, { prioridadeVariant } from '@/components/ui/Badge';
 
-const COLORS = ['#16a34a', '#3b82f6', '#475569'];
-const BAR_COLORS = ['#16a34a', '#22c55e', '#4ade80', '#86efac', '#bbf7d0'];
+const COLORS = ['#16a34a', '#3b82f6', '#64748b'];
+const BAR_COLORS = ['#16a34a', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
 
 const pieData = [
   { name: 'Concluída', value: tarefasSemanais.filter((t) => t.status === 'concluida').length },
@@ -48,42 +49,46 @@ const barData = setores.map((s) => ({
   tarefas: s.demandasSemanais + s.demandasMensais,
 }));
 
+const sparkData = Array.from({ length: 7 }, (_, i) => ({
+  v: Math.floor(Math.random() * 20) + 10,
+}));
+
 const statCards = [
   {
     label: 'Projetos Ativos',
     value: '12',
+    change: '+3 este mês',
     icon: Briefcase,
-    iconBg: 'bg-green-500/20 text-green-500',
-    bg: 'bg-green-500/10 border-green-500/20',
+    gradient: 'from-emerald-500 to-teal-400',
   },
   {
     label: 'Pendências',
     value: '5',
+    change: '-2 vs semana passada',
     icon: AlertCircle,
-    iconBg: 'bg-orange-500/20 text-orange-500',
-    bg: 'bg-orange-500/10 border-orange-500/20',
+    gradient: 'from-amber-500 to-orange-400',
   },
   {
     label: 'Tarefas Hoje',
     value: '24',
+    change: '18 concluídas',
     icon: CheckCircle2,
-    iconBg: 'bg-blue-500/20 text-blue-500',
-    bg: 'bg-blue-500/10 border-blue-500/20',
+    gradient: 'from-blue-500 to-indigo-400',
   },
   {
     label: 'Equipe Online',
     value: '8',
+    change: 'de 12 colaboradores',
     icon: Users,
-    iconBg: 'bg-purple-500/20 text-purple-500',
-    bg: 'bg-purple-500/10 border-purple-500/20',
+    gradient: 'from-violet-500 to-purple-400',
   },
 ];
 
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color: string }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-card rounded-xl p-3 text-sm">
-        <p className="text-white font-semibold mb-1">{label}</p>
+      <div className="card p-3 text-sm !rounded-xl">
+        <p className="text-text-primary font-semibold mb-1">{label}</p>
         {payload.map((p) => (
           <p key={p.name} style={{ color: p.color }} className="text-xs">
             {p.name}: <strong>{p.value}</strong>
@@ -105,80 +110,104 @@ export default function DashboardPage() {
   const totalTarefas = pieData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <div className="space-y-8 md:space-y-10 animate-fade-in">
-      {/* Welcome banner */}
-      <div className="glass-card rounded-2xl p-7 md:p-9 lg:p-10 border border-brand-navy-border relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-green/10 via-brand-green/5 to-transparent pointer-events-none" />
+    <div className="space-y-6 md:space-y-8 animate-fade-up">
+      {/* ─── Hero Banner ─── */}
+      <div className="relative overflow-hidden rounded-3xl gradient-mesh p-7 md:p-10">
+        {/* Decorative orbs */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
+
         <div className="relative flex items-center justify-between flex-wrap gap-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2 tracking-tight">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-white/90 text-xs font-medium backdrop-blur-sm">
+                <Activity className="w-3 h-3" />
+                {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
+              </span>
+            </div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1.5 tracking-tight">
               Bem-vindo de volta 👋
             </h2>
-            <p className="text-slate-300 text-sm md:text-base">
+            <p className="text-white/70 text-sm md:text-base max-w-md">
               Aqui está o resumo das atividades e desempenho de hoje.
             </p>
           </div>
-          <div className="flex items-center gap-4 bg-brand-navy/60 p-4 rounded-xl border border-brand-navy-border/60">
-            <div className="text-right">
-              <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Setor Destaque</p>
-              <p className="text-white font-bold text-base">{setorMaisAtivo.nome}</p>
-              <p className="text-brand-green-light text-sm font-semibold">{setorMaisAtivo.desempenho}% de desempenho</p>
+
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+            <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center animate-float">
+              <Flame className="w-6 h-6 text-yellow-300" />
             </div>
-            <div className="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center flex-shrink-0 border border-brand-green/30">
-              <Zap className="w-6 h-6 text-brand-green-light" />
+            <div className="text-right">
+              <p className="text-white/60 text-xs font-medium uppercase tracking-wider">Setor Destaque</p>
+              <p className="text-white font-bold text-base">{setorMaisAtivo.nome}</p>
+              <p className="text-emerald-300 text-sm font-semibold">{setorMaisAtivo.desempenho}%</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+      {/* ─── Stat Cards ─── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
             <div
               key={card.label}
-              className={`glass-card rounded-2xl p-6 md:p-7 border hover-lift cursor-default flex flex-col justify-between ${card.bg}`}
+              className="card card-hover p-5 md:p-6 flex flex-col justify-between gap-4"
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-slate-400 text-sm font-semibold tracking-wide">{card.label}</span>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${card.iconBg}`}>
-                  <Icon className="w-5 h-5" />
+              <div className="flex items-center justify-between">
+                <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${card.gradient} flex items-center justify-center shadow-lg`}>
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+                <div className="w-16 h-8 opacity-40">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={sparkData}>
+                      <Area type="monotone" dataKey="v" stroke="#16a34a" fill="#16a34a" fillOpacity={0.15} strokeWidth={1.5} dot={false} />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
               <div>
-                <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{card.value}</h3>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-text-primary tracking-tight">{card.value}</h3>
+                <p className="text-text-muted text-xs font-medium mt-0.5">{card.label}</p>
+                <p className="text-text-muted text-[11px] mt-1 opacity-70">{card.change}</p>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-stretch">
-        {/* Bar Chart */}
-        <div className="lg:col-span-7 xl:col-span-8 glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col h-full justify-between">
-          <div className="flex items-center justify-between mb-6 flex-shrink-0">
+      {/* ─── Charts Row (Bento Grid) ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
+        {/* Bar Chart — spans 7/8 cols */}
+        <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7 flex flex-col">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-white font-bold text-lg">Demandas por Setor</h3>
-              <p className="text-slate-400 text-xs mt-1">Volume acumulado de tarefas nos principais setores</p>
+              <h3 className="text-text-primary font-bold text-base">Demandas por Setor</h3>
+              <p className="text-text-muted text-xs mt-0.5">Volume acumulado de tarefas</p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-brand-navy-light flex items-center justify-center text-slate-400 border border-brand-navy-border">
-              <BarChart2 className="w-5 h-5 text-slate-300" />
+            <div className="w-9 h-9 rounded-xl bg-surface-2 flex items-center justify-center text-text-muted">
+              <BarChart2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex-1 min-h-[320px]">
+          <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+              <BarChart data={barData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-border)" vertical={false} />
+                <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '0.75rem', color: '#fff' }}
-                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                  contentStyle={{
+                    backgroundColor: 'var(--surface-1)',
+                    border: '1px solid var(--surface-border)',
+                    borderRadius: '14px',
+                    color: 'var(--text-primary)',
+                    boxShadow: 'var(--shadow-lg)',
+                  }}
+                  cursor={{ fill: 'var(--surface-hover)' }}
                 />
-                <Bar dataKey="tarefas" radius={[6, 6, 0, 0]}>
-                  {barData.map((entry, index) => (
+                <Bar dataKey="tarefas" radius={[8, 8, 0, 0]}>
+                  {barData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
                   ))}
                 </Bar>
@@ -187,56 +216,61 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Pie Chart */}
-        <div className="lg:col-span-5 xl:col-span-4 glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col h-full justify-between">
-          <div className="flex items-center justify-between mb-4 flex-shrink-0">
+        {/* Pie Chart — spans 5/4 cols */}
+        <div className="lg:col-span-5 xl:col-span-4 card p-5 md:p-7 flex flex-col">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-white font-bold text-lg">Status das Tarefas</h3>
-              <p className="text-slate-400 text-xs mt-1">Visão geral do progresso global</p>
+              <h3 className="text-text-primary font-bold text-base">Status das Tarefas</h3>
+              <p className="text-text-muted text-xs mt-0.5">Visão geral do progresso</p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-brand-navy-light flex items-center justify-center text-slate-400 border border-brand-navy-border">
-              <PieChartIcon className="w-5 h-5 text-slate-300" />
+            <div className="w-9 h-9 rounded-xl bg-surface-2 flex items-center justify-center text-text-muted">
+              <PieChartIcon className="w-4 h-4" />
             </div>
           </div>
 
-          <div className="flex-1 min-h-[220px] flex items-center justify-center relative">
-            <ResponsiveContainer width="100%" height={220}>
+          <div className="flex-1 min-h-[200px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={65}
-                  outerRadius={90}
-                  paddingAngle={4}
+                  innerRadius={55}
+                  outerRadius={80}
+                  paddingAngle={5}
                   dataKey="value"
                   stroke="none"
                 >
-                  {pieData.map((entry, index) => (
+                  {pieData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '0.75rem', color: '#fff' }}
-                  itemStyle={{ color: '#fff' }}
+                  contentStyle={{
+                    backgroundColor: 'var(--surface-1)',
+                    border: '1px solid var(--surface-border)',
+                    borderRadius: '14px',
+                    color: 'var(--text-primary)',
+                    boxShadow: 'var(--shadow-lg)',
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Status Breakdown Legend */}
-          <div className="grid grid-cols-1 gap-2.5 mt-4 pt-4 border-t border-brand-navy-border/60">
+          {/* Legend */}
+          <div className="space-y-2 mt-3 pt-4 border-t border-surface-border">
             {pieData.map((item, idx) => {
               const pct = totalTarefas > 0 ? Math.round((item.value / totalTarefas) * 100) : 0;
               return (
-                <div key={item.name} className="flex items-center justify-between p-3 rounded-xl bg-brand-navy/50 border border-brand-navy-border/50">
-                  <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-                    <span className="text-slate-300 text-xs font-semibold">{item.name}</span>
+                <div key={item.name} className="flex items-center justify-between py-1.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[idx] }} />
+                    <span className="text-text-secondary text-xs font-medium">{item.name}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-white text-xs font-bold">{item.value}</span>
-                    <span className="text-slate-400 text-[11px] font-semibold bg-white/5 px-2 py-0.5 rounded-md">{pct}%</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-text-primary text-xs font-bold">{item.value}</span>
+                    <span className="text-text-muted text-[11px] font-medium bg-surface-2 px-2 py-0.5 rounded-full">{pct}%</span>
                   </div>
                 </div>
               );
@@ -245,38 +279,51 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Bottom Row */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
-        {/* Próximos Prazos */}
-        <div className="glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col h-full justify-between">
-          <div className="flex items-center justify-between mb-6 flex-shrink-0">
-            <h3 className="text-white font-bold text-lg flex items-center gap-2.5">
-              <CalendarClock className="w-5 h-5 text-brand-green-light" />
+      {/* ─── Bottom Row ─── */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-5">
+        {/* Próximos Prazos — Timeline */}
+        <div className="card p-5 md:p-7 flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-text-primary font-bold text-base flex items-center gap-2">
+              <CalendarClock className="w-5 h-5 text-brand" />
               Próximos Prazos
             </h3>
-            <span className="text-xs bg-brand-green/20 text-brand-green-light px-3 py-1 rounded-lg font-semibold whitespace-nowrap flex-shrink-0 border border-brand-green/30">
+            <span className="text-xs bg-brand/10 text-brand px-3 py-1 rounded-full font-semibold">
               Esta semana
             </span>
           </div>
-          <div className="space-y-3.5">
-            {proximosPrazos.map((t) => {
+
+          <div className="space-y-1">
+            {proximosPrazos.map((t, i) => {
               const days = getDaysUntil(t.prazo);
               return (
-                <div key={t.id} className="flex items-center gap-4 p-4 rounded-xl bg-brand-navy/40 border border-brand-navy-border/40 hover:bg-white/5 transition-colors">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-extrabold ${
-                    days <= 1 ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                    days <= 3 ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                  }`}>
-                    {days <= 0 ? '!' : `${days}d`}
+                <div key={t.id} className="flex items-center gap-4 py-3 px-3 rounded-2xl hover:bg-surface-hover transition-colors group">
+                  {/* Timeline dot + line */}
+                  <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                    <div className={`w-3 h-3 rounded-full border-2 ${
+                      days <= 1 ? 'border-red-500 bg-red-500/30' :
+                      days <= 3 ? 'border-amber-500 bg-amber-500/30' : 'border-blue-500 bg-blue-500/30'
+                    }`} />
+                    {i < proximosPrazos.length - 1 && (
+                      <div className="w-px h-6 bg-surface-border" />
+                    )}
                   </div>
+
                   <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm font-semibold truncate">{t.nome}</p>
-                    <p className="text-slate-400 text-xs mt-0.5">{t.responsavel} · {formatDate(t.prazo)}</p>
+                    <p className="text-text-primary text-sm font-semibold truncate group-hover:text-brand transition-colors">{t.nome}</p>
+                    <p className="text-text-muted text-xs mt-0.5">{t.responsavel} · {formatDate(t.prazo)}</p>
                   </div>
-                  <div className="flex-shrink-0 flex flex-col items-end gap-1">
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <Badge variant={prioridadeVariant(t.prioridade)} dot>
                       {prioridadeLabel(t.prioridade)}
                     </Badge>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                      days <= 1 ? 'bg-red-500/10 text-red-500' :
+                      days <= 3 ? 'bg-amber-500/10 text-amber-500' : 'bg-blue-500/10 text-blue-500'
+                    }`}>
+                      {days <= 0 ? 'Hoje!' : `${days}d`}
+                    </span>
                   </div>
                 </div>
               );
@@ -284,34 +331,35 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Indicadores por Setor */}
-        <div className="glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col h-full justify-between">
-          <div className="flex items-center justify-between mb-6 flex-shrink-0">
-            <h3 className="text-white font-bold text-lg flex items-center gap-2.5">
-              <TrendingUp className="w-5 h-5 text-brand-green-light" />
+        {/* Desempenho por Setor */}
+        <div className="card p-5 md:p-7 flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-text-primary font-bold text-base flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-brand" />
               Desempenho por Setor
             </h3>
-            <Link href="/setores" className="text-brand-green-light text-xs font-bold hover:underline flex items-center gap-1">
+            <Link href="/setores" className="text-brand text-xs font-semibold hover:underline flex items-center gap-1">
               Ver todos <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-          <div className="space-y-4">
+
+          <div className="space-y-3">
             {setores.map((s) => (
-              <div key={s.id} className="flex items-center gap-4 p-3.5 rounded-xl bg-brand-navy/40 border border-brand-navy-border/40">
+              <div key={s.id} className="flex items-center gap-3.5 py-2 group">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-bold text-white shadow-sm"
-                  style={{ backgroundColor: s.cor + '33', color: s.cor }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold text-white shadow-sm"
+                  style={{ backgroundColor: s.cor }}
                 >
                   {s.avatar}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between mb-1.5">
-                    <p className="text-white text-xs font-semibold truncate">{s.nome}</p>
-                    <p className="text-white text-xs font-extrabold ml-2">{s.desempenho}%</p>
+                    <p className="text-text-primary text-sm font-medium truncate group-hover:text-brand transition-colors">{s.nome}</p>
+                    <p className="text-text-primary text-sm font-bold ml-2">{s.desempenho}%</p>
                   </div>
-                  <div className="h-2 w-full bg-brand-navy-border rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-700"
+                      className="h-full rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${s.desempenho}%`, backgroundColor: s.cor }}
                     />
                   </div>

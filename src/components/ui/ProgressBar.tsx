@@ -19,32 +19,28 @@ export default function ProgressBar({
 
   const sizeClasses = {
     sm: 'h-1.5',
-    md: 'h-2',
-    lg: 'h-3',
+    md: 'h-2.5',
+    lg: 'h-3.5',
   };
-
-  const barColor =
-    color ||
-    (clamped >= 75
-      ? 'bg-green-500'
-      : clamped >= 50
-      ? 'bg-yellow-500'
-      : clamped >= 25
-      ? 'bg-orange-500'
-      : 'bg-red-500');
 
   return (
     <div className={cn('w-full', className)}>
       {showLabel && (
-        <div className="flex justify-between mb-1">
-          <span className="text-xs text-slate-400">Progresso</span>
-          <span className="text-xs font-semibold text-white">{clamped}%</span>
+        <div className="flex justify-between mb-1.5">
+          <span className="text-xs text-text-muted font-medium">Progresso</span>
+          <span className="text-xs font-bold text-text-primary">{clamped}%</span>
         </div>
       )}
-      <div className={cn('w-full bg-brand-navy-border rounded-sm overflow-hidden', sizeClasses[size])}>
+      <div className={cn('w-full bg-surface-2 rounded-full overflow-hidden', sizeClasses[size])}>
         <div
-          className={cn('h-full rounded-sm transition-all duration-700 ease-out', barColor)}
-          style={{ width: `${clamped}%` }}
+          className={cn(
+            'h-full rounded-full transition-all duration-1000 ease-out progress-shine',
+            !color && 'bg-gradient-to-r from-brand to-emerald-400'
+          )}
+          style={{
+            width: `${clamped}%`,
+            ...(color ? { background: color } : {}),
+          }}
         />
       </div>
     </div>

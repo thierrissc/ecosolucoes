@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Bell, CheckCheck, AlertCircle, ListTodo, Clock, Target, Info } from 'lucide-react';
+import { Bell, CheckCheck, AlertCircle, ListTodo, Clock, Target, Info, ExternalLink } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { TipoNotificacao } from '@/types';
 import { timeAgo } from '@/lib/utils';
 import Link from 'next/link';
 
-const tipoConfig: Record<TipoNotificacao, { icon: React.ElementType; color: string; bg: string; label: string }> = {
-  aviso: { icon: AlertCircle, color: 'text-orange-400', bg: 'bg-orange-500/15 border-orange-500/25', label: 'Aviso' },
-  tarefa: { icon: ListTodo, color: 'text-blue-400', bg: 'bg-blue-500/15 border-blue-500/25', label: 'Tarefa' },
-  prazo: { icon: Clock, color: 'text-red-400', bg: 'bg-red-500/15 border-red-500/25', label: 'Prazo' },
-  meta: { icon: Target, color: 'text-green-400', bg: 'bg-green-500/15 border-green-500/25', label: 'Meta' },
+const tipoConfig: Record<TipoNotificacao, { icon: React.ElementType; gradient: string; label: string }> = {
+  aviso: { icon: AlertCircle, gradient: 'from-amber-500 to-orange-400', label: 'Aviso' },
+  tarefa: { icon: ListTodo, gradient: 'from-blue-500 to-indigo-400', label: 'Tarefa' },
+  prazo: { icon: Clock, gradient: 'from-red-500 to-pink-400', label: 'Prazo' },
+  meta: { icon: Target, gradient: 'from-emerald-500 to-teal-400', label: 'Meta' },
 };
 
 export default function NotificacoesPage() {
@@ -24,114 +24,110 @@ export default function NotificacoesPage() {
     return n.tipo === filtro;
   });
 
+  const filterOptions = [
+    { key: 'todas', label: 'Todas' },
+    { key: 'nao_lidas', label: 'Não lidas' },
+    { key: 'aviso', label: 'Avisos' },
+    { key: 'tarefa', label: 'Tarefas' },
+    { key: 'prazo', label: 'Prazos' },
+    { key: 'meta', label: 'Metas' },
+  ] as const;
+
   return (
-    <div className="space-y-8 md:space-y-10 animate-fade-in w-full">
+    <div className="space-y-6 md:space-y-8 animate-fade-up">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-white font-extrabold text-2xl md:text-3xl flex items-center gap-3 tracking-tight">
-            <Bell className="w-6 h-6 text-brand-green-light" />
+          <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl flex items-center gap-3 tracking-tight">
             Notificações
             {naoLidasCount > 0 && (
-              <span className="bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-lg whitespace-nowrap flex-shrink-0">
+              <span className="bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">
                 {naoLidasCount} novas
               </span>
             )}
           </h2>
-          <p className="text-slate-400 text-sm mt-1">{filtered.length} notificações encontradas</p>
+          <p className="text-text-muted text-sm mt-1">{filtered.length} notificações</p>
         </div>
         {naoLidasCount > 0 && (
-          <button
-            onClick={marcarTodasLidas}
-            className="flex items-center gap-2 text-brand-green-light hover:text-white text-sm border border-brand-green/30 hover:border-brand-green px-5 py-2.5 rounded-xl transition-all font-semibold"
-          >
+          <button onClick={marcarTodasLidas} className="btn-ghost">
             <CheckCheck className="w-4 h-4" />
             Marcar todas como lidas
           </button>
         )}
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2.5 flex-wrap">
-        {(['todas', 'nao_lidas', 'aviso', 'tarefa', 'prazo', 'meta'] as const).map((f) => {
-          const labels: Record<string, string> = {
-            todas: 'Todas',
-            nao_lidas: 'Não lidas',
-            aviso: 'Avisos',
-            tarefa: 'Tarefas',
-            prazo: 'Prazos',
-            meta: 'Metas',
-          };
-          return (
-            <button
-              key={f}
-              onClick={() => setFiltro(f)}
-              className={`px-4.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex-shrink-0 ${
-                filtro === f
-                  ? 'bg-brand-green text-white shadow-md shadow-brand-green/20'
-                  : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border'
-              }`}
-            >
-              {labels[f]}
-            </button>
-          );
-        })}
+      {/* Segmented Filters */}
+      <div className="segmented-control flex-wrap">
+        {filterOptions.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setFiltro(f.key)}
+            className={`segmented-btn ${filtro === f.key ? 'active' : ''}`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
 
-      {/* Notifications list */}
-      <div className="space-y-4">
-        {filtered.map((notif) => {
-          const cfg = tipoConfig[notif.tipo];
-          const Icon = cfg.icon;
-          return (
-            <div
-              key={notif.id}
-              onClick={() => marcarLida(notif.id)}
-              className={`glass-card rounded-2xl p-5 md:p-6 border transition-all cursor-pointer hover-lift ${
-                !notif.lida
-                  ? 'border-brand-green/40 bg-brand-green/5'
-                  : 'border-brand-navy-border'
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border ${cfg.bg}`}>
-                  <Icon className={`w-5 h-5 ${cfg.color}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className={`text-sm font-semibold ${notif.lida ? 'text-slate-300' : 'text-white'}`}>
-                        {notif.titulo}
-                      </p>
-                      <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">{notif.descricao}</p>
-                    </div>
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      {!notif.lida && (
-                        <span className="w-2 h-2 rounded-sm bg-brand-green pulse-dot" />
-                      )}
-                      <span className="text-slate-500 text-xs whitespace-nowrap">{timeAgo(notif.timestamp)}</span>
-                    </div>
+      {/* Timeline Notifications */}
+      <div className="relative">
+        {/* Vertical line */}
+        <div className="absolute left-[22px] top-4 bottom-4 w-px bg-surface-border hidden md:block" />
+
+        <div className="space-y-3">
+          {filtered.map((notif) => {
+            const cfg = tipoConfig[notif.tipo];
+            const Icon = cfg.icon;
+            return (
+              <div
+                key={notif.id}
+                onClick={() => marcarLida(notif.id)}
+                className={`card p-4 md:p-5 transition-all cursor-pointer group hover:shadow-md ${
+                  !notif.lida ? 'ring-1 ring-brand/20 bg-brand/[0.02]' : ''
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  {/* Icon */}
+                  <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                    <Icon className="w-5 h-5 text-white" />
                   </div>
-                  {notif.link && (
-                    <Link
-                      href={notif.link}
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 mt-2 text-brand-green-light text-xs hover:underline"
-                    >
-                      <Info className="w-3 h-3" /> Ver detalhes →
-                    </Link>
-                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className={`text-sm font-semibold transition-colors ${notif.lida ? 'text-text-secondary' : 'text-text-primary'} group-hover:text-brand`}>
+                          {notif.titulo}
+                        </p>
+                        <p className="text-text-muted text-xs mt-0.5 leading-relaxed">{notif.descricao}</p>
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                        {!notif.lida && (
+                          <span className="w-2.5 h-2.5 rounded-full bg-brand animate-pulse" />
+                        )}
+                        <span className="text-text-muted text-[11px] whitespace-nowrap">{timeAgo(notif.timestamp)}</span>
+                      </div>
+                    </div>
+                    {notif.link && (
+                      <Link
+                        href={notif.link}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 mt-2 text-brand text-xs font-medium hover:underline"
+                      >
+                        <ExternalLink className="w-3 h-3" /> Ver detalhes
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
+            );
+          })}
+          {filtered.length === 0 && (
+            <div className="card p-12 text-center">
+              <Bell className="w-10 h-10 text-text-muted mx-auto mb-3 opacity-40" />
+              <p className="text-text-muted">Nenhuma notificação encontrada.</p>
             </div>
-          );
-        })}
-        {filtered.length === 0 && (
-          <div className="glass-card rounded-2xl p-12 border border-brand-navy-border text-center">
-            <Bell className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <p className="text-slate-400">Nenhuma notificação encontrada.</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { AppProvider } from '@/contexts/AppContext';
 import AppLayoutClient from '../components/layout/AppLayoutClient';
 
-const inter = Inter({ subsets: ['latin'] });
+const outfit = Outfit({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800', '900'] });
 
 export const metadata: Metadata = {
   title: 'Eco Soluções — Plataforma Corporativa',
@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className={outfit.className} suppressHydrationWarning>
         <ThemeProvider>
           <AppProvider>
             <AppLayoutClient>{children}</AppLayoutClient>

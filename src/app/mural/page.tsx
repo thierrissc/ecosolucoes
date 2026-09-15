@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Pin, Heart, Eye, Filter } from 'lucide-react';
+import { Plus, Pin, Heart, Eye, Search } from 'lucide-react';
 import { publicacoes as allPublicacoes } from '@/data/mural';
 import { PublicacaoMural, Prioridade } from '@/types';
 import Badge, { prioridadeVariant, tipoMuralVariant } from '@/components/ui/Badge';
@@ -46,58 +46,49 @@ export default function MuralPage() {
   };
 
   return (
-    <div className="space-y-8 md:space-y-10 animate-fade-in">
+    <div className="space-y-6 md:space-y-8 animate-fade-up">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-white font-extrabold text-2xl md:text-3xl tracking-tight">Publicações do Mural</h2>
-          <p className="text-slate-400 text-sm mt-1">{filtered.length} publicações encontradas</p>
+          <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Mural Corporativo</h2>
+          <p className="text-text-muted text-sm mt-1">{filtered.length} publicações encontradas</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-dark text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-brand-green/20 hover:shadow-brand-green/30 flex-shrink-0 whitespace-nowrap"
-        >
+        <button onClick={() => setShowModal(true)} className="btn-primary">
           <Plus className="w-4 h-4" />
           Nova Publicação
         </button>
       </div>
 
       {/* Filters */}
-      <div className="glass-card rounded-2xl p-6 md:p-7 border border-brand-navy-border">
-        <div className="flex items-center gap-4 flex-wrap">
-          <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
-          <input
-            type="text"
-            placeholder="Buscar publicação..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-green/50 w-64"
-          />
-          <div className="flex gap-2.5 flex-wrap">
+      <div className="card p-4 md:p-5">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="relative flex-shrink-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+            <input
+              type="text"
+              placeholder="Buscar publicação..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="input pl-9 w-56"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
             {tiposOptions.map((t) => (
               <button
                 key={t}
                 onClick={() => setFiltroTipo(t)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all capitalize whitespace-nowrap flex-shrink-0 ${
-                  filtroTipo === t
-                    ? 'bg-brand-green text-white shadow-md shadow-brand-green/20 border border-brand-green-light'
-                    : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border hover:border-slate-500'
-                }`}
+                className={`chip ${filtroTipo === t ? 'active' : ''}`}
               >
                 {t === 'todos' ? 'Todos' : tipoMuralLabel(t)}
               </button>
             ))}
           </div>
-          <div className="flex gap-2.5 ml-auto flex-wrap">
+          <div className="flex gap-1.5 ml-auto flex-wrap">
             {prioridadesOptions.map((p) => (
               <button
                 key={p}
                 onClick={() => setFiltroPrioridade(p)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all capitalize whitespace-nowrap flex-shrink-0 ${
-                  filtroPrioridade === p
-                    ? 'bg-brand-green text-white shadow-md shadow-brand-green/20 border border-brand-green-light'
-                    : 'bg-brand-navy-light text-slate-400 hover:text-white border border-brand-navy-border hover:border-slate-500'
-                }`}
+                className={`chip ${filtroPrioridade === p ? 'active' : ''}`}
               >
                 {p === 'todas' ? 'Todas' : prioridadeLabel(p)}
               </button>
@@ -108,11 +99,11 @@ export default function MuralPage() {
 
       {/* Fixadas */}
       {fixadas.length > 0 && (
-        <div className="space-y-4 mb-8">
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-            <Pin className="w-3.5 h-3.5 text-brand-green-light" /> Fixadas
+        <div className="space-y-3">
+          <h3 className="text-text-muted text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+            <Pin className="w-3.5 h-3.5 text-brand" /> Fixadas
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
             {fixadas.map((pub) => (
               <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
             ))}
@@ -121,19 +112,17 @@ export default function MuralPage() {
       )}
 
       {/* Normais */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {fixadas.length > 0 && (
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-            Todas as Publicações
-          </h3>
+          <h3 className="text-text-muted text-xs font-bold uppercase tracking-widest">Todas as Publicações</h3>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
           {normais.map((pub) => (
             <PostCard key={pub.id} pub={pub} curtida={curtidas[pub.id]} onCurtir={toggleCurtida} />
           ))}
           {filtered.length === 0 && (
-            <div className="col-span-3 glass-card rounded-2xl p-12 border border-brand-navy-border text-center">
-              <p className="text-slate-400 text-lg">Nenhuma publicação encontrada.</p>
+            <div className="col-span-3 card p-12 text-center">
+              <p className="text-text-muted text-lg">Nenhuma publicação encontrada.</p>
             </div>
           )}
         </div>
@@ -154,45 +143,49 @@ export default function MuralPage() {
 }
 
 function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: boolean; onCurtir: (id: string) => void }) {
-  const prioridadeColors: Record<string, string> = {
+  const prioridadeBorder: Record<string, string> = {
     alta: 'border-l-red-500',
-    media: 'border-l-yellow-500',
-    baixa: 'border-l-green-500',
+    media: 'border-l-amber-500',
+    baixa: 'border-l-emerald-500',
   };
 
   return (
-    <div className={`glass-card rounded-2xl p-6 md:p-7 border border-brand-navy-border hover-lift flex flex-col justify-between gap-4 border-l-4 ${prioridadeColors[pub.prioridade]}`}>
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2.5 flex-wrap">
+    <div className={`card card-hover p-5 md:p-6 flex flex-col justify-between gap-3 border-l-[3px] ${prioridadeBorder[pub.prioridade]}`}>
+      {/* Top */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-lg">{tipoIcons[pub.tipo]}</span>
           <Badge variant={tipoMuralVariant(pub.tipo)}>
-            {tipoIcons[pub.tipo]} {tipoMuralLabel(pub.tipo)}
+            {tipoMuralLabel(pub.tipo)}
           </Badge>
           <Badge variant={prioridadeVariant(pub.prioridade)} dot>
             {prioridadeLabel(pub.prioridade)}
           </Badge>
         </div>
-        {pub.fixado && <Pin className="w-4 h-4 text-brand-green-light flex-shrink-0" />}
+        {pub.fixado && <Pin className="w-3.5 h-3.5 text-brand flex-shrink-0" />}
       </div>
 
+      {/* Content */}
       <div>
-        <h4 className="text-white font-semibold text-sm leading-snug mb-2">{pub.titulo}</h4>
-        <p className="text-slate-400 text-xs leading-relaxed line-clamp-3">{pub.descricao}</p>
+        <h4 className="text-text-primary font-semibold text-sm leading-snug mb-1.5">{pub.titulo}</h4>
+        <p className="text-text-muted text-xs leading-relaxed line-clamp-3">{pub.descricao}</p>
       </div>
 
-      <div className="flex items-center gap-2 pt-2 border-t border-brand-navy-border mt-auto">
-        <div className="w-7 h-7 rounded-md bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
-          <span className="text-white text-xs font-bold">{pub.avatarAutor}</span>
+      {/* Footer */}
+      <div className="flex items-center gap-2 pt-3 border-t border-surface-border mt-auto">
+        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center flex-shrink-0">
+          <span className="text-white text-[10px] font-bold">{pub.avatarAutor}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-white text-xs font-medium truncate">{pub.autor}</p>
-          <p className="text-slate-500 text-xs">{pub.cargo} · {timeAgo(pub.data)}</p>
+          <p className="text-text-primary text-xs font-medium truncate">{pub.autor}</p>
+          <p className="text-text-muted text-[11px]">{pub.cargo} · {timeAgo(pub.data)}</p>
         </div>
-        <div className="flex items-center gap-3 text-slate-500 flex-shrink-0">
+        <div className="flex items-center gap-3 text-text-muted flex-shrink-0">
           <button
             onClick={() => onCurtir(pub.id)}
-            className={`flex items-center gap-1 text-xs hover:text-red-400 transition-colors ${curtida ? 'text-red-400' : ''}`}
+            className={`flex items-center gap-1 text-xs transition-all ${curtida ? 'text-red-500 scale-110' : 'hover:text-red-400'}`}
           >
-            <Heart className={`w-3.5 h-3.5 ${curtida ? 'fill-current' : ''}`} />
+            <Heart className={`w-3.5 h-3.5 transition-all ${curtida ? 'fill-current' : ''}`} />
             {pub.curtidas + (curtida ? 1 : 0)}
           </button>
           <span className="flex items-center gap-1 text-xs">
@@ -236,38 +229,38 @@ function NewPostModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="glass-card rounded-2xl p-6 border border-brand-navy-border w-full max-w-lg animate-fade-in">
-        <h3 className="text-white font-bold text-lg mb-4">Nova Publicação</h3>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="card p-6 md:p-7 w-full max-w-lg animate-scale-in" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-text-primary font-bold text-lg mb-5">Nova Publicação</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-slate-400 text-xs block mb-1">Título *</label>
+            <label className="text-text-muted text-xs font-medium block mb-1.5">Título *</label>
             <input
               required
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
-              className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-green/50"
+              className="input"
               placeholder="Título da publicação..."
             />
           </div>
           <div>
-            <label className="text-slate-400 text-xs block mb-1">Descrição *</label>
+            <label className="text-text-muted text-xs font-medium block mb-1.5">Descrição *</label>
             <textarea
               required
               rows={4}
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
-              className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-green/50 resize-none"
+              className="input resize-none"
               placeholder="Descreva o comunicado..."
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Tipo</label>
+              <label className="text-text-muted text-xs font-medium block mb-1.5">Tipo</label>
               <select
                 value={tipo}
                 onChange={(e) => setTipo(e.target.value as PublicacaoMural['tipo'])}
-                className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
+                className="input input-select"
               >
                 {tiposOptions.filter((t) => t !== 'todos').map((t) => (
                   <option key={t} value={t}>{tipoMuralLabel(t)}</option>
@@ -275,11 +268,11 @@ function NewPostModal({
               </select>
             </div>
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Prioridade</label>
+              <label className="text-text-muted text-xs font-medium block mb-1.5">Prioridade</label>
               <select
                 value={prioridade}
                 onChange={(e) => setPrioridade(e.target.value as Prioridade)}
-                className="w-full bg-brand-navy-light border border-brand-navy-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
+                className="input input-select"
               >
                 <option value="baixa">Baixa</option>
                 <option value="media">Média</option>
@@ -287,18 +280,11 @@ function NewPostModal({
               </select>
             </div>
           </div>
-          <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl text-sm text-slate-400 border border-brand-navy-border hover:text-white hover:border-slate-500 transition-all"
-            >
+          <div className="flex gap-3 pt-3">
+            <button type="button" onClick={onClose} className="btn-ghost flex-1 justify-center">
               Cancelar
             </button>
-            <button
-              type="submit"
-              className="flex-1 py-2.5 rounded-xl text-sm bg-brand-green hover:bg-brand-green-dark text-white font-medium transition-all"
-            >
+            <button type="submit" className="btn-primary flex-1 justify-center">
               Publicar
             </button>
           </div>

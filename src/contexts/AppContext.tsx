@@ -5,8 +5,9 @@ import { notificacoes as notifData } from '@/data/notificacoes';
 import { Notificacao } from '@/types';
 
 interface AppContextType {
-  sidebarCollapsed: boolean;
-  toggleSidebar: () => void;
+  mobileMenuOpen: boolean;
+  toggleMobileMenu: () => void;
+  closeMobileMenu: () => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   notificacoes: Notificacao[];
@@ -16,8 +17,9 @@ interface AppContextType {
 }
 
 const AppContext = createContext<AppContextType>({
-  sidebarCollapsed: false,
-  toggleSidebar: () => {},
+  mobileMenuOpen: false,
+  toggleMobileMenu: () => {},
+  closeMobileMenu: () => {},
   searchQuery: '',
   setSearchQuery: () => {},
   notificacoes: [],
@@ -27,11 +29,12 @@ const AppContext = createContext<AppContextType>({
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>(notifData);
 
-  const toggleSidebar = () => setSidebarCollapsed((c) => !c);
+  const toggleMobileMenu = () => setMobileMenuOpen((c) => !c);
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const marcarLida = (id: string) => {
     setNotificacoes((prev) =>
@@ -48,8 +51,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
-        sidebarCollapsed,
-        toggleSidebar,
+        mobileMenuOpen,
+        toggleMobileMenu,
+        closeMobileMenu,
         searchQuery,
         setSearchQuery,
         notificacoes,

@@ -17,94 +17,101 @@ const iconMap: Record<string, React.ElementType> = {
 
 export default function SetoresPage() {
   return (
-    <div className="space-y-8 md:space-y-10 animate-fade-in">
+    <div className="space-y-6 md:space-y-8 animate-fade-up">
       <div>
-        <h2 className="text-white font-extrabold text-2xl md:text-3xl tracking-tight">Gestão de Setores</h2>
-        <p className="text-slate-400 text-sm mt-1">{setores.length} setores cadastrados no sistema</p>
+        <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Gestão de Setores</h2>
+        <p className="text-text-muted text-sm mt-1">{setores.length} setores cadastrados</p>
       </div>
 
-      {/* Summary Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+      {/* Summary */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
         {[
-          { label: 'Total Colaboradores', value: setores.reduce((a, s) => a + s.colaboradores, 0), color: 'text-blue-400' },
-          { label: 'Demandas Semanais', value: setores.reduce((a, s) => a + s.demandasSemanais, 0), color: 'text-yellow-400' },
-          { label: 'Demandas Mensais', value: setores.reduce((a, s) => a + s.demandasMensais, 0), color: 'text-purple-400' },
-          { label: 'Desempenho Médio', value: `${Math.round(setores.reduce((a, s) => a + s.desempenho, 0) / setores.length)}%`, color: 'text-brand-green-light' },
+          { label: 'Colaboradores', value: setores.reduce((a, s) => a + s.colaboradores, 0), color: 'from-blue-500 to-indigo-400' },
+          { label: 'Demandas Semanais', value: setores.reduce((a, s) => a + s.demandasSemanais, 0), color: 'from-amber-500 to-yellow-400' },
+          { label: 'Demandas Mensais', value: setores.reduce((a, s) => a + s.demandasMensais, 0), color: 'from-violet-500 to-purple-400' },
+          { label: 'Desempenho Médio', value: `${Math.round(setores.reduce((a, s) => a + s.desempenho, 0) / setores.length)}%`, color: 'from-emerald-500 to-teal-400' },
         ].map((item) => (
-          <div key={item.label} className="glass-card rounded-2xl p-6 md:p-7 border border-brand-navy-border text-center flex flex-col justify-center items-center">
-            <p className={`text-3xl md:text-4xl font-extrabold ${item.color}`}>{item.value}</p>
-            <p className="text-slate-400 text-xs md:text-sm font-medium mt-1.5">{item.label}</p>
+          <div key={item.label} className="card p-5 md:p-6 text-center">
+            <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${item.color} mx-auto mb-3 flex items-center justify-center shadow-lg`}>
+              <span className="text-white text-sm font-bold">#</span>
+            </div>
+            <p className="text-text-primary text-3xl md:text-4xl font-extrabold">{item.value}</p>
+            <p className="text-text-muted text-xs font-medium mt-1">{item.label}</p>
           </div>
         ))}
       </div>
 
-      {/* Setor Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
         {setores.map((setor) => {
           const Icon = iconMap[setor.icone] || Building2;
           const tarefasSetor = tarefasSemanais.filter((t) => t.setorId === setor.id);
           const concluidas = tarefasSetor.filter((t) => t.status === 'concluida').length;
 
           return (
-            <div key={setor.id} className="glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border hover-lift group flex flex-col justify-between">
-              <div>
-                {/* Header */}
-                <div className="flex items-start gap-4 mb-6">
+            <div key={setor.id} className="card card-hover overflow-hidden flex flex-col">
+              {/* Header with gradient */}
+              <div
+                className="h-2 w-full"
+                style={{ background: `linear-gradient(90deg, ${setor.cor}, ${setor.cor}88)` }}
+              />
+
+              <div className="p-5 md:p-6 flex flex-col flex-1">
+                {/* Top */}
+                <div className="flex items-start gap-3.5 mb-5">
                   <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 shadow-md"
-                    style={{ backgroundColor: setor.cor + '22' }}
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105"
+                    style={{ backgroundColor: setor.cor + '18' }}
                   >
-                    <Icon className="w-7 h-7" style={{ color: setor.cor }} />
+                    <Icon className="w-6 h-6" style={{ color: setor.cor }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-bold text-lg truncate">{setor.nome}</h3>
+                    <h3 className="text-text-primary font-bold text-base truncate">{setor.nome}</h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="w-5 h-5 rounded-md flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: setor.cor }}>
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-offset-1 ring-offset-surface-1"
+                        style={{ backgroundColor: setor.cor }}
+                      >
                         {setor.avatar}
                       </div>
-                      <p className="text-slate-400 text-xs font-medium truncate">{setor.responsavel}</p>
+                      <p className="text-text-muted text-xs truncate">{setor.responsavel}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="grid grid-cols-3 gap-2 mb-5">
                   {[
-                    { label: 'Colaboradores', value: setor.colaboradores, color: 'text-blue-400' },
-                    { label: 'Dem. Semanais', value: setor.demandasSemanais, color: 'text-yellow-400' },
-                    { label: 'Dem. Mensais', value: setor.demandasMensais, color: 'text-purple-400' },
+                    { label: 'Equipe', value: setor.colaboradores, color: 'text-blue-500' },
+                    { label: 'Semanais', value: setor.demandasSemanais, color: 'text-amber-500' },
+                    { label: 'Mensais', value: setor.demandasMensais, color: 'text-violet-500' },
                   ].map((s) => (
-                    <div key={s.label} className="bg-brand-navy/60 rounded-xl p-3 text-center border border-brand-navy-border/60">
-                      <p className={`text-xl font-extrabold ${s.color}`}>{s.value}</p>
-                      <p className="text-slate-400 text-[11px] font-medium mt-0.5 truncate">{s.label}</p>
+                    <div key={s.label} className="bg-surface-2 rounded-xl p-2.5 text-center">
+                      <p className={`text-lg font-extrabold ${s.color}`}>{s.value}</p>
+                      <p className="text-text-muted text-[10px] font-medium mt-0.5">{s.label}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Performance */}
-                <div className="space-y-2">
+                <div className="space-y-2 mt-auto">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-400 text-xs font-semibold">Desempenho Geral</span>
-                    <span className="text-white text-xs font-extrabold">{setor.desempenho}%</span>
+                    <span className="text-text-muted text-xs font-medium">Desempenho</span>
+                    <span className="text-text-primary text-xs font-extrabold">{setor.desempenho}%</span>
                   </div>
-                  <div className="h-2 w-full bg-brand-navy-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${setor.desempenho}%`, backgroundColor: setor.cor }}
-                    />
-                  </div>
+                  <ProgressBar value={setor.desempenho} size="sm" color={setor.cor} />
                 </div>
-              </div>
 
-              {/* Tarefas da semana */}
-              {tarefasSetor.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-brand-navy-border/60">
-                  <p className="text-slate-400 text-xs mb-2">
-                    Tarefas esta semana: <strong className="text-white font-bold">{concluidas}/{tarefasSetor.length}</strong> concluídas
-                  </p>
-                  <ProgressBar value={(concluidas / tarefasSetor.length) * 100} size="sm" />
-                </div>
-              )}
+                {/* Weekly tasks */}
+                {tarefasSetor.length > 0 && (
+                  <div className="mt-4 pt-3 border-t border-surface-border">
+                    <p className="text-text-muted text-xs">
+                      Tarefas: <strong className="text-text-primary font-bold">{concluidas}/{tarefasSetor.length}</strong> concluídas
+                    </p>
+                    <ProgressBar value={(concluidas / tarefasSetor.length) * 100} size="sm" className="mt-1.5" />
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}

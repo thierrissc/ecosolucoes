@@ -3,14 +3,14 @@ import { cn } from '@/lib/utils';
 type BadgeVariant = 'green' | 'red' | 'yellow' | 'blue' | 'purple' | 'pink' | 'orange' | 'slate';
 
 const variantClasses: Record<BadgeVariant, string> = {
-  green: 'bg-green-500/15 text-green-400 border-green-500/25',
-  red: 'bg-red-500/15 text-red-400 border-red-500/25',
-  yellow: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/25',
-  blue: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
-  purple: 'bg-purple-500/15 text-purple-400 border-purple-500/25',
-  pink: 'bg-pink-500/15 text-pink-400 border-pink-500/25',
-  orange: 'bg-orange-500/15 text-orange-400 border-orange-500/25',
-  slate: 'bg-slate-500/15 text-slate-400 border-slate-500/25',
+  green: 'bg-emerald-500/12 text-emerald-500 dark:text-emerald-400',
+  red: 'bg-red-500/12 text-red-500 dark:text-red-400',
+  yellow: 'bg-amber-500/12 text-amber-600 dark:text-amber-400',
+  blue: 'bg-blue-500/12 text-blue-500 dark:text-blue-400',
+  purple: 'bg-violet-500/12 text-violet-500 dark:text-violet-400',
+  pink: 'bg-pink-500/12 text-pink-500 dark:text-pink-400',
+  orange: 'bg-orange-500/12 text-orange-500 dark:text-orange-400',
+  slate: 'bg-slate-500/12 text-slate-500 dark:text-slate-400',
 };
 
 export function prioridadeVariant(p: string): BadgeVariant {
@@ -54,13 +54,13 @@ export default function Badge({ variant = 'slate', className, children, dot }: B
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border whitespace-nowrap flex-shrink-0 tracking-wide',
+        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap flex-shrink-0 tracking-wide',
         variantClasses[variant],
         className
       )}
     >
       {dot && (
-        <span className="w-1.5 h-1.5 rounded-sm bg-current flex-shrink-0" />
+        <span className="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0 animate-pulse" />
       )}
       {children}
     </span>

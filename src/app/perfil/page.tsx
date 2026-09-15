@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2 } from 'lucide-react';
+import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf } from 'lucide-react';
 
 interface PerfilData {
   nomeEmpresa: string;
@@ -69,163 +69,132 @@ export default function PerfilPage() {
     }
   };
 
-  if (!isClient) return null; // Avoid hydration mismatch
+  if (!isClient) return null;
 
   return (
-    <div className="space-y-8 md:space-y-10 animate-fade-in w-full">
+    <div className="space-y-6 md:space-y-8 animate-fade-up w-full">
       <div>
-        <h2 className="text-white font-extrabold text-2xl md:text-3xl tracking-tight">Perfil da Empresa</h2>
-        <p className="text-slate-400 text-sm mt-1">Gerencie as informações corporativas que aparecerão na plataforma.</p>
+        <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Perfil da Empresa</h2>
+        <p className="text-text-muted text-sm mt-1">Gerencie as informações corporativas.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-        {/* Sidebar Profile Card */}
-        <div className="lg:col-span-5 xl:col-span-4 space-y-6">
-          <div className="glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border flex flex-col items-center text-center">
-            <div className="relative group mb-5">
-              <div className="w-32 h-32 rounded-2xl border-4 border-brand-navy-border overflow-hidden bg-brand-navy-light flex items-center justify-center relative shadow-lg">
-                {data.avatarUrl ? (
-                  <img src={data.avatarUrl} alt="Logo da Empresa" className="w-full h-full object-cover" />
-                ) : (
-                  <Building className="w-12 h-12 text-slate-500" />
-                )}
-                
-                <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center backdrop-blur-sm">
-                  <Camera className="w-6 h-6 text-white mb-1" />
-                  <span className="text-white text-xs font-medium">Alterar Logo</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-                </label>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
+        {/* Profile Card */}
+        <div className="lg:col-span-5 xl:col-span-4 space-y-4 md:space-y-5">
+          <div className="card overflow-hidden">
+            {/* Cover gradient */}
+            <div className="h-28 gradient-mesh relative">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface-1/80" />
             </div>
 
-            <h3 className="text-white font-bold text-xl">{data.nomeEmpresa || 'Sua Empresa'}</h3>
-            <p className="text-brand-green-light text-sm font-semibold mb-2">
-              {data.arrobaEmpresa ? (data.arrobaEmpresa.startsWith('@') ? data.arrobaEmpresa : `@${data.arrobaEmpresa}`) : '@usuario'}
-            </p>
-            <p className="text-slate-400 text-xs leading-relaxed mb-6 line-clamp-3">
-              {data.descricao || 'Adicione uma breve descrição sobre a sua empresa aqui.'}
-            </p>
+            <div className="px-6 pb-6 -mt-14 relative flex flex-col items-center text-center">
+              {/* Avatar */}
+              <div className="relative group mb-4">
+                <div className="w-28 h-28 rounded-3xl border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg">
+                  {data.avatarUrl ? (
+                    <img src={data.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center">
+                      <Leaf className="w-10 h-10 text-white" />
+                    </div>
+                  )}
 
-            <div className="w-full space-y-3 text-left pt-5 border-t border-brand-navy-border/60">
-              {data.setorAtuacao && (
-                <div className="flex items-center gap-2.5 text-slate-300 text-xs font-medium">
-                  <Briefcase className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                  <span className="truncate">{data.setorAtuacao}</span>
+                  <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center backdrop-blur-sm rounded-3xl">
+                    <Camera className="w-5 h-5 text-white mb-1" />
+                    <span className="text-white text-[11px] font-medium">Alterar</span>
+                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                  </label>
                 </div>
-              )}
-              {data.email && (
-                <div className="flex items-center gap-2.5 text-slate-300 text-xs font-medium">
-                  <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                  <span className="truncate">{data.email}</span>
-                </div>
-              )}
-              {data.site && (
-                <div className="flex items-center gap-2.5 text-slate-300 text-xs font-medium">
-                  <Globe className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                  <span className="truncate">{data.site}</span>
-                </div>
-              )}
+              </div>
+
+              <h3 className="text-text-primary font-bold text-xl">{data.nomeEmpresa || 'Sua Empresa'}</h3>
+              <p className="text-brand text-sm font-semibold mb-2">
+                {data.arrobaEmpresa ? (data.arrobaEmpresa.startsWith('@') ? data.arrobaEmpresa : `@${data.arrobaEmpresa}`) : '@usuario'}
+              </p>
+              <p className="text-text-muted text-xs leading-relaxed mb-5 line-clamp-3">
+                {data.descricao || 'Adicione uma breve descrição sobre a sua empresa.'}
+              </p>
+
+              <div className="w-full space-y-2.5 text-left pt-4 border-t border-surface-border">
+                {data.setorAtuacao && (
+                  <div className="flex items-center gap-2.5 text-text-secondary text-xs font-medium">
+                    <Briefcase className="w-4 h-4 text-text-muted flex-shrink-0" />
+                    <span className="truncate">{data.setorAtuacao}</span>
+                  </div>
+                )}
+                {data.email && (
+                  <div className="flex items-center gap-2.5 text-text-secondary text-xs font-medium">
+                    <Mail className="w-4 h-4 text-text-muted flex-shrink-0" />
+                    <span className="truncate">{data.email}</span>
+                  </div>
+                )}
+                {data.site && (
+                  <div className="flex items-center gap-2.5 text-text-secondary text-xs font-medium">
+                    <Globe className="w-4 h-4 text-text-muted flex-shrink-0" />
+                    <span className="truncate">{data.site}</span>
+                  </div>
+                )}
+                {data.endereco && (
+                  <div className="flex items-center gap-2.5 text-text-secondary text-xs font-medium">
+                    <MapPin className="w-4 h-4 text-text-muted flex-shrink-0" />
+                    <span className="truncate">{data.endereco}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Form Card */}
-        <div className="lg:col-span-7 xl:col-span-8 glass-card rounded-2xl p-6 md:p-8 border border-brand-navy-border">
+        {/* Form */}
+        <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7">
           <form onSubmit={handleSave} className="space-y-6">
             <div>
-              <h3 className="text-white font-semibold mb-4 border-b border-brand-navy-border pb-2">Informações Básicas</h3>
+              <h3 className="text-text-primary font-semibold text-base mb-4 pb-2 border-b border-surface-border">Informações Básicas</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-500 font-medium text-xs block mb-1">Nome da Empresa</label>
-                  <input
-                    name="nomeEmpresa"
-                    value={data.nomeEmpresa}
-                    onChange={handleChange}
-                    placeholder="Ex: Eco Soluções LTDA"
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Nome da Empresa</label>
+                  <input name="nomeEmpresa" value={data.nomeEmpresa} onChange={handleChange} placeholder="Ex: Eco Soluções LTDA" className="input" />
                 </div>
                 <div>
-                  <label className="text-slate-500 font-medium text-xs block mb-1">Username / @</label>
-                  <input
-                    name="arrobaEmpresa"
-                    value={data.arrobaEmpresa}
-                    onChange={handleChange}
-                    placeholder="Ex: @ecosolucoes"
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Username / @</label>
+                  <input name="arrobaEmpresa" value={data.arrobaEmpresa} onChange={handleChange} placeholder="Ex: @ecosolucoes" className="input" />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="text-slate-500 font-medium text-xs block mb-1">Breve Descrição</label>
-                  <textarea
-                    name="descricao"
-                    value={data.descricao}
-                    onChange={handleChange}
-                    rows={3}
-                    placeholder="Conte-nos um pouco sobre a empresa..."
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white resize-none transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Breve Descrição</label>
+                  <textarea name="descricao" value={data.descricao} onChange={handleChange} rows={3} placeholder="Conte-nos sobre a empresa..." className="input resize-none" />
                 </div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4 border-b border-brand-navy-border pb-2">Contato & Localização</h3>
+              <h3 className="text-text-primary font-semibold text-base mb-4 pb-2 border-b border-surface-border">Contato & Localização</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-500 font-medium text-xs block mb-1">E-mail Corporativo</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={data.email}
-                    onChange={handleChange}
-                    placeholder="contato@empresa.com"
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">E-mail Corporativo</label>
+                  <input type="email" name="email" value={data.email} onChange={handleChange} placeholder="contato@empresa.com" className="input" />
                 </div>
                 <div>
-                  <label className="text-slate-500 font-medium text-xs block mb-1">Setor de Atuação</label>
-                  <input
-                    name="setorAtuacao"
-                    value={data.setorAtuacao}
-                    onChange={handleChange}
-                    placeholder="Ex: Tecnologia Sustentável"
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Setor de Atuação</label>
+                  <input name="setorAtuacao" value={data.setorAtuacao} onChange={handleChange} placeholder="Ex: Tecnologia Sustentável" className="input" />
                 </div>
                 <div>
-                  <label className="text-slate-500 font-medium text-xs block mb-1">Website</label>
-                  <input
-                    name="site"
-                    value={data.site}
-                    onChange={handleChange}
-                    placeholder="https://www.empresa.com.br"
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Website</label>
+                  <input name="site" value={data.site} onChange={handleChange} placeholder="https://www.empresa.com.br" className="input" />
                 </div>
                 <div>
-                  <label className="text-slate-500 font-medium text-xs block mb-1">Sede / Endereço</label>
-                  <input
-                    name="endereco"
-                    value={data.endereco}
-                    onChange={handleChange}
-                    placeholder="São Paulo, SP"
-                    className="w-full bg-brand-navy-light border border-brand-navy-border rounded-md px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                  />
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Sede / Endereço</label>
+                  <input name="endereco" value={data.endereco} onChange={handleChange} placeholder="São Paulo, SP" className="input" />
                 </div>
               </div>
             </div>
 
             <div className="flex items-center justify-end gap-4 pt-4">
               {saveSuccess && (
-                <span className="text-brand-green-light text-sm font-medium animate-fade-in flex items-center gap-1">
+                <span className="text-brand text-sm font-medium animate-fade-up flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" /> Salvo com sucesso!
                 </span>
               )}
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-white text-black hover:bg-slate-200 dark:bg-white dark:text-black dark:hover:bg-slate-200 px-6 py-2 rounded-md font-medium text-sm transition-all shadow-sm"
-              >
+              <button type="submit" className="btn-primary">
                 <Save className="w-4 h-4" /> Salvar Perfil
               </button>
             </div>
