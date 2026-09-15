@@ -8,7 +8,7 @@ import AppLayoutClient from '../components/layout/AppLayoutClient';
 const outfit = Outfit({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800', '900'] });
 
 export const metadata: Metadata = {
-  title: 'Eco Soluções — Plataforma Corporativa',
+  title: 'Eco Soluções',
   description: 'Plataforma corporativa digital para gestão interna e comunicação entre setores.',
   keywords: 'gestão corporativa, mural digital, demandas, setores, produtividade',
   icons: {

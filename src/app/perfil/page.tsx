@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface PerfilData {
   nomeEmpresa: string;
@@ -33,6 +34,7 @@ export default function PerfilPage() {
   const [data, setData] = useState<PerfilData>(DEFAULT_DATA);
   const [isClient, setIsClient] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [modalAction, setModalAction] = useState<'limpar' | 'restaurar' | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -211,24 +213,14 @@ export default function PerfilPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={() => {
-                  if (confirm('Deseja limpar todos os dados de exemplo? O sistema ficará pronto para o cadastro das informações reais da sua empresa.')) {
-                    limparDadosExemplo();
-                    alert('Dados de exemplo removidos! Agora você pode cadastrar suas informações.');
-                  }
-                }}
+                onClick={() => setModalAction('limpar')}
                 className="px-4 py-2 text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/30 transition-all"
               >
                 Limpar dados de exemplo (Começar do Zero)
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  if (confirm('Deseja restaurar os dados demonstrativos?')) {
-                    restaurarDadosExemplo();
-                    alert('Dados de exemplo restaurados.');
-                  }
-                }}
+                onClick={() => setModalAction('restaurar')}
                 className="btn-ghost text-xs"
               >
                 Restaurar dados de demonstração
@@ -237,6 +229,30 @@ export default function PerfilPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={modalAction === 'limpar'}
+        title="Limpar Dados de Exemplo"
+        message="Deseja limpar todos os dados de exemplo? O sistema ficará limpo e pronto para o cadastro das informações reais da sua empresa."
+        confirmLabel="Limpar Todos os Dados"
+        onConfirm={() => {
+          limparDadosExemplo();
+          setModalAction(null);
+        }}
+        onCancel={() => setModalAction(null)}
+      />
+
+      <ConfirmModal
+        isOpen={modalAction === 'restaurar'}
+        title="Restaurar Dados de Demonstração"
+        message="Deseja restaurar o conjunto de dados demonstrativos do sistema?"
+        confirmLabel="Restaurar Dados"
+        onConfirm={() => {
+          restaurarDadosExemplo();
+          setModalAction(null);
+        }}
+        onCancel={() => setModalAction(null)}
+      />
     </div>
   );
 }

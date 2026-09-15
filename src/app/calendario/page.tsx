@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, MapPin, Clock, Users, Plus, Trash2, X, Palet
 import { useApp } from '@/contexts/AppContext';
 import { EventoCalendario } from '@/types';
 import Badge, { tipoEventoVariant } from '@/components/ui/Badge';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 const tipoEventoLabel: Record<string, string> = {
   reuniao: 'Reunião',
@@ -40,6 +41,7 @@ export default function CalendarioPage() {
   const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 1));
   const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate());
   const [showModal, setShowModal] = useState(false);
+  const [deletingEvento, setDeletingEvento] = useState<{ id: string; titulo: string } | null>(null);
 
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novoTipo, setNovoTipo] = useState<'reuniao' | 'treinamento' | 'entrega' | 'evento'>('reuniao');
@@ -143,14 +145,16 @@ export default function CalendarioPage() {
                   onClick={() => setSelectedDay(day)}
                   className={`min-h-[85px] md:min-h-[105px] flex flex-col items-stretch justify-start p-1.5 transition-all text-left relative overflow-hidden border ${
                     isSelected
-                      ? 'border-brand bg-brand/10 shadow-sm'
+                      ? isToday
+                        ? 'border-sky-400 bg-sky-500/20 shadow-sm'
+                        : 'border-brand bg-brand/10 shadow-sm'
                       : isToday
-                      ? 'border-brand/60 bg-brand/5'
+                      ? 'border-sky-400/90 bg-sky-500/10'
                       : 'border-surface-border bg-surface-1 hover:border-text-muted/40 hover:bg-surface-hover'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
-                    <span className={`text-xs font-bold ${isSelected ? 'text-brand' : isToday ? 'text-brand' : 'text-text-primary'}`}>
+                    <span className={`text-xs font-bold ${isToday ? 'text-sky-400 font-extrabold' : isSelected ? 'text-brand' : 'text-text-primary'}`}>
                       {day}
                     </span>
                     {dayEvents.length > 0 && (
@@ -234,11 +238,7 @@ export default function CalendarioPage() {
                           <div className="flex items-center gap-2 flex-shrink-0">
                             <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
                             <button
-                              onClick={() => {
-                                if (confirm(`Deseja excluir o evento "${e.titulo}"?`)) {
-                                  deleteEvento(e.id);
-                                }
-                              }}
+                              onClick={() => setDeletingEvento({ id: e.id, titulo: e.titulo })}
                               className="text-text-muted hover:text-red-500 p-1 hover:bg-red-500/10 transition-colors"
                               title="Excluir evento"
                             >
@@ -288,11 +288,8 @@ export default function CalendarioPage() {
                 const eventColor = e.cor || tipoEventoColor[e.tipo] || '#16a34a';
                 return (
                   <div key={e.id} className="flex items-center gap-3 p-2 hover:bg-surface-hover transition-colors group relative border border-transparent hover:border-surface-border">
-                    <div
-                      className="w-10 h-10 flex-shrink-0 flex items-center justify-center border"
-                      style={{ backgroundColor: eventColor + '18', borderColor: eventColor + '40' }}
-                    >
-                      <span className="text-sm font-bold" style={{ color: eventColor }}>{d.getDate()}</span>
+                    <div className="w-7 flex-shrink-0 text-center">
+                      <span className="text-base font-extrabold" style={{ color: eventColor }}>{d.getDate()}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-text-primary text-xs font-semibold truncate group-hover:text-brand transition-colors">{e.titulo}</p>
@@ -300,11 +297,7 @@ export default function CalendarioPage() {
                     </div>
                     <Badge variant={tipoEventoVariant(e.tipo)}>{tipoEventoLabel[e.tipo]}</Badge>
                     <button
-                      onClick={() => {
-                        if (confirm(`Deseja excluir o evento "${e.titulo}"?`)) {
-                          deleteEvento(e.id);
-                        }
-                      }}
+                      onClick={() => setDeletingEvento({ id: e.id, titulo: e.titulo })}
                       title="Excluir evento"
                       className="p-1.5 text-text-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                     >
@@ -442,6 +435,20 @@ export default function CalendarioPage() {
           </div>
         </div>
       )}
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deletingEvento}
+        title="Excluir Evento"
+        message={`Tem certeza que deseja excluir o evento "${deletingEvento?.titulo}"? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir Evento"
+        onConfirm={() => {
+          if (deletingEvento) {
+            deleteEvento(deletingEvento.id);
+            setDeletingEvento(null);
+          }
+        }}
+        onCancel={() => setDeletingEvento(null)}
+      />
     </div>
   );
 }

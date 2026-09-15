@@ -6,6 +6,7 @@ import { useApp } from '@/contexts/AppContext';
 import { MetaMensal } from '@/types';
 import ProgressBar from '@/components/ui/ProgressBar';
 import Badge from '@/components/ui/Badge';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import { formatDate } from '@/lib/utils';
 
 const categoriaConfig: Record<string, { icon: React.ElementType; label: string; gradient: string; variant: 'green' | 'blue' | 'purple' }> = {
@@ -21,6 +22,7 @@ export default function DemandasMensaisPage() {
   const [filtroCategoria, setFiltroCategoria] = useState<'todas' | MetaMensal['categoria']>('todas');
   const [now] = useState(() => Date.now());
   const [showModal, setShowModal] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Form state
   const [nome, setNome] = useState('');
@@ -58,28 +60,18 @@ export default function DemandasMensaisPage() {
     return matchSetor && matchCat;
   });
 
-  const totalProgresso = filtered.length > 0
-    ? Math.round(filtered.reduce((acc, m) => acc + m.progresso, 0) / filtered.length)
-    : 0;
-
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Demandas Mensais</h2>
-          <p className="text-text-muted text-sm mt-1">Metas, projetos e relatórios corporativos</p>
+          <p className="text-text-muted text-sm mt-1">{filtered.length} metas e projetos corporativos</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setShowModal(true)} className="btn-primary">
-            <Plus className="w-4 h-4" />
-            Nova Demanda Mensal
-          </button>
-          <div className="card px-5 py-2.5 text-center">
-            <p className="text-text-muted text-[11px] font-medium mb-0.5">Progresso Médio</p>
-            <p className="text-brand font-extrabold text-2xl">{totalProgresso}%</p>
-          </div>
-        </div>
+        <button onClick={() => setShowModal(true)} className="btn-primary">
+          <Plus className="w-4 h-4" />
+          Nova Meta
+        </button>
       </div>
 
       {/* Summary */}
@@ -94,8 +86,8 @@ export default function DemandasMensaisPage() {
           );
           return (
             <div key={cat} className="card p-5 md:p-6 text-center space-y-3">
-              <div className={`w-12 h-12 bg-gradient-to-br ${cfg.gradient} mx-auto flex items-center justify-center shadow-lg`}>
-                <Icon className="w-6 h-6 text-white" />
+              <div className="w-9 h-9 border border-surface-border bg-surface-2/40 mx-auto flex items-center justify-center">
+                <Icon className="w-4 h-4 text-text-secondary" />
               </div>
               <p className="text-text-primary font-extrabold text-3xl">{count}</p>
               <p className="text-text-muted text-xs font-semibold uppercase tracking-wider">{cfg.label}s</p>
@@ -105,11 +97,11 @@ export default function DemandasMensaisPage() {
         })}
       </div>
 
-      {/* Filters */}
-      <div className="card p-4 md:p-5">
-        <div className="flex items-center gap-3 flex-wrap">
+      {/* Filters (Compact) */}
+      <div className="card p-3 inline-block max-w-full">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Filter className="w-4 h-4 text-text-muted flex-shrink-0" />
-          <select value={filtroSetor} onChange={(e) => setFiltroSetor(e.target.value)} className="input input-select w-auto min-w-[160px]">
+          <select value={filtroSetor} onChange={(e) => setFiltroSetor(e.target.value)} className="input input-select w-auto min-w-[150px] text-xs py-1.5 px-2.5">
             <option value="todos">Todos os Setores</option>
             {setores.map((s) => <option key={s.id} value={s.id}>{s.nome}</option>)}
           </select>
@@ -118,7 +110,7 @@ export default function DemandasMensaisPage() {
               <button
                 key={cat}
                 onClick={() => setFiltroCategoria(cat)}
-                className={`chip ${filtroCategoria === cat ? 'active' : ''}`}
+                className={`chip text-xs py-1 px-2.5 ${filtroCategoria === cat ? 'active' : ''}`}
               >
                 {cat === 'todas' ? 'Todas' : categoriaConfig[cat].label}
               </button>
@@ -150,24 +142,20 @@ export default function DemandasMensaisPage() {
 
             return (
               <div key={meta.id} className="card card-hover p-5 md:p-6 flex flex-col gap-4 relative group">
-                <div className="flex items-start gap-3.5">
-                  <div className={`w-11 h-11 bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0 shadow-sm`}>
-                    <Icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-text-primary font-semibold text-sm leading-snug">{meta.nome}</h3>
-                      <div className="flex items-center gap-1.5">
-                        <Badge variant={cfg.variant}>{cfg.label}</Badge>
-                        <button
-                          onClick={() => deleteMetaMensal(meta.id)}
-                          className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1 transition-all"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-text-primary font-semibold text-base leading-snug">{meta.nome}</h3>
                     <p className="text-text-muted text-xs mt-1 leading-relaxed line-clamp-2">{meta.descricao}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <Badge variant={cfg.variant}>{cfg.label}</Badge>
+                    <button
+                      onClick={() => setDeletingId(meta.id)}
+                      title="Excluir meta"
+                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1 transition-all"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
@@ -317,6 +305,20 @@ export default function DemandasMensaisPage() {
           </div>
         </div>
       )}
+
+      {/* Modal de Confirmação de Exclusão */}
+      <ConfirmModal
+        isOpen={!!deletingId}
+        onClose={() => setDeletingId(null)}
+        onConfirm={() => {
+          if (deletingId) {
+            deleteMetaMensal(deletingId);
+            setDeletingId(null);
+          }
+        }}
+        title="Excluir Meta Mensal"
+        message="Tem certeza que deseja excluir esta meta ou projeto? Esta ação não poderá ser desfeita."
+      />
     </div>
   );
 }

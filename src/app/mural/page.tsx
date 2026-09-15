@@ -5,6 +5,7 @@ import { Plus, Pin, Heart, Eye, Search, Trash2 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { PublicacaoMural, Prioridade } from '@/types';
 import Badge, { prioridadeVariant, tipoMuralVariant } from '@/components/ui/Badge';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import { timeAgo, prioridadeLabel, tipoMuralLabel } from '@/lib/utils';
 
 const tiposOptions = ['todos', 'comunicado', 'evento', 'aviso_urgente', 'meta', 'mudanca'];
@@ -17,6 +18,7 @@ export default function MuralPage() {
   const [busca, setBusca] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [curtidasLocais, setCurtidasLocais] = useState<Record<string, boolean>>({});
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const filtered = publicacoes.filter((p) => {
     const matchTipo = filtroTipo === 'todos' || p.tipo === filtroTipo;
@@ -40,9 +42,7 @@ export default function MuralPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Tem certeza que deseja excluir esta publicação?')) {
-      deletePublicacao(id);
-    }
+    setDeletingId(id);
   };
 
   return (
@@ -160,6 +160,21 @@ export default function MuralPage() {
           }}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deletingId}
+        title="Excluir Publicação"
+        message="Tem certeza que deseja excluir esta publicação do mural? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir Publicação"
+        onConfirm={() => {
+          if (deletingId) {
+            deletePublicacao(deletingId);
+            setDeletingId(null);
+          }
+        }}
+        onCancel={() => setDeletingId(null)}
+      />
     </div>
   );
 }

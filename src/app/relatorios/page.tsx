@@ -10,7 +10,12 @@ import { useApp } from '@/contexts/AppContext';
 const COLORS = ['#16a34a', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#f97316'];
 
 function handleExport() {
+  const prev = document.title;
+  document.title = 'Eco Soluções';
   window.print();
+  setTimeout(() => {
+    document.title = prev;
+  }, 1000);
 }
 
 export default function RelatoriosPage() {
@@ -55,8 +60,8 @@ export default function RelatoriosPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Relatórios Corporativos</h2>
-          <p className="text-text-muted text-sm mt-1">Análise consolidada de desempenho e produtividade</p>
+          <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Eco Soluções</h2>
+          <p className="text-text-muted text-sm mt-1">Relatórios Gerenciais e Desempenho</p>
         </div>
         <button onClick={handleExport} className="btn-ghost print:hidden">
           <Download className="w-4 h-4" /> Exportar PDF

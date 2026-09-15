@@ -5,6 +5,7 @@ import { LayoutList, Columns, Filter, ChevronRight, Plus, X, Trash2 } from 'luci
 import { useApp } from '@/contexts/AppContext';
 import { Status, Prioridade } from '@/types';
 import Badge, { prioridadeVariant, statusVariant } from '@/components/ui/Badge';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import { formatDate, getDaysUntil, prioridadeLabel, statusLabel } from '@/lib/utils';
 
 const kanbanColunas: { status: Status; label: string; color: string }[] = [
@@ -22,6 +23,7 @@ export default function DemandasSemanaisPage() {
   const [filtroStatus, setFiltroStatus] = useState<'todos' | Status>('todos');
   const [ordenacao, setOrdenacao] = useState<'prazo' | 'prioridade'>('prazo');
   const [showModal, setShowModal] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Form state
   const [nome, setNome] = useState('');
@@ -103,29 +105,29 @@ export default function DemandasSemanaisPage() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="card p-4 md:p-5">
-        <div className="flex items-center gap-3 flex-wrap">
+      {/* Filters (Compact) */}
+      <div className="card p-3 inline-block max-w-full">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Filter className="w-4 h-4 text-text-muted flex-shrink-0" />
-          <select value={filtroSetor} onChange={(e) => setFiltroSetor(e.target.value)} className="input input-select w-auto min-w-[160px]">
+          <select value={filtroSetor} onChange={(e) => setFiltroSetor(e.target.value)} className="input input-select w-auto min-w-[140px] text-xs py-1.5 px-2.5">
             <option value="todos">Todos os Setores</option>
             {setores.map((s) => (
               <option key={s.id} value={s.id}>{s.nome}</option>
             ))}
           </select>
-          <select value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value as any)} className="input input-select w-auto">
+          <select value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value as any)} className="input input-select w-auto text-xs py-1.5 px-2.5">
             <option value="todas">Todas Prioridades</option>
             <option value="alta">Alta</option>
             <option value="media">Média</option>
             <option value="baixa">Baixa</option>
           </select>
-          <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as any)} className="input input-select w-auto">
+          <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value as any)} className="input input-select w-auto text-xs py-1.5 px-2.5">
             <option value="todos">Todos os Status</option>
             <option value="nao_iniciada">Não Iniciada</option>
             <option value="em_andamento">Em Andamento</option>
             <option value="concluida">Concluída</option>
           </select>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="flex items-center gap-2 pl-1">
             <span className="text-text-muted text-xs font-medium">Ordenar:</span>
             <button
               onClick={() => setOrdenacao(ordenacao === 'prazo' ? 'prioridade' : 'prazo')}
@@ -204,7 +206,7 @@ export default function DemandasSemanaisPage() {
                       </select>
                     </div>
                     <button
-                      onClick={() => deleteTarefaSemanal(t.id)}
+                      onClick={() => setDeletingId(t.id)}
                       title="Excluir tarefa"
                       className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1.5 transition-all flex-shrink-0"
                     >
@@ -242,7 +244,8 @@ export default function DemandasSemanaisPage() {
                             <div className="flex items-center gap-1.5">
                               <Badge variant={prioridadeVariant(t.prioridade)} dot />
                               <button
-                                onClick={() => deleteTarefaSemanal(t.id)}
+                                onClick={() => setDeletingId(t.id)}
+                                title="Excluir tarefa"
                                 className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 transition-all"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -390,6 +393,21 @@ export default function DemandasSemanaisPage() {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deletingId}
+        title="Excluir Demanda Semanal"
+        message="Tem certeza que deseja excluir esta tarefa semanal? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir Tarefa"
+        onConfirm={() => {
+          if (deletingId) {
+            deleteTarefaSemanal(deletingId);
+            setDeletingId(null);
+          }
+        }}
+        onCancel={() => setDeletingId(null)}
+      />
     </div>
   );
 }
