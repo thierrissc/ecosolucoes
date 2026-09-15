@@ -138,7 +138,10 @@ export default function NotificacoesPage() {
                       </h4>
                       {!notif.lida && (
                         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-brand/10 text-brand border border-brand/20 flex-shrink-0" title="Não lida">
-                          <span className="w-2 h-2 rounded-full dot bg-brand animate-pulse" />
+                          <span
+                            className="w-2 h-2 rounded-full dot bg-brand animate-pulse"
+                            style={{ borderRadius: '9999px' }}
+                          />
                           Nova
                         </span>
                       )}
