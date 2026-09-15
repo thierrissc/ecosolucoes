@@ -324,7 +324,7 @@ export default function DashboardPage() {
                 <div key={t.id} className="flex items-center gap-4 py-3 px-3 hover:bg-surface-hover transition-colors group">
                   {/* Timeline dot + line */}
                   <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                    <div className={`w-2.5 h-2.5 status-dot ${
+                    <div className={`w-2.5 h-2.5 rounded-full dot ${
                       days <= 1 ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' :
                       days <= 3 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'
                     }`} />
