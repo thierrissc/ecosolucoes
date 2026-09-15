@@ -174,15 +174,16 @@ export default function DashboardPage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Bar Chart */}
-        <div className="xl:col-span-2 glass-card rounded-2xl p-6 border border-brand-navy-border">
-          <div className="flex items-center justify-between mb-6">
+        <div className="xl:col-span-2 glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+          <div className="flex items-center justify-between mb-6 flex-shrink-0">
             <div>
               <h3 className="text-white font-semibold">Demandas por Setor</h3>
               <p className="text-slate-400 text-sm">Semanais e Mensais</p>
             </div>
             <TrendingUp className="w-5 h-5 text-brand-green-light" />
           </div>
-          <ResponsiveContainer width="100%" height={220}>
+          <div className="flex-1 min-h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} barGap={4}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
               <XAxis dataKey="setor" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -192,17 +193,19 @@ export default function DashboardPage() {
               <Bar dataKey="Mensais" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </div>
 
         {/* Pie Chart */}
-        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border">
-          <div className="flex items-center justify-between mb-6">
+        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+          <div className="flex items-center justify-between mb-6 flex-shrink-0">
             <div>
               <h3 className="text-white font-semibold">Status das Tarefas</h3>
               <p className="text-slate-400 text-sm">Distribuição atual</p>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={200}>
+          <div className="flex-1 min-h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={4} dataKey="value">
                 {pieData.map((entry, index) => (
@@ -216,14 +219,15 @@ export default function DashboardPage() {
               />
             </PieChart>
           </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
       {/* Bottom Row */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {/* Próximos Prazos */}
-        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border">
-          <div className="flex items-center justify-between mb-4">
+        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+          <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h3 className="text-white font-semibold flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-brand-green-light" />
               Próximos Prazos
@@ -259,8 +263,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Indicadores por Setor */}
-        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border">
-          <div className="flex items-center justify-between mb-4">
+        <div className="glass-card rounded-2xl p-6 border border-brand-navy-border flex flex-col h-full">
+          <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h3 className="text-white font-semibold flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-brand-green-light" />
               Desempenho por Setor

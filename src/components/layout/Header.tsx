@@ -83,9 +83,9 @@ export default function Header({ pathname }: HeaderProps) {
           )}
         </Link>
 
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center cursor-pointer hover:shadow-lg hover:shadow-brand-green/30 transition-all">
+        <Link href="/perfil" className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center cursor-pointer hover:shadow-lg hover:shadow-brand-green/30 transition-all">
           <span className="text-white text-xs font-bold">ME</span>
-        </div>
+        </Link>
       </div>
     </header>
   );

@@ -105,13 +105,19 @@ export default function CalendarioPage() {
                 >
                   <span className="text-xs font-semibold">{day}</span>
                   {dayEvents.length > 0 && (
-                    <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
+                    <div className="flex flex-col gap-1 mt-1 w-full px-1 overflow-hidden">
                       {dayEvents.slice(0, 3).map((e) => (
-                        <span
+                        <div
                           key={e.id}
-                          className={`w-1.5 h-1.5 rounded-full ${tipoEventoColor[e.tipo]} ${isSelected ? 'bg-white/60' : ''}`}
-                        />
+                          className={`text-[9px] font-medium px-1 py-0.5 rounded truncate w-full text-left ${tipoEventoColor[e.tipo].replace('bg-', 'bg-').concat('/80')} text-white`}
+                          title={e.titulo}
+                        >
+                          {e.titulo}
+                        </div>
                       ))}
+                      {dayEvents.length > 3 && (
+                        <div className="text-[10px] text-slate-500 font-medium">+{dayEvents.length - 3} mais</div>
+                      )}
                     </div>
                   )}
                 </button>

@@ -26,7 +26,6 @@ const navItems = [
   { href: '/demandas/semanais', label: 'Demandas Semanais', icon: ListTodo },
   { href: '/demandas/mensais', label: 'Demandas Mensais', icon: CalendarDays },
   { href: '/calendario', label: 'Calendário', icon: Calendar1 },
-  { href: '/comunicacao', label: 'Comunicação', icon: MessageSquare },
   { href: '/relatorios', label: 'Relatórios', icon: BarChart3 },
   { href: '/notificacoes', label: 'Notificações', icon: Bell },
 ];
@@ -38,7 +37,7 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        'sidebar-gradient fixed left-0 top-0 h-full z-50 flex flex-col transition-all duration-300 border-r border-brand-navy-border',
+        'sidebar-gradient sticky left-0 top-0 h-screen z-50 flex flex-col flex-shrink-0 transition-all duration-300 border-r border-brand-navy-border',
         sidebarCollapsed ? 'w-16' : 'w-64'
       )}
     >
@@ -88,7 +87,7 @@ export default function Sidebar() {
                   )}
                 </div>
                 {!sidebarCollapsed && (
-                  <span className="text-sm font-medium truncate">{label}</span>
+                  <span className="text-base font-medium truncate">{label}</span>
                 )}
                 {isActive && !sidebarCollapsed && (
                   <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-green-light flex-shrink-0" />
@@ -102,15 +101,17 @@ export default function Sidebar() {
       {/* User */}
       {!sidebarCollapsed && (
         <div className="px-3 py-3 border-t border-brand-navy-border">
-          <div className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/5 cursor-pointer transition-colors">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-bold">ME</span>
+          <Link href="/perfil" className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/5 cursor-pointer transition-colors block">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs font-bold">ME</span>
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-white text-sm font-semibold truncate">Seu Perfil</p>
+                <p className="text-slate-400 text-xs truncate">Administrador</p>
+              </div>
             </div>
-            <div className="overflow-hidden">
-              <p className="text-white text-xs font-semibold truncate">Seu Perfil</p>
-              <p className="text-slate-400 text-xs truncate">Administrador</p>
-            </div>
-          </div>
+          </Link>
         </div>
       )}
 
