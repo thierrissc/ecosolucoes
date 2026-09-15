@@ -36,6 +36,8 @@ interface AppContextType {
   publicacoes: PublicacaoMural[];
   addPublicacao: (pub: Omit<PublicacaoMural, 'id' | 'curtidas' | 'visualizacoes' | 'data'>) => void;
   toggleCurtidaMural: (id: string) => void;
+  deletePublicacao: (id: string) => void;
+  toggleFixarPublicacao: (id: string) => void;
 
   // Calendário
   eventos: EventoCalendario[];
@@ -218,6 +220,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const deletePublicacao = (id: string) => {
+    setPublicacoes((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const toggleFixarPublicacao = (id: string) => {
+    setPublicacoes((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, fixado: !p.fixado } : p))
+    );
+  };
+
   // Calendário
   const addEvento = (evento: Omit<EventoCalendario, 'id'>) => {
     const e: EventoCalendario = {
@@ -297,6 +309,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         publicacoes,
         addPublicacao,
         toggleCurtidaMural,
+        deletePublicacao,
+        toggleFixarPublicacao,
 
         eventos,
         addEvento,

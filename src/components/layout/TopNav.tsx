@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   LayoutDashboard,
@@ -56,11 +56,23 @@ interface TopNavProps {
 }
 
 export default function TopNav({ pathname }: TopNavProps) {
-  const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu, naoLidasCount } = useApp();
+  const {
+    mobileMenuOpen,
+    toggleMobileMenu,
+    closeMobileMenu,
+    naoLidasCount,
+    tarefasSemanais,
+    metasMensais,
+    setores,
+    publicacoes,
+    eventos,
+  } = useApp();
   const { darkMode, toggleDarkMode } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [demandasOpen, setDemandasOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [mobileSearchTerm, setMobileSearchTerm] = useState('');
 
   useEffect(() => {
     setMounted(true);
@@ -73,6 +85,77 @@ export default function TopNav({ pathname }: TopNavProps) {
 
   const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
   const isDemandasActive = pathname.startsWith('/demandas');
+
+  const executeSearch = (q: string) => {
+    const term = q.toLowerCase().trim();
+    if (!term) return [];
+    const results: Array<{ id: string; category: string; title: string; subtitle: string; href: string }> = [];
+
+    tarefasSemanais.forEach((t) => {
+      if (t.nome.toLowerCase().includes(term) || t.responsavel.toLowerCase().includes(term) || (t.descricao && t.descricao.toLowerCase().includes(term))) {
+        results.push({
+          id: `t_${t.id}`,
+          category: 'Demanda Semanal',
+          title: t.nome,
+          subtitle: `${t.responsavel} · ${t.status.replace('_', ' ')}`,
+          href: '/demandas/semanais',
+        });
+      }
+    });
+
+    metasMensais.forEach((m) => {
+      if (m.nome.toLowerCase().includes(term) || (m.descricao && m.descricao.toLowerCase().includes(term)) || m.responsavel.toLowerCase().includes(term)) {
+        results.push({
+          id: `m_${m.id}`,
+          category: 'Meta Mensal',
+          title: m.nome,
+          subtitle: `Progresso: ${m.progresso}% · Resp: ${m.responsavel}`,
+          href: '/demandas/mensais',
+        });
+      }
+    });
+
+    setores.forEach((s) => {
+      if (s.nome.toLowerCase().includes(term) || s.responsavel.toLowerCase().includes(term)) {
+        results.push({
+          id: `s_${s.id}`,
+          category: 'Setor',
+          title: s.nome,
+          subtitle: `Líder: ${s.responsavel} · ${s.desempenho}% desempenho`,
+          href: '/setores',
+        });
+      }
+    });
+
+    publicacoes.forEach((p) => {
+      if (p.titulo.toLowerCase().includes(term) || p.descricao.toLowerCase().includes(term) || p.autor.toLowerCase().includes(term)) {
+        results.push({
+          id: `p_${p.id}`,
+          category: 'Mural',
+          title: p.titulo,
+          subtitle: `Por ${p.autor} · ${p.tipo}`,
+          href: '/mural',
+        });
+      }
+    });
+
+    eventos.forEach((e) => {
+      if (e.titulo.toLowerCase().includes(term) || (e.local && e.local.toLowerCase().includes(term))) {
+        results.push({
+          id: `e_${e.id}`,
+          category: 'Calendário',
+          title: e.titulo,
+          subtitle: `${e.data}${e.hora ? ` às ${e.hora}` : ''}${e.local ? ` · ${e.local}` : ''}`,
+          href: '/calendario',
+        });
+      }
+    });
+
+    return results.slice(0, 8);
+  };
+
+  const desktopSearchResults = useMemo(() => executeSearch(searchTerm), [searchTerm, tarefasSemanais, metasMensais, setores, publicacoes, eventos]);
+  const mobileSearchResults = useMemo(() => executeSearch(mobileSearchTerm), [mobileSearchTerm, tarefasSemanais, metasMensais, setores, publicacoes, eventos]);
 
   return (
     <>
@@ -225,17 +308,74 @@ export default function TopNav({ pathname }: TopNavProps) {
 
         {/* Search bar (expandable) */}
         {searchOpen && (
-          <div className="hidden md:block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up">
+          <div className="hidden md:block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up relative z-50">
             <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3">
               <div className="relative max-w-xl mx-auto">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Buscar tarefas, setores, avisos..."
                   autoFocus
-                  className="input pl-10"
-                  onBlur={() => setSearchOpen(false)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setSearchOpen(false);
+                      setSearchTerm('');
+                    }
+                  }}
+                  className="input input-with-icon pr-10"
                 />
+                {searchTerm ? (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setSearchOpen(false)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary text-xs px-1.5 py-0.5 border border-surface-border"
+                  >
+                    ESC
+                  </button>
+                )}
+
+                {/* Dropdown de Resultados */}
+                {searchTerm.trim() && (
+                  <div className="absolute top-full left-0 right-0 mt-2 card p-2 bg-surface-1 border border-surface-border shadow-2xl z-50 max-h-80 overflow-y-auto">
+                    {desktopSearchResults.length > 0 ? (
+                      <div className="divide-y divide-surface-border">
+                        {desktopSearchResults.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            onClick={() => {
+                              setSearchOpen(false);
+                              setSearchTerm('');
+                            }}
+                            className="flex items-center justify-between p-2.5 hover:bg-surface-hover transition-colors group text-left"
+                          >
+                            <div className="min-w-0 flex-1 pr-3">
+                              <p className="text-text-primary text-xs font-semibold truncate group-hover:text-brand transition-colors">
+                                {item.title}
+                              </p>
+                              <p className="text-text-muted text-[11px] truncate">{item.subtitle}</p>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-surface-2 text-text-secondary px-2 py-0.5 border border-surface-border flex-shrink-0">
+                              {item.category}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-text-muted text-xs text-center py-4">
+                        Nenhum resultado encontrado para &quot;{searchTerm}&quot;
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -247,12 +387,57 @@ export default function TopNav({ pathname }: TopNavProps) {
             <div className="w-full px-4 sm:px-6 py-4">
               {/* Mobile Search */}
               <div className="relative mb-4">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Buscar..."
-                  className="input pl-10"
+                  placeholder="Buscar tarefas, setores, avisos..."
+                  value={mobileSearchTerm}
+                  onChange={(e) => setMobileSearchTerm(e.target.value)}
+                  className="input input-with-icon pr-10"
                 />
+                {mobileSearchTerm && (
+                  <button
+                    onClick={() => setMobileSearchTerm('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+
+                {/* Mobile Dropdown de Resultados */}
+                {mobileSearchTerm.trim() && (
+                  <div className="mt-2 card p-2 bg-surface-1 border border-surface-border shadow-xl max-h-60 overflow-y-auto">
+                    {mobileSearchResults.length > 0 ? (
+                      <div className="divide-y divide-surface-border">
+                        {mobileSearchResults.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            onClick={() => {
+                              closeMobileMenu();
+                              setMobileSearchTerm('');
+                            }}
+                            className="flex items-center justify-between p-2.5 hover:bg-surface-hover transition-colors group text-left"
+                          >
+                            <div className="min-w-0 flex-1 pr-2">
+                              <p className="text-text-primary text-xs font-semibold truncate group-hover:text-brand transition-colors">
+                                {item.title}
+                              </p>
+                              <p className="text-text-muted text-[11px] truncate">{item.subtitle}</p>
+                            </div>
+                            <span className="text-[9px] font-bold uppercase tracking-wider bg-surface-2 text-text-secondary px-1.5 py-0.5 border border-surface-border flex-shrink-0">
+                              {item.category}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-text-muted text-xs text-center py-3">
+                        Nenhum resultado para &quot;{mobileSearchTerm}&quot;
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               <nav className="space-y-1">

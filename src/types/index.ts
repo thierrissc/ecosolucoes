@@ -53,6 +53,7 @@ export interface EventoCalendario {
   data: string;
   hora?: string;
   tipo: TipoEvento;
+  cor?: string;
   descricao?: string;
   participantes?: string[];
   local?: string;

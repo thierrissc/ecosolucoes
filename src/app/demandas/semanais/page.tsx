@@ -186,23 +186,27 @@ export default function DemandasSemanaisPage() {
                       {prioridadeLabel(t.prioridade)}
                     </Badge>
                   </div>
-                  <div className="col-span-3 flex items-center gap-2">
-                    <Badge variant={statusVariant(t.status)}>
-                      {statusLabel(t.status)}
-                    </Badge>
-                    <select
-                      value={t.status}
-                      onChange={(e) => updateTarefaStatus(t.id, e.target.value as Status)}
-                      className="input input-select w-auto text-xs py-1 px-2"
-                    >
-                      <option value="nao_iniciada">Não Iniciada</option>
-                      <option value="em_andamento">Em Andamento</option>
-                      <option value="concluida">Concluída</option>
-                    </select>
+                  <div className="col-span-3 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-[100px] flex-shrink-0">
+                        <Badge variant={statusVariant(t.status)}>
+                          {statusLabel(t.status)}
+                        </Badge>
+                      </div>
+                      <select
+                        value={t.status}
+                        onChange={(e) => updateTarefaStatus(t.id, e.target.value as Status)}
+                        className="input input-select w-[140px] text-xs py-1.5 px-2 flex-shrink-0"
+                      >
+                        <option value="nao_iniciada">Não Iniciada</option>
+                        <option value="em_andamento">Em Andamento</option>
+                        <option value="concluida">Concluída</option>
+                      </select>
+                    </div>
                     <button
                       onClick={() => deleteTarefaSemanal(t.id)}
                       title="Excluir tarefa"
-                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1 transition-all ml-auto"
+                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 p-1.5 transition-all flex-shrink-0"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

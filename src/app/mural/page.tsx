@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Pin, Heart, Eye, Search } from 'lucide-react';
+import { Plus, Pin, Heart, Eye, Search, Trash2 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { PublicacaoMural, Prioridade } from '@/types';
 import Badge, { prioridadeVariant, tipoMuralVariant } from '@/components/ui/Badge';
@@ -11,7 +11,7 @@ const tiposOptions = ['todos', 'comunicado', 'evento', 'aviso_urgente', 'meta', 
 const prioridadesOptions: ('todas' | Prioridade)[] = ['todas', 'alta', 'media', 'baixa'];
 
 export default function MuralPage() {
-  const { publicacoes, addPublicacao, toggleCurtidaMural } = useApp();
+  const { publicacoes, addPublicacao, toggleCurtidaMural, deletePublicacao, toggleFixarPublicacao } = useApp();
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [filtroPrioridade, setFiltroPrioridade] = useState<'todas' | Prioridade>('todas');
   const [busca, setBusca] = useState('');
@@ -39,13 +39,19 @@ export default function MuralPage() {
     }
   };
 
+  const handleDelete = (id: string) => {
+    if (confirm('Tem certeza que deseja excluir esta publicação?')) {
+      deletePublicacao(id);
+    }
+  };
+
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Mural Corporativo</h2>
-          <p className="text-text-muted text-sm mt-1">{filtered.length} publicações encontradas</p>
+          <p className="text-text-muted text-sm mt-1">{filtered.length} publicações</p>
         </div>
         <button onClick={() => setShowModal(true)} className="btn-primary">
           <Plus className="w-4 h-4" />
@@ -55,18 +61,20 @@ export default function MuralPage() {
 
       {/* Filters */}
       <div className="card p-4 md:p-5">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex-shrink-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
             <input
               type="text"
-              placeholder="Buscar publicação..."
+              placeholder="Buscar comunicados, avisos ou autores..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="input pl-9 w-56"
+              className="input pl-10"
             />
           </div>
-          <div className="flex gap-1.5 flex-wrap">
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-text-muted text-xs font-semibold uppercase tracking-wider">Tipo:</span>
             {tiposOptions.map((t) => (
               <button
                 key={t}
@@ -77,7 +85,9 @@ export default function MuralPage() {
               </button>
             ))}
           </div>
-          <div className="flex gap-1.5 ml-auto flex-wrap">
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-text-muted text-xs font-semibold uppercase tracking-wider">Prioridade:</span>
             {prioridadesOptions.map((p) => (
               <button
                 key={p}
@@ -99,7 +109,14 @@ export default function MuralPage() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
             {fixadas.map((pub) => (
-              <PostCard key={pub.id} pub={pub} curtida={curtidasLocais[pub.id]} onCurtir={handleToggleCurtida} />
+              <PostCard
+                key={pub.id}
+                pub={pub}
+                curtida={curtidasLocais[pub.id]}
+                onCurtir={handleToggleCurtida}
+                onToggleFixar={toggleFixarPublicacao}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         </div>
@@ -112,11 +129,22 @@ export default function MuralPage() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
           {normais.map((pub) => (
-            <PostCard key={pub.id} pub={pub} curtida={curtidasLocais[pub.id]} onCurtir={handleToggleCurtida} />
+            <PostCard
+              key={pub.id}
+              pub={pub}
+              curtida={curtidasLocais[pub.id]}
+              onCurtir={handleToggleCurtida}
+              onToggleFixar={toggleFixarPublicacao}
+              onDelete={handleDelete}
+            />
           ))}
           {filtered.length === 0 && (
             <div className="col-span-3 card p-12 text-center">
-              <p className="text-text-muted text-lg">Nenhuma publicação encontrada.</p>
+              <p className="text-text-muted text-lg mb-3">Nenhuma publicação no mural.</p>
+              <button onClick={() => setShowModal(true)} className="btn-primary inline-flex">
+                <Plus className="w-4 h-4" />
+                Criar Primeira Publicação
+              </button>
             </div>
           )}
         </div>
@@ -136,7 +164,19 @@ export default function MuralPage() {
   );
 }
 
-function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: boolean; onCurtir: (id: string) => void }) {
+function PostCard({
+  pub,
+  curtida,
+  onCurtir,
+  onToggleFixar,
+  onDelete,
+}: {
+  pub: PublicacaoMural;
+  curtida: boolean;
+  onCurtir: (id: string) => void;
+  onToggleFixar: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
   const prioridadeBorder: Record<string, string> = {
     alta: 'border-l-red-500',
     media: 'border-l-amber-500',
@@ -155,7 +195,26 @@ function PostCard({ pub, curtida, onCurtir }: { pub: PublicacaoMural; curtida: b
             {prioridadeLabel(pub.prioridade)}
           </Badge>
         </div>
-        {pub.fixado && <Pin className="w-3.5 h-3.5 text-brand flex-shrink-0" />}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => onToggleFixar(pub.id)}
+            title={pub.fixado ? 'Desfixar publicação' : 'Fixar publicação'}
+            className={`p-1.5 transition-colors ${
+              pub.fixado
+                ? 'text-brand bg-brand/10 hover:bg-brand/20'
+                : 'text-text-muted hover:text-text-primary hover:bg-surface-hover'
+            }`}
+          >
+            <Pin className={`w-3.5 h-3.5 ${pub.fixado ? 'fill-current' : ''}`} />
+          </button>
+          <button
+            onClick={() => onDelete(pub.id)}
+            title="Excluir publicação"
+            className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Content */}
