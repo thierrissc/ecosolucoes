@@ -69,19 +69,33 @@ export default function DashboardPage() {
     ? [...setores].sort((a, b) => b.desempenho - a.desempenho)[0]
     : null;
 
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const atrasadasCount = tarefasSemanais.filter(
+    (t) => t.status !== 'concluida' && t.prazo < todayStr
+  ).length;
+
   const concluidasCount = tarefasSemanais.filter((t) => t.status === 'concluida').length;
-  const andamentoCount = tarefasSemanais.filter((t) => t.status === 'em_andamento').length;
-  const naoIniciadaCount = tarefasSemanais.filter((t) => t.status === 'nao_iniciada').length;
+  const andamentoNoPrazo = tarefasSemanais.filter(
+    (t) => t.status === 'em_andamento' && t.prazo >= todayStr
+  ).length;
+  const naoIniciadaNoPrazo = tarefasSemanais.filter(
+    (t) => t.status === 'nao_iniciada' && t.prazo >= todayStr
+  ).length;
 
   const pieData = [
-    { name: 'Concluída', value: concluidasCount },
-    { name: 'Em Andamento', value: andamentoCount },
-    { name: 'Não Iniciada', value: naoIniciadaCount },
+    { name: 'Concluída', value: concluidasCount, color: '#16a34a' },
+    { name: 'Em Andamento', value: andamentoNoPrazo, color: '#3b82f6' },
+    { name: 'Não Iniciada', value: naoIniciadaNoPrazo, color: '#64748b' },
+    ...(atrasadasCount > 0
+      ? [{ name: 'Prazo Passado', value: atrasadasCount, color: '#ef4444' }]
+      : []),
   ];
 
   const barData = setores.map((s) => ({
     name: s.nome.split(' ')[0],
     tarefas: tarefasSemanais.filter((t) => t.setorId === s.id).length || (s.demandasSemanais + s.demandasMensais),
+    cor: s.cor || '#16a34a',
   }));
 
   const totalTarefas = pieData.reduce((acc, curr) => acc + curr.value, 0);
@@ -217,8 +231,8 @@ export default function DashboardPage() {
                   cursor={{ fill: 'var(--surface-hover)' }}
                 />
                 <Bar dataKey="tarefas" radius={[0, 0, 0, 0]}>
-                  {barData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                  {barData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.cor} />
                   ))}
                 </Bar>
               </BarChart>
@@ -251,8 +265,8 @@ export default function DashboardPage() {
                   dataKey="value"
                   stroke="none"
                 >
-                  {pieData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -270,12 +284,12 @@ export default function DashboardPage() {
 
           {/* Legend */}
           <div className="space-y-2 mt-3 pt-4 border-t border-surface-border">
-            {pieData.map((item, idx) => {
+            {pieData.map((item) => {
               const pct = totalTarefas > 0 ? Math.round((item.value / totalTarefas) * 100) : 0;
               return (
                 <div key={item.name} className="flex items-center justify-between py-1.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-2.5 h-2.5 flex-shrink-0" style={{ backgroundColor: COLORS[idx] }} />
+                    <span className="w-2.5 h-2.5 status-dot flex-shrink-0" style={{ backgroundColor: item.color }} />
                     <span className="text-text-secondary text-xs font-medium">{item.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -310,9 +324,9 @@ export default function DashboardPage() {
                 <div key={t.id} className="flex items-center gap-4 py-3 px-3 hover:bg-surface-hover transition-colors group">
                   {/* Timeline dot + line */}
                   <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                    <div className={`w-3 h-3 border-2 ${
-                      days <= 1 ? 'border-red-500 bg-red-500/30' :
-                      days <= 3 ? 'border-amber-500 bg-amber-500/30' : 'border-blue-500 bg-blue-500/30'
+                    <div className={`w-2.5 h-2.5 status-dot ${
+                      days <= 1 ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' :
+                      days <= 3 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'
                     }`} />
                     {i < proximosPrazos.length - 1 && (
                       <div className="w-px h-6 bg-surface-border" />
@@ -358,7 +372,18 @@ export default function DashboardPage() {
 
           <div className="space-y-3">
             {setores.map((s) => (
-              <div key={s.id} className="flex items-center gap-3.5 py-2 group">
+              <div
+                key={s.id}
+                className="flex items-center gap-3.5 py-2 group cursor-pointer"
+                onMouseEnter={(e) => {
+                  const label = e.currentTarget.querySelector('.setor-name-hover') as HTMLElement;
+                  if (label) label.style.color = s.cor;
+                }}
+                onMouseLeave={(e) => {
+                  const label = e.currentTarget.querySelector('.setor-name-hover') as HTMLElement;
+                  if (label) label.style.color = '';
+                }}
+              >
                 <div
                   className="w-9 h-9 flex items-center justify-center flex-shrink-0 text-xs font-bold text-white shadow-sm"
                   style={{ backgroundColor: s.cor }}
@@ -367,7 +392,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between mb-1.5">
-                    <p className="text-text-primary text-sm font-medium truncate group-hover:text-brand transition-colors">{s.nome}</p>
+                    <p className="setor-name-hover text-text-primary text-sm font-medium truncate transition-colors">
+                      {s.nome}
+                    </p>
                     <p className="text-text-primary text-sm font-bold ml-2">{s.desempenho}%</p>
                   </div>
                   <div className="h-1.5 w-full bg-surface-2 overflow-hidden">

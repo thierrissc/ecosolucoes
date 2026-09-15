@@ -12,10 +12,12 @@ const COLORS = ['#16a34a', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
 function handleExport() {
   const prev = document.title;
   document.title = 'Eco Soluções';
-  window.print();
   setTimeout(() => {
-    document.title = prev;
-  }, 1000);
+    window.print();
+    setTimeout(() => {
+      document.title = prev;
+    }, 1000);
+  }, 150);
 }
 
 export default function RelatoriosPage() {
@@ -99,9 +101,9 @@ export default function RelatoriosPage() {
             <h3 className="text-text-primary font-bold text-base">Demandas por Setor</h3>
             <p className="text-text-muted text-xs mt-0.5">Concluídas vs Pendentes</p>
           </div>
-          <div className="min-h-[260px] flex-1 overflow-hidden">
+          <div className="h-[260px] min-h-[260px] w-full flex-1">
             {barData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={260}>
+              <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-border)" vertical={false} />
                   <XAxis dataKey="setor" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
@@ -123,8 +125,8 @@ export default function RelatoriosPage() {
             <h3 className="text-text-primary font-bold text-base">Evolução Mensal</h3>
             <p className="text-text-muted text-xs mt-0.5">Histórico comparativo</p>
           </div>
-          <div className="min-h-[260px] flex-1 overflow-hidden">
-            <ResponsiveContainer width="100%" height={260}>
+          <div className="h-[260px] min-h-[260px] w-full flex-1">
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={lineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-border)" vertical={false} />
                 <XAxis dataKey="mes" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
@@ -146,8 +148,8 @@ export default function RelatoriosPage() {
             <h3 className="text-text-primary font-bold text-base">Distribuição por Status</h3>
             <p className="text-text-muted text-xs mt-0.5">Tarefas vigentes</p>
           </div>
-          <div className="min-h-[220px] flex-1 overflow-hidden">
-            <ResponsiveContainer width="100%" height={220}>
+          <div className="h-[220px] min-h-[220px] w-full flex-1">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
                   {pieData.map((entry, index) => (

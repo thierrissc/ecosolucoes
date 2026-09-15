@@ -121,6 +121,10 @@
   border-radius: 0 !important;
 }
 
+.status-dot, .badge-dot, .dot {
+  border-radius: 9999px !important;
+}
+
 /* ─── Scrollbar ─── */
 
 ::-webkit-scrollbar {
@@ -456,9 +460,24 @@
 /* ─── Print & PDF Export ─── */
 
 @media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   @page {
-    margin: 1.5cm;
+    margin: 1.2cm;
     size: A4 portrait;
+  }
+
+  :root {
+    --text-primary: #0f172a !important;
+    --text-secondary: #334155 !important;
+    --text-muted: #64748b !important;
+    --surface-0: #ffffff !important;
+    --surface-1: #ffffff !important;
+    --surface-2: #f8fafc !important;
+    --surface-border: #cbd5e1 !important;
   }
 
   body {
@@ -486,29 +505,35 @@
     break-inside: avoid !important;
     page-break-inside: avoid !important;
     margin-bottom: 1.25rem !important;
-    overflow: hidden !important;
   }
 
-  .grid {
-    display: block !important;
-  }
-
-  .grid > * {
+  .recharts-responsive-container {
     width: 100% !important;
-    max-width: 100% !important;
-    margin-bottom: 1rem !important;
+    height: 260px !important;
+    min-height: 260px !important;
     display: block !important;
+    visibility: visible !important;
   }
 
-  .recharts-responsive-container,
   .recharts-wrapper {
-    max-width: 100% !important;
     width: 100% !important;
-    overflow: hidden !important;
+    height: 260px !important;
+    min-height: 260px !important;
+    display: block !important;
+    position: relative !important;
+    visibility: visible !important;
+  }
+
+  .recharts-surface {
+    width: 100% !important;
+    height: 260px !important;
+    min-height: 260px !important;
+    display: block !important;
+    visibility: visible !important;
   }
 
   svg {
-    max-width: 100% !important;
+    visibility: visible !important;
   }
 }
 

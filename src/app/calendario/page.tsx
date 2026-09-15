@@ -198,16 +198,6 @@ export default function CalendarioPage() {
               })}
             </div>
           </div>
-
-          {/* Legend */}
-          <div className="flex items-center gap-5 mt-6 pt-4 border-t border-surface-border flex-wrap">
-            {Object.entries(tipoEventoLabel).map(([tipo, label]) => (
-              <div key={tipo} className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5" style={{ backgroundColor: tipoEventoColor[tipo] }} />
-                <span className="text-text-secondary text-xs font-medium">{label}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Side Panel */}
