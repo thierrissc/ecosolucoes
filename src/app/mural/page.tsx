@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Pin, Heart, Eye, Search, Trash2, Lightbulb, Shield, MessageSquarePlus, UserX, Sparkles, Building2 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { PublicacaoMural, Prioridade, TipoMural } from '@/types';
@@ -413,6 +414,16 @@ function NewPostModal({
   const [anonimo, setAnonimo] = useState(isSugestaoDefault);
   const [autorNome, setAutorNome] = useState(loggedUserName || '');
   const [cargo, setCargo] = useState('Colaborador');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -441,13 +452,15 @@ function NewPostModal({
     onSubmit(nova);
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-[9999] p-4 sm:p-6 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="card p-6 md:p-7 w-full max-w-lg animate-scale-in my-auto max-h-[85vh] overflow-y-auto shadow-2xl border border-surface-border"
+        className="card p-6 md:p-7 w-full max-w-lg animate-scale-in my-auto max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-border bg-surface-1"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-2 mb-5">
@@ -589,6 +602,7 @@ function NewPostModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
