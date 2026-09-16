@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf, LogOut } from 'lucide-react';
+import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf, LogOut, Trash2, User } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface PerfilData {
   nomeEmpresa: string;
   arrobaEmpresa: string;
+  cargo: string;
   email: string;
   telefone: string;
   endereco: string;
@@ -20,6 +21,7 @@ interface PerfilData {
 const DEFAULT_DATA: PerfilData = {
   nomeEmpresa: '',
   arrobaEmpresa: '',
+  cargo: '',
   email: '',
   telefone: '',
   endereco: '',
@@ -30,7 +32,7 @@ const DEFAULT_DATA: PerfilData = {
 };
 
 export default function PerfilPage() {
-  const { user, isAuthenticated, logout, limparDadosExemplo, restaurarDadosExemplo } = useApp();
+  const { user, isAuthenticated, logout, checkAuth, limparDadosExemplo, restaurarDadosExemplo } = useApp();
   const [data, setData] = useState<PerfilData>(DEFAULT_DATA);
   const [isClient, setIsClient] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -41,7 +43,15 @@ export default function PerfilPage() {
     const saved = localStorage.getItem('@eco-solucoes:perfil');
     if (saved) {
       try {
-        setData(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        setData({
+          ...DEFAULT_DATA,
+          ...parsed,
+          nomeEmpresa: parsed.nomeEmpresa || user?.companyName || '',
+          cargo: parsed.cargo || user?.name || '',
+          email: parsed.email || user?.email || '',
+          avatarUrl: parsed.avatarUrl !== undefined ? parsed.avatarUrl : (user?.avatar || ''),
+        });
       } catch (e) {
         console.error('Failed to parse saved profile data');
       }
@@ -49,7 +59,9 @@ export default function PerfilPage() {
       setData((prev) => ({
         ...prev,
         nomeEmpresa: user.companyName || '',
+        cargo: user.name || '',
         email: user.email || '',
+        avatarUrl: user.avatar || '',
       }));
     }
   }, [user]);
@@ -60,10 +72,30 @@ export default function PerfilPage() {
     setSaveSuccess(false);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const syncWithServer = async (updated: PerfilData) => {
+    if (isAuthenticated) {
+      try {
+        await fetch('/api/user/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            companyName: updated.nomeEmpresa,
+            name: updated.cargo || user?.name,
+            avatar: updated.avatarUrl,
+          }),
+        });
+        await checkAuth();
+      } catch (err) {
+        console.error('Erro ao sincronizar perfil:', err);
+      }
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem('@eco-solucoes:perfil', JSON.stringify(data));
-    window.dispatchEvent(new Event('perfilUpdated'));
+    window.dispatchEvent(new CustomEvent('perfilUpdated', { detail: data }));
+    await syncWithServer(data);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
   };
@@ -72,18 +104,25 @@ export default function PerfilPage() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const newUrl = reader.result as string;
-        setData((prev) => {
-          const updated = { ...prev, avatarUrl: newUrl };
-          localStorage.setItem('@eco-solucoes:perfil', JSON.stringify(updated));
-          window.dispatchEvent(new Event('perfilUpdated'));
-          return updated;
-        });
+        const updated = { ...data, avatarUrl: newUrl };
+        setData(updated);
+        localStorage.setItem('@eco-solucoes:perfil', JSON.stringify(updated));
+        window.dispatchEvent(new CustomEvent('perfilUpdated', { detail: updated }));
+        await syncWithServer(updated);
         setSaveSuccess(false);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleRemoveAvatar = async () => {
+    const updated = { ...data, avatarUrl: '' };
+    setData(updated);
+    localStorage.setItem('@eco-solucoes:perfil', JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('perfilUpdated', { detail: updated }));
+    await syncWithServer(updated);
   };
 
   if (!isClient) return null;
@@ -116,7 +155,7 @@ export default function PerfilPage() {
 
             <div className="px-6 pb-6 -mt-14 relative flex flex-col items-center text-center">
               {/* Avatar */}
-              <div className="relative group mb-4">
+              <div className="relative group mb-2">
                 <div className="w-28 h-28 border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg">
                   {data.avatarUrl ? (
                     <img src={data.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
@@ -134,15 +173,33 @@ export default function PerfilPage() {
                 </div>
               </div>
 
+              {/* Botão Remover Foto */}
+              {data.avatarUrl && (
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  className="mb-3 text-[11px] text-red-500 hover:text-red-400 font-semibold inline-flex items-center gap-1.5 py-1 px-2.5 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all shadow-sm"
+                  title="Remover foto do perfil"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Remover foto de perfil
+                </button>
+              )}
+
               <h3 className="text-text-primary font-bold text-xl">{data.nomeEmpresa || 'Sua Empresa'}</h3>
               <p className="text-brand text-sm font-semibold mb-2">
-                {data.arrobaEmpresa ? (data.arrobaEmpresa.startsWith('@') ? data.arrobaEmpresa : `@${data.arrobaEmpresa}`) : '@usuario'}
+                {data.cargo ? `${data.cargo} · ` : ''}{data.arrobaEmpresa ? (data.arrobaEmpresa.startsWith('@') ? data.arrobaEmpresa : `@${data.arrobaEmpresa}`) : '@usuario'}
               </p>
               <p className="text-text-muted text-xs leading-relaxed mb-5 line-clamp-3">
                 {data.descricao || 'Adicione uma breve descrição sobre a sua empresa.'}
               </p>
 
               <div className="w-full space-y-2.5 text-left pt-4 border-t border-surface-border">
+                {data.cargo && (
+                  <div className="flex items-center gap-2.5 text-text-secondary text-xs font-medium">
+                    <User className="w-4 h-4 text-text-muted flex-shrink-0" />
+                    <span className="truncate">{data.cargo}</span>
+                  </div>
+                )}
                 {data.setorAtuacao && (
                   <div className="flex items-center gap-2.5 text-text-secondary text-xs font-medium">
                     <Briefcase className="w-4 h-4 text-text-muted flex-shrink-0" />
@@ -185,6 +242,10 @@ export default function PerfilPage() {
                 <div>
                   <label className="text-text-muted font-medium text-xs block mb-1.5">Username / @</label>
                   <input name="arrobaEmpresa" value={data.arrobaEmpresa} onChange={handleChange} placeholder="Ex: @ecosolucoes" className="input" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="text-text-muted font-medium text-xs block mb-1.5">Seu Nome / Cargo do Responsável</label>
+                  <input name="cargo" value={data.cargo} onChange={handleChange} placeholder="Ex: Diretor Geral / Tonga" className="input" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="text-text-muted font-medium text-xs block mb-1.5">Breve Descrição</label>
