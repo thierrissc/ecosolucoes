@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf, LogOut, Trash2, User, X } from 'lucide-react';
+import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf, LogOut, Trash2, User, X, Pencil, Upload } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
@@ -37,8 +37,23 @@ export default function PerfilPage() {
   const [isClient, setIsClient] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [modalAction, setModalAction] = useState<'limpar' | 'restaurar' | null>(null);
-  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [editDropdownOpen, setEditDropdownOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setEditDropdownOpen(false);
+      }
+    };
+    if (editDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [editDropdownOpen]);
 
   useEffect(() => {
     setIsClient(true);
@@ -156,34 +171,62 @@ export default function PerfilPage() {
             </div>
 
             <div className="px-6 pb-6 -mt-14 relative flex flex-col items-center text-center">
-              {/* Avatar */}
-              {/* Avatar com clique interativo */}
-              <div
-                onClick={() => {
-                  if (data.avatarUrl) {
-                    setAvatarModalOpen(true);
-                  } else {
-                    fileInputRef.current?.click();
-                  }
-                }}
-                className="relative group mb-4 cursor-pointer"
-                title={data.avatarUrl ? 'Clique para alterar ou remover a foto' : 'Clique para adicionar foto de perfil'}
-              >
-                <div className="w-28 h-28 border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+              {/* Avatar com botão Edit dropdown estilo imagem de referência */}
+              <div className="relative mb-5" ref={dropdownRef}>
+                <div className="w-28 h-28 rounded-full border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg relative">
                   {data.avatarUrl ? (
                     <img src={data.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center">
-                      <Leaf className="w-10 h-10 text-white" />
+                    <img src="/icon.png" alt="Eco Soluções" className="w-full h-full object-cover bg-surface-2" />
+                  )}
+                </div>
+
+                {/* Botão [ Edit ] ancorado no canto inferior esquerdo */}
+                <div className="absolute -bottom-2 -left-1 z-20">
+                  <button
+                    type="button"
+                    onClick={() => setEditDropdownOpen((prev) => !prev)}
+                    className="px-2.5 py-1 bg-surface-1 hover:bg-surface-2 border border-surface-border text-text-primary text-xs font-semibold rounded-md shadow-md flex items-center gap-1.5 transition-all group"
+                  >
+                    <Pencil className="w-3.5 h-3.5 text-text-secondary group-hover:text-brand transition-colors" />
+                    <span>Edit</span>
+                  </button>
+
+                  {/* Dropdown ancorado com seta */}
+                  {editDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-44 bg-surface-1 border border-surface-border rounded-lg shadow-2xl p-1.5 z-50 animate-scale-in text-left">
+                      {/* Triângulo / Seta indicativa */}
+                      <div className="absolute -top-1.5 left-4 w-3 h-3 bg-surface-1 border-t border-l border-surface-border rotate-45" />
+
+                      <div className="relative z-10 space-y-0.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditDropdownOpen(false);
+                            fileInputRef.current?.click();
+                          }}
+                          className="w-full px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-hover rounded-md text-left flex items-center gap-2 transition-colors"
+                        >
+                          <Upload className="w-3.5 h-3.5 text-text-muted" />
+                          <span>Carregar foto...</span>
+                        </button>
+
+                        {data.avatarUrl && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditDropdownOpen(false);
+                              handleRemoveAvatar();
+                            }}
+                            className="w-full px-3 py-2 text-xs font-medium text-red-400 hover:bg-red-500/10 rounded-md text-left flex items-center gap-2 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                            <span>Remover foto</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
-
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center backdrop-blur-sm">
-                    <Camera className="w-5 h-5 text-white mb-1" />
-                    <span className="text-white text-[11px] font-semibold">
-                      {data.avatarUrl ? 'Opções da Foto' : 'Adicionar Foto'}
-                    </span>
-                  </div>
                 </div>
               </div>
 
@@ -348,56 +391,6 @@ export default function PerfilPage() {
         onCancel={() => setModalAction(null)}
       />
 
-      {/* Modal de Ações da Foto de Perfil */}
-      {avatarModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-4"
-          onClick={() => setAvatarModalOpen(false)}
-        >
-          <div
-            className="card max-w-xs w-full p-5 bg-surface-1 border border-surface-border shadow-2xl text-center animate-scale-in"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="w-16 h-16 border-2 border-surface-border overflow-hidden mx-auto mb-3 bg-surface-2 shadow-inner">
-              <img src={data.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
-            </div>
-            <h4 className="text-text-primary font-bold text-sm mb-1">Foto de Perfil</h4>
-            <p className="text-text-muted text-xs mb-4">Escolha a ação desejada:</p>
-
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setAvatarModalOpen(false);
-                  fileInputRef.current?.click();
-                }}
-                className="w-full py-2.5 px-3 text-xs font-semibold btn-primary justify-center flex items-center gap-2 shadow-sm"
-              >
-                <Camera className="w-4 h-4" /> Alterar Foto
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setAvatarModalOpen(false);
-                  handleRemoveAvatar();
-                }}
-                className="w-full py-2.5 px-3 text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/25 transition-all flex items-center justify-center gap-2"
-              >
-                <Trash2 className="w-4 h-4" /> Remover Foto
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setAvatarModalOpen(false)}
-                className="w-full py-2 px-3 text-xs font-medium text-text-muted hover:text-text-primary transition-all pt-1"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
