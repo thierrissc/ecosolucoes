@@ -1,14 +1,22 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { setores as initialSetores } from '@/data/setores';
 import { tarefasSemanais as initialTarefas, metasMensais as initialMetas } from '@/data/demandas';
 import { publicacoes as initialMural } from '@/data/mural';
 import { eventos as initialEventos } from '@/data/calendario';
 import { notificacoes as initialNotificacoes } from '@/data/notificacoes';
 import { Setor, Tarefa, MetaMensal, PublicacaoMural, EventoCalendario, Notificacao, Status } from '@/types';
+import { AuthUser } from '@/lib/auth';
 
 interface AppContextType {
+  // Autenticação
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  authLoading: boolean;
+  checkAuth: () => Promise<void>;
+  logout: () => Promise<void>;
+
   mobileMenuOpen: boolean;
   toggleMobileMenu: () => void;
   closeMobileMenu: () => void;
@@ -73,6 +81,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
 
+  // Estado de Autenticação
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Estados dos Dados
   const [setores, setSetores] = useState<Setor[]>([]);
   const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>([]);
   const [metasMensais, setMetasMensais] = useState<MetaMensal[]>([]);
@@ -80,76 +93,132 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [eventos, setEventos] = useState<EventoCalendario[]>([]);
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
 
-  // Carregar dados persistidos no localStorage
-  useEffect(() => {
+  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ─── Verificar Autenticação ───
+  const checkAuth = useCallback(async () => {
     try {
-      const s = localStorage.getItem(STORAGE_KEYS.SETORES);
-      if (s) setSetores(JSON.parse(s));
+      setAuthLoading(true);
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
 
-      const t = localStorage.getItem(STORAGE_KEYS.TAREFAS);
-      if (t) setTarefasSemanais(JSON.parse(t));
+      if (data.authenticated && data.user) {
+        setUser(data.user);
 
-      const m = localStorage.getItem(STORAGE_KEYS.METAS);
-      if (m) setMetasMensais(JSON.parse(m));
+        // Carregar dados salvos no banco SQL do usuário
+        try {
+          const dataRes = await fetch('/api/user/data');
+          if (dataRes.ok) {
+            const userData = await dataRes.json();
+            setSetores(userData.setores || []);
+            setTarefasSemanais(userData.tarefas || []);
+            setMetasMensais(userData.metas || []);
+            setPublicacoes(userData.mural || []);
+            setEventos(userData.eventos || []);
+            setNotificacoes(userData.notificacoes || []);
+          }
+        } catch {
+          // Mantém estado limpo
+          setSetores([]);
+          setTarefasSemanais([]);
+          setMetasMensais([]);
+          setPublicacoes([]);
+          setEventos([]);
+          setNotificacoes([]);
+        }
+      } else {
+        setUser(null);
+        // Modo Visitante: exibe os dados didáticos de exemplo
+        const s = localStorage.getItem(STORAGE_KEYS.SETORES);
+        setSetores(s ? JSON.parse(s) : initialSetores);
 
-      const mu = localStorage.getItem(STORAGE_KEYS.MURAL);
-      if (mu) setPublicacoes(JSON.parse(mu));
+        const t = localStorage.getItem(STORAGE_KEYS.TAREFAS);
+        setTarefasSemanais(t ? JSON.parse(t) : initialTarefas);
 
-      const e = localStorage.getItem(STORAGE_KEYS.EVENTOS);
-      if (e) setEventos(JSON.parse(e));
+        const m = localStorage.getItem(STORAGE_KEYS.METAS);
+        setMetasMensais(m ? JSON.parse(m) : initialMetas);
 
-      const n = localStorage.getItem(STORAGE_KEYS.NOTIFICACOES);
-      if (n) setNotificacoes(JSON.parse(n));
+        const mu = localStorage.getItem(STORAGE_KEYS.MURAL);
+        setPublicacoes(mu ? JSON.parse(mu) : initialMural);
+
+        const e = localStorage.getItem(STORAGE_KEYS.EVENTOS);
+        setEventos(e ? JSON.parse(e) : initialEventos);
+
+        const n = localStorage.getItem(STORAGE_KEYS.NOTIFICACOES);
+        setNotificacoes(n ? JSON.parse(n) : initialNotificacoes);
+      }
     } catch {
-      // fallback to initial
+      setUser(null);
+      setSetores(initialSetores);
+      setTarefasSemanais(initialTarefas);
+      setMetasMensais(initialMetas);
+      setPublicacoes(initialMural);
+      setEventos(initialEventos);
+      setNotificacoes(initialNotificacoes);
+    } finally {
+      setAuthLoading(false);
+      setMounted(true);
     }
-    setMounted(true);
   }, []);
 
-  // Salvar no localStorage quando o estado mudar
   useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEYS.SETORES, JSON.stringify(setores));
-    } catch {}
-  }, [setores, mounted]);
+    checkAuth();
+  }, [checkAuth]);
 
+  // ─── Sincronização de Dados ───
   useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEYS.TAREFAS, JSON.stringify(tarefasSemanais));
-    } catch {}
-  }, [tarefasSemanais, mounted]);
+    if (!mounted || authLoading) return;
 
-  useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEYS.METAS, JSON.stringify(metasMensais));
-    } catch {}
-  }, [metasMensais, mounted]);
+    if (user) {
+      // Usuário autenticado: salva no banco de dados SQL com debounce
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+      syncTimeoutRef.current = setTimeout(async () => {
+        try {
+          await fetch('/api/user/data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              setores,
+              tarefas: tarefasSemanais,
+              metas: metasMensais,
+              mural: publicacoes,
+              eventos,
+              notificacoes,
+            }),
+          });
+        } catch (err) {
+          console.error('Erro ao sincronizar com banco de dados:', err);
+        }
+      }, 800);
+    } else {
+      // Visitante: armazena alterações temporárias no localStorage
+      try {
+        localStorage.setItem(STORAGE_KEYS.SETORES, JSON.stringify(setores));
+        localStorage.setItem(STORAGE_KEYS.TAREFAS, JSON.stringify(tarefasSemanais));
+        localStorage.setItem(STORAGE_KEYS.METAS, JSON.stringify(metasMensais));
+        localStorage.setItem(STORAGE_KEYS.MURAL, JSON.stringify(publicacoes));
+        localStorage.setItem(STORAGE_KEYS.EVENTOS, JSON.stringify(eventos));
+        localStorage.setItem(STORAGE_KEYS.NOTIFICACOES, JSON.stringify(notificacoes));
+      } catch {}
+    }
+  }, [setores, tarefasSemanais, metasMensais, publicacoes, eventos, notificacoes, user, mounted, authLoading]);
 
-  useEffect(() => {
-    if (!mounted) return;
+  // ─── Logout ───
+  const logout = async () => {
     try {
-      localStorage.setItem(STORAGE_KEYS.MURAL, JSON.stringify(publicacoes));
+      await fetch('/api/auth/logout', { method: 'POST' });
     } catch {}
-  }, [publicacoes, mounted]);
+    setUser(null);
+    // Restaura os dados de exemplo para o modo visitante
+    setSetores(initialSetores);
+    setTarefasSemanais(initialTarefas);
+    setMetasMensais(initialMetas);
+    setPublicacoes(initialMural);
+    setEventos(initialEventos);
+    setNotificacoes(initialNotificacoes);
+  };
 
-  useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEYS.EVENTOS, JSON.stringify(eventos));
-    } catch {}
-  }, [eventos, mounted]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEYS.NOTIFICACOES, JSON.stringify(notificacoes));
-    } catch {}
-  }, [notificacoes, mounted]);
-
-  // Setores
+  // ─── Setores ───
   const addSetor = (novo: Omit<Setor, 'id' | 'demandasSemanais' | 'demandasMensais' | 'desempenho'>) => {
     const s: Setor = {
       ...novo,
@@ -165,7 +234,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setSetores((prev) => prev.filter((s) => s.id !== id));
   };
 
-  // Demandas Semanais
+  // ─── Demandas Semanais ───
   const addTarefaSemanal = (nova: Omit<Tarefa, 'id' | 'tipo'>) => {
     const t: Tarefa = {
       ...nova,
@@ -185,7 +254,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setTarefasSemanais((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Demandas Mensais
+  // ─── Demandas Mensais ───
   const addMetaMensal = (nova: Omit<MetaMensal, 'id'>) => {
     const m: MetaMensal = {
       ...nova,
@@ -204,7 +273,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMetasMensais((prev) => prev.filter((m) => m.id !== id));
   };
 
-  // Mural
+  // ─── Mural ───
   const addPublicacao = (pub: Omit<PublicacaoMural, 'id' | 'curtidas' | 'visualizacoes' | 'data'>) => {
     const nova: PublicacaoMural = {
       ...pub,
@@ -232,7 +301,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  // Calendário
+  // ─── Calendário ───
   const addEvento = (evento: Omit<EventoCalendario, 'id'>) => {
     const e: EventoCalendario = {
       ...evento,
@@ -245,7 +314,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setEventos((prev) => prev.filter((e) => e.id !== id));
   };
 
-  // Notificações
+  // ─── Notificações ───
   const marcarLida = (id: string) => {
     setNotificacoes((prev) =>
       prev.map((n) => (n.id === id ? { ...n, lida: true } : n))
@@ -268,7 +337,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const naoLidasCount = notificacoes.filter((n) => !n.lida).length;
 
-  // Gestão de dados
+  // ─── Gestão de Dados ───
   const limparDadosExemplo = () => {
     setSetores([]);
     setTarefasSemanais([]);
@@ -298,6 +367,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        user,
+        isAuthenticated: !!user,
+        authLoading,
+        checkAuth,
+        logout,
+
         mobileMenuOpen,
         toggleMobileMenu: () => setMobileMenuOpen((c) => !c),
         closeMobileMenu: () => setMobileMenuOpen(false),

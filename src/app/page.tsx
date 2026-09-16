@@ -14,6 +14,7 @@ import {
   PieChart as PieChartIcon,
   Activity,
   Flame,
+  Sparkles,
 } from 'lucide-react';
 import {
   BarChart,
@@ -58,7 +59,7 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
 };
 
 export default function DashboardPage() {
-  const { tarefasSemanais, setores, metasMensais } = useApp();
+  const { tarefasSemanais, setores, metasMensais, user, isAuthenticated } = useApp();
 
   const proximosPrazos = tarefasSemanais
     .filter((t) => t.status !== 'concluida')
@@ -79,22 +80,18 @@ export default function DashboardPage() {
   const andamentoNoPrazo = tarefasSemanais.filter(
     (t) => t.status === 'em_andamento' && t.prazo >= todayStr
   ).length;
-  const naoIniciadaNoPrazo = tarefasSemanais.filter(
-    (t) => t.status === 'nao_iniciada' && t.prazo >= todayStr
-  ).length;
+  const naoIniciadas = tarefasSemanais.filter((t) => t.status === 'nao_iniciada').length;
 
   const pieData = [
-    { name: 'Concluída', value: concluidasCount, color: '#16a34a' },
+    { name: 'Concluídas', value: concluidasCount, color: '#16a34a' },
     { name: 'Em Andamento', value: andamentoNoPrazo, color: '#3b82f6' },
-    { name: 'Não Iniciada', value: naoIniciadaNoPrazo, color: '#64748b' },
-    ...(atrasadasCount > 0
-      ? [{ name: 'Prazo Passado', value: atrasadasCount, color: '#ef4444' }]
-      : []),
+    { name: 'Não Iniciada', value: naoIniciadas, color: '#64748b' },
+    ...(atrasadasCount > 0 ? [{ name: 'Prazo Passado', value: atrasadasCount, color: '#ef4444' }] : []),
   ];
 
   const barData = setores.map((s) => ({
     name: s.nome.split(' ')[0],
-    tarefas: tarefasSemanais.filter((t) => t.setorId === s.id).length || (s.demandasSemanais + s.demandasMensais),
+    tarefas: tarefasSemanais.filter((t) => t.setorId === s.id).length,
     cor: s.cor || '#16a34a',
   }));
 
@@ -141,18 +138,45 @@ export default function DashboardPage() {
 
         <div className="relative flex items-center justify-between flex-wrap gap-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 text-white/90 text-xs font-medium backdrop-blur-sm">
                 <Activity className="w-3 h-3" />
                 {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
               </span>
+              {!isAuthenticated && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-400/20 text-yellow-200 border border-yellow-400/30 text-xs font-bold backdrop-blur-sm">
+                  <Sparkles className="w-3 h-3 text-yellow-300" />
+                  Modo Demonstração (Dados de Exemplo)
+                </span>
+              )}
             </div>
+
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1.5 tracking-tight">
-              Bem-vindo de volta
+              {isAuthenticated ? `Bem-vindo, ${user?.companyName || 'Sua Empresa'}` : 'Visão Geral Corporativa'}
             </h2>
-            <p className="text-white/70 text-sm md:text-base max-w-md">
-              Aqui está o resumo das atividades e desempenho de hoje.
+            <p className="text-white/80 text-sm md:text-base max-w-lg">
+              {isAuthenticated
+                ? 'Aqui está o resumo das atividades, metas e demandas da sua empresa.'
+                : 'Estatísticas de demonstração para você conhecer o sistema. Crie sua conta ou faça login para gerenciar sua empresa.'}
             </p>
+
+            {!isAuthenticated && (
+              <div className="mt-4 flex items-center gap-3 flex-wrap">
+                <Link
+                  href="/registro"
+                  className="px-4 py-2 bg-white text-emerald-800 text-xs font-bold hover:bg-white/95 transition-all shadow-md inline-flex items-center gap-1.5"
+                >
+                  Cadastrar Minha Empresa
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 bg-white/15 text-white text-xs font-semibold hover:bg-white/25 border border-white/20 transition-all backdrop-blur-sm"
+                >
+                  Fazer Login
+                </Link>
+              </div>
+            )}
           </div>
 
           {setorMaisAtivo && (

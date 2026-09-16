@@ -18,6 +18,7 @@ import {
   X,
   Leaf,
   ChevronDown,
+  LogOut,
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -66,6 +67,9 @@ export default function TopNav({ pathname }: TopNavProps) {
     setores,
     publicacoes,
     eventos,
+    user,
+    isAuthenticated,
+    logout,
   } = useApp();
   const { darkMode, toggleDarkMode } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -300,18 +304,54 @@ export default function TopNav({ pathname }: TopNavProps) {
                   )}
                 </Link>
 
-                {/* Avatar */}
-                <Link
-                  href="/perfil"
-                  className="w-9 h-9 flex items-center justify-center hover:shadow-lg hover:shadow-brand/25 transition-all ml-1 border border-surface-border bg-surface-2 overflow-hidden"
-                  title="Perfil"
-                >
-                  <img
-                    src={userAvatar || '/icon.png'}
-                    alt="Perfil"
-                    className="w-full h-full object-cover"
-                  />
-                </Link>
+                {/* Autenticação: Login/Cadastro ou Perfil */}
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-1.5 ml-1">
+                    <Link
+                      href="/perfil"
+                      className="flex items-center gap-2 p-1 hover:bg-surface-hover transition-colors border border-surface-border bg-surface-1"
+                      title="Perfil da Empresa"
+                    >
+                      <div className="w-7 h-7 border border-surface-border bg-surface-2 overflow-hidden flex items-center justify-center flex-shrink-0">
+                        <img
+                          src={user?.avatar || userAvatar || '/icon.png'}
+                          alt={user?.companyName || 'Perfil'}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="text-left hidden xl:block pr-1.5">
+                        <p className="text-xs font-bold text-text-primary leading-tight max-w-[110px] truncate">
+                          {user?.companyName || 'Minha Empresa'}
+                        </p>
+                        <p className="text-[10px] text-text-muted leading-tight truncate">
+                          {user?.name || 'Gestor'}
+                        </p>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors border border-surface-border"
+                      title="Sair da conta"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 ml-1">
+                    <Link
+                      href="/login"
+                      className="px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-surface-border transition-colors whitespace-nowrap"
+                    >
+                      Entrar
+                    </Link>
+                    <Link
+                      href="/registro"
+                      className="btn-primary px-3 py-1.5 text-xs font-bold whitespace-nowrap shadow-sm"
+                    >
+                      Cadastrar
+                    </Link>
+                  </div>
+                )}
 
                 {/* Mobile hamburger */}
                 <button
@@ -501,22 +541,57 @@ export default function TopNav({ pathname }: TopNavProps) {
                   );
                 })}
 
+                {/* Mobile Auth Bottom Section */}
                 <div className="pt-2 mt-2 border-t border-surface-border">
-                  <Link
-                    href="/perfil"
-                    onClick={closeMobileMenu}
-                    className={cn(
-                      'flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all',
-                      isActive('/perfil')
-                        ? 'text-brand bg-brand/8'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
-                    )}
-                  >
-                    <div className="w-5 h-5 border border-surface-border bg-surface-2 overflow-hidden flex-shrink-0">
-                      <img src={userAvatar || '/icon.png'} alt="Perfil" className="w-full h-full object-cover" />
+                  {isAuthenticated ? (
+                    <div className="space-y-1">
+                      <Link
+                        href="/perfil"
+                        onClick={closeMobileMenu}
+                        className={cn(
+                          'flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium transition-all',
+                          isActive('/perfil')
+                            ? 'text-brand bg-brand/8'
+                            : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+                        )}
+                      >
+                        <div className="w-6 h-6 border border-surface-border bg-surface-2 overflow-hidden flex-shrink-0">
+                          <img src={user?.avatar || userAvatar || '/icon.png'} alt="Perfil" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-text-primary truncate">{user?.companyName}</p>
+                          <p className="text-[10px] text-text-muted truncate">{user?.name}</p>
+                        </div>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          closeMobileMenu();
+                        }}
+                        className="flex items-center gap-2.5 px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 w-full text-left transition-colors"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        Sair da conta
+                      </button>
                     </div>
-                    Perfil da Empresa
-                  </Link>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 px-3 py-2">
+                      <Link
+                        href="/login"
+                        onClick={closeMobileMenu}
+                        className="text-center py-2 text-xs font-semibold text-text-secondary hover:text-text-primary bg-surface-2 border border-surface-border transition-colors"
+                      >
+                        Entrar
+                      </Link>
+                      <Link
+                        href="/registro"
+                        onClick={closeMobileMenu}
+                        className="btn-primary justify-center text-center py-2 text-xs font-bold shadow-sm"
+                      >
+                        Cadastrar
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </nav>
             </div>

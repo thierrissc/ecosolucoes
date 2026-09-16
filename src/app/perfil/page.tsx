@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf } from 'lucide-react';
+import { Camera, Save, Building, Mail, MapPin, Globe, AtSign, Briefcase, CheckCircle2, Leaf, LogOut } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
@@ -30,7 +30,7 @@ const DEFAULT_DATA: PerfilData = {
 };
 
 export default function PerfilPage() {
-  const { limparDadosExemplo, restaurarDadosExemplo } = useApp();
+  const { user, isAuthenticated, logout, limparDadosExemplo, restaurarDadosExemplo } = useApp();
   const [data, setData] = useState<PerfilData>(DEFAULT_DATA);
   const [isClient, setIsClient] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -45,8 +45,14 @@ export default function PerfilPage() {
       } catch (e) {
         console.error('Failed to parse saved profile data');
       }
+    } else if (user) {
+      setData((prev) => ({
+        ...prev,
+        nomeEmpresa: user.companyName || '',
+        email: user.email || '',
+      }));
     }
-  }, []);
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -84,9 +90,19 @@ export default function PerfilPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up w-full">
-      <div>
-        <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Perfil da Empresa</h2>
-        <p className="text-text-muted text-sm mt-1">Gerencie as informações corporativas.</p>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Perfil da Empresa</h2>
+          <p className="text-text-muted text-sm mt-1">Gerencie as informações corporativas.</p>
+        </div>
+        {isAuthenticated && (
+          <button
+            onClick={logout}
+            className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" /> Sair da Conta
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
