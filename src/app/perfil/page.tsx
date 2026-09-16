@@ -171,9 +171,9 @@ export default function PerfilPage() {
             </div>
 
             <div className="px-6 pb-6 -mt-14 relative flex flex-col items-center text-center">
-              {/* Avatar com botão Edit dropdown estilo imagem de referência */}
+              {/* Avatar quadrado com botão Edit dropdown */}
               <div className="relative mb-5" ref={dropdownRef}>
-                <div className="w-28 h-28 rounded-full border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg relative">
+                <div className="w-28 h-28 border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg relative">
                   {data.avatarUrl ? (
                     <img src={data.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
                   ) : (
