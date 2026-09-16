@@ -77,29 +77,43 @@ export default function TopNav({ pathname }: TopNavProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileSearchTerm, setMobileSearchTerm] = useState('');
-  const [userAvatar, setUserAvatar] = useState<string>('/icon.png');
+  const [localProfile, setLocalProfile] = useState<{
+    companyName?: string;
+    cargo?: string;
+    avatarUrl?: string;
+  }>({});
 
   useEffect(() => {
     setMounted(true);
-    const updateAvatar = () => {
+    const syncProfile = () => {
       try {
         const saved = localStorage.getItem('@eco-solucoes:perfil');
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (parsed.avatarUrl) {
-            setUserAvatar(parsed.avatarUrl);
-          }
+          setLocalProfile({
+            companyName: parsed.nomeEmpresa,
+            cargo: parsed.cargo,
+            avatarUrl: parsed.avatarUrl,
+          });
+        } else {
+          setLocalProfile({});
         }
       } catch (e) {}
     };
-    updateAvatar();
-    window.addEventListener('storage', updateAvatar);
-    window.addEventListener('perfilUpdated', updateAvatar);
+    syncProfile();
+    window.addEventListener('storage', syncProfile);
+    window.addEventListener('perfilUpdated', syncProfile);
     return () => {
-      window.removeEventListener('storage', updateAvatar);
-      window.removeEventListener('perfilUpdated', updateAvatar);
+      window.removeEventListener('storage', syncProfile);
+      window.removeEventListener('perfilUpdated', syncProfile);
     };
   }, []);
+
+  const displayedCompanyName = localProfile.companyName || user?.companyName || 'Minha Empresa';
+  const displayedRole = localProfile.cargo || user?.name || 'Gestor';
+  const displayedAvatar = (localProfile.avatarUrl !== undefined && localProfile.avatarUrl !== null)
+    ? (localProfile.avatarUrl || '/icon.png')
+    : (user?.avatar || '/icon.png');
 
   useEffect(() => {
     closeMobileMenu();
@@ -313,17 +327,17 @@ export default function TopNav({ pathname }: TopNavProps) {
                   >
                     <div className="w-8 h-8 sm:w-9 sm:h-9 border border-surface-border bg-surface-2 overflow-hidden flex items-center justify-center flex-shrink-0 group-hover:border-brand/50 transition-colors">
                       <img
-                        src={user?.avatar || userAvatar || '/icon.png'}
-                        alt={user?.companyName || 'Perfil'}
+                        src={displayedAvatar}
+                        alt={displayedCompanyName}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="text-left hidden sm:block">
                       <p className="text-xs font-bold text-text-primary leading-tight max-w-[130px] lg:max-w-[160px] truncate group-hover:text-brand transition-colors">
-                        {user?.companyName || 'Minha Empresa'}
+                        {displayedCompanyName}
                       </p>
                       <p className="text-[10px] font-medium text-brand leading-tight truncate mt-0.5">
-                        {user?.name || 'Gestor'}
+                        {displayedRole}
                       </p>
                     </div>
                   </Link>
@@ -547,11 +561,11 @@ export default function TopNav({ pathname }: TopNavProps) {
                         )}
                       >
                         <div className="w-6 h-6 border border-surface-border bg-surface-2 overflow-hidden flex-shrink-0">
-                          <img src={user?.avatar || userAvatar || '/icon.png'} alt="Perfil" className="w-full h-full object-cover" />
+                          <img src={displayedAvatar} alt={displayedCompanyName} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold text-text-primary truncate">{user?.companyName}</p>
-                          <p className="text-[10px] text-text-muted truncate">{user?.name}</p>
+                          <p className="text-xs font-bold text-text-primary truncate">{displayedCompanyName}</p>
+                          <p className="text-[10px] text-brand truncate">{displayedRole}</p>
                         </div>
                       </Link>
                       <button
