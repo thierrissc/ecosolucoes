@@ -306,36 +306,27 @@ export default function TopNav({ pathname }: TopNavProps) {
 
                 {/* Autenticação: Login/Cadastro ou Perfil */}
                 {isAuthenticated ? (
-                  <div className="flex items-center gap-1.5 ml-1">
-                    <Link
-                      href="/perfil"
-                      className="flex items-center gap-2 p-1 hover:bg-surface-hover transition-colors border border-surface-border bg-surface-1"
-                      title="Perfil da Empresa"
-                    >
-                      <div className="w-7 h-7 border border-surface-border bg-surface-2 overflow-hidden flex items-center justify-center flex-shrink-0">
-                        <img
-                          src={user?.avatar || userAvatar || '/icon.png'}
-                          alt={user?.companyName || 'Perfil'}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="text-left hidden xl:block pr-1.5">
-                        <p className="text-xs font-bold text-text-primary leading-tight max-w-[110px] truncate">
-                          {user?.companyName || 'Minha Empresa'}
-                        </p>
-                        <p className="text-[10px] text-text-muted leading-tight truncate">
-                          {user?.name || 'Gestor'}
-                        </p>
-                      </div>
-                    </Link>
-                    <button
-                      onClick={logout}
-                      className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors border border-surface-border"
-                      title="Sair da conta"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  <Link
+                    href="/perfil"
+                    className="flex items-center gap-2.5 py-1 px-2 sm:px-3 hover:bg-surface-hover transition-all border border-surface-border bg-surface-1 ml-1 hover:border-brand/40 group shadow-sm"
+                    title="Acessar Perfil da Empresa"
+                  >
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 border border-surface-border bg-surface-2 overflow-hidden flex items-center justify-center flex-shrink-0 group-hover:border-brand/50 transition-colors">
+                      <img
+                        src={user?.avatar || userAvatar || '/icon.png'}
+                        alt={user?.companyName || 'Perfil'}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="text-left hidden sm:block">
+                      <p className="text-xs font-bold text-text-primary leading-tight max-w-[130px] lg:max-w-[160px] truncate group-hover:text-brand transition-colors">
+                        {user?.companyName || 'Minha Empresa'}
+                      </p>
+                      <p className="text-[10px] font-medium text-brand leading-tight truncate mt-0.5">
+                        {user?.name || 'Gestor'}
+                      </p>
+                    </div>
+                  </Link>
                 ) : (
                   <div className="flex items-center gap-2 ml-1">
                     <Link
