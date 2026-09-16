@@ -1,0 +1,25 @@
+-- Eco Soluções - Schema do Banco de Dados SQL (PostgreSQL / MySQL)
+
+CREATE TABLE IF NOT EXISTS users (
+  id VARCHAR(64) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  company_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  avatar TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_workspaces (
+  user_id VARCHAR(64) PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  setores JSONB NOT NULL DEFAULT '[]',
+  tarefas JSONB NOT NULL DEFAULT '[]',
+  metas JSONB NOT NULL DEFAULT '[]',
+  mural JSONB NOT NULL DEFAULT '[]',
+  eventos JSONB NOT NULL DEFAULT '[]',
+  notificacoes JSONB NOT NULL DEFAULT '[]',
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
