@@ -74,8 +74,8 @@ export async function POST(req: Request) {
       }
 
       return NextResponse.json(
-        { error: 'Banco de dados não configurado no servidor. Configure a variável DATABASE_URL.' },
-        { status: 503 }
+        { error: 'Não foi possível conectar ao banco de dados no momento. Tente novamente.' },
+        { status: 500 }
       );
     }
   } catch (error) {
