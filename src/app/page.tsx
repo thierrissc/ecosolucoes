@@ -30,6 +30,7 @@ import {
   Area,
   AreaChart,
 } from 'recharts';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 import { formatDate, getDaysUntil, prioridadeLabel } from '@/lib/utils';
@@ -60,6 +61,30 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
 
 export default function DashboardPage() {
   const { tarefasSemanais, setores, metasMensais, user, isAuthenticated } = useApp();
+  const [localCompanyName, setLocalCompanyName] = useState<string>('');
+
+  useEffect(() => {
+    const syncProfile = () => {
+      try {
+        const saved = localStorage.getItem('@eco-solucoes:perfil');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.nomeEmpresa) {
+            setLocalCompanyName(parsed.nomeEmpresa);
+          }
+        }
+      } catch {}
+    };
+    syncProfile();
+    window.addEventListener('storage', syncProfile);
+    window.addEventListener('perfilUpdated', syncProfile);
+    return () => {
+      window.removeEventListener('storage', syncProfile);
+      window.removeEventListener('perfilUpdated', syncProfile);
+    };
+  }, []);
+
+  const displayedCompanyName = localCompanyName || user?.companyName || 'Sua Empresa';
 
   const proximosPrazos = tarefasSemanais
     .filter((t) => t.status !== 'concluida')
@@ -152,7 +177,7 @@ export default function DashboardPage() {
             </div>
 
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1.5 tracking-tight">
-              {isAuthenticated ? `Bem-vindo, ${user?.companyName || 'Sua Empresa'}` : 'Visão Geral Corporativa'}
+              {isAuthenticated ? `Bem-vindo, ${displayedCompanyName}` : 'Visão Geral Corporativa'}
             </h2>
             <p className="text-white/80 text-sm md:text-base max-w-lg">
               {isAuthenticated
