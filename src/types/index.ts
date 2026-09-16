@@ -1,6 +1,6 @@
 export type Prioridade = 'baixa' | 'media' | 'alta';
 export type Status = 'nao_iniciada' | 'em_andamento' | 'concluida';
-export type TipoMural = 'comunicado' | 'evento' | 'aviso_urgente' | 'meta' | 'mudanca';
+export type TipoMural = 'comunicado' | 'evento' | 'aviso_urgente' | 'meta' | 'mudanca' | 'sugestao';
 export type TipoEvento = 'reuniao' | 'treinamento' | 'entrega' | 'evento';
 export type TipoNotificacao = 'aviso' | 'tarefa' | 'prazo' | 'meta';
 
@@ -45,6 +45,8 @@ export interface PublicacaoMural {
   curtidas: number;
   visualizacoes: number;
   fixado?: boolean;
+  anonimo?: boolean;
+  statusSugestao?: 'em_analise' | 'aprovada' | 'implementada';
 }
 
 export interface EventoCalendario {

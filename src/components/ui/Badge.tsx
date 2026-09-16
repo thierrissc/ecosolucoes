@@ -29,6 +29,7 @@ export function tipoMuralVariant(t: string): BadgeVariant {
     comunicado: 'blue',
     mudanca: 'orange',
     treinamento: 'yellow',
+    sugestao: 'yellow',
   };
   return map[t] || 'slate';
 }

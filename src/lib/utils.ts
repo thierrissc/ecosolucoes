@@ -73,6 +73,7 @@ export function tipoMuralLabel(t: string): string {
     meta: 'Meta',
     mudanca: 'Mudança',
     treinamento: 'Treinamento',
+    sugestao: 'Sugestão / Melhoria',
   };
   return labels[t] || t;
 }
