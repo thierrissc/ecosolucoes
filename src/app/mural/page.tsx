@@ -71,18 +71,20 @@ export default function MuralPage() {
           </p>
         </div>
         <div className="flex items-center gap-2.5 flex-wrap">
-          <button
-            onClick={handleOpenSugestaoModal}
-            className="px-4 py-2 text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-all inline-flex items-center gap-2"
-          >
-            <Lightbulb className="w-4 h-4 text-amber-500" />
-            Nova Sugestão / Melhoria
-          </button>
-
-          <button onClick={handleOpenNormalModal} className="btn-primary">
-            <Plus className="w-4 h-4" />
-            Novo Comunicado
-          </button>
+          {abaAtiva === 'sugestoes' ? (
+            <button
+              onClick={handleOpenSugestaoModal}
+              className="px-4 py-2 text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-all inline-flex items-center gap-2 shadow-sm"
+            >
+              <Lightbulb className="w-4 h-4 text-amber-500" />
+              Nova Sugestão / Melhoria
+            </button>
+          ) : (
+            <button onClick={handleOpenNormalModal} className="btn-primary">
+              <Plus className="w-4 h-4" />
+              Novo Comunicado
+            </button>
+          )}
         </div>
       </div>
 
@@ -440,8 +442,14 @@ function NewPostModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="card p-6 md:p-7 w-full max-w-lg animate-scale-in max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="card p-6 md:p-7 w-full max-w-lg animate-scale-in my-auto max-h-[85vh] overflow-y-auto shadow-2xl border border-surface-border"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center gap-2 mb-5">
           {tipo === 'sugestao' ? (
             <div className="w-8 h-8 bg-amber-500/20 text-amber-500 flex items-center justify-center">
