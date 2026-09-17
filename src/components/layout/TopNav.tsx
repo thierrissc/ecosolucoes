@@ -19,6 +19,7 @@ import {
   Leaf,
   ChevronDown,
   LogOut,
+  Users,
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -50,6 +51,7 @@ const pageTitles: Record<string, string> = {
   '/relatorios': 'Relatórios',
   '/notificacoes': 'Notificações',
   '/perfil': 'Perfil da Empresa',
+  '/funcionarios': 'Gestão de Colaboradores',
 };
 
 interface TopNavProps {
@@ -109,11 +111,27 @@ export default function TopNav({ pathname }: TopNavProps) {
     };
   }, []);
 
-  const displayedCompanyName = localProfile.companyName || user?.companyName || 'Minha Empresa';
-  const displayedRole = localProfile.cargo || user?.name || 'Gestor';
-  const displayedAvatar = (localProfile.avatarUrl !== undefined && localProfile.avatarUrl !== null)
-    ? (localProfile.avatarUrl || '/icon.png')
-    : (user?.avatar || '/icon.png');
+  const isEmployee = user?.role === 'funcionario';
+  const displayedCompanyName = isEmployee
+    ? user?.companyName || 'Empresa'
+    : (localProfile.companyName || user?.companyName || 'Minha Empresa');
+  const displayedRole = isEmployee
+    ? `${user?.cargo || 'Colaborador'} · ${user?.name}`
+    : (localProfile.cargo || user?.name || 'Gestor');
+  const displayedAvatar = isEmployee
+    ? (user?.avatar || '/icon.png')
+    : ((localProfile.avatarUrl !== undefined && localProfile.avatarUrl !== null)
+        ? (localProfile.avatarUrl || '/icon.png')
+        : (user?.avatar || '/icon.png'));
+
+  const visibleNavItems = useMemo(() => {
+    if (user?.role === 'funcionario') {
+      return navItems;
+    }
+    const items = [...navItems];
+    items.splice(3, 0, { href: '/funcionarios', label: 'Funcionários', icon: Users });
+    return items;
+  }, [user]);
 
   useEffect(() => {
     closeMobileMenu();
@@ -214,7 +232,7 @@ export default function TopNav({ pathname }: TopNavProps) {
 
               {/* Desktop Nav */}
               <nav className="hidden lg:flex items-center gap-1">
-                {navItems.map((item) => {
+                {visibleNavItems.map((item) => {
                   if ('children' in item && item.children) {
                     return (
                       <div key={item.label} className="relative">
@@ -505,7 +523,7 @@ export default function TopNav({ pathname }: TopNavProps) {
               </div>
 
               <nav className="space-y-1">
-                {navItems.map((item) => {
+                {visibleNavItems.map((item) => {
                   if ('children' in item && item.children) {
                     return (
                       <div key={item.label}>

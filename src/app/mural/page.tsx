@@ -13,7 +13,7 @@ const tiposOptions = ['todos', 'comunicado', 'sugestao', 'evento', 'aviso_urgent
 const prioridadesOptions: ('todas' | Prioridade)[] = ['todas', 'alta', 'media', 'baixa'];
 
 export default function MuralPage() {
-  const { publicacoes, addPublicacao, toggleCurtidaMural, deletePublicacao, toggleFixarPublicacao, user } = useApp();
+  const { publicacoes, addPublicacao, toggleCurtidaMural, deletePublicacao, toggleFixarPublicacao, user, hasPermission } = useApp();
   const [abaAtiva, setAbaAtiva] = useState<'todos' | 'sugestoes'>('todos');
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [filtroPrioridade, setFiltroPrioridade] = useState<'todas' | Prioridade>('todas');
@@ -22,6 +22,9 @@ export default function MuralPage() {
   const [modalIsSugestao, setModalIsSugestao] = useState(false);
   const [curtidasLocais, setCurtidasLocais] = useState<Record<string, boolean>>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const canDeleteMural = hasPermission('podeApagarMural');
+  const canCreateMural = hasPermission('podeCriarMural');
 
   const sugestoesCount = publicacoes.filter((p) => p.tipo === 'sugestao').length;
 
@@ -71,22 +74,24 @@ export default function MuralPage() {
             {filtered.length} publicações {abaAtiva === 'sugestoes' ? 'na caixa de sugestões' : 'no mural'}
           </p>
         </div>
-        <div className="flex items-center gap-2.5 flex-wrap">
-          {abaAtiva === 'sugestoes' ? (
-            <button
-              onClick={handleOpenSugestaoModal}
-              className="px-4 py-2 text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-all inline-flex items-center gap-2 shadow-sm"
-            >
-              <Lightbulb className="w-4 h-4 text-amber-500" />
-              Nova Sugestão / Melhoria
-            </button>
-          ) : (
-            <button onClick={handleOpenNormalModal} className="btn-primary">
-              <Plus className="w-4 h-4" />
-              Novo Comunicado
-            </button>
-          )}
-        </div>
+        {canCreateMural && (
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {abaAtiva === 'sugestoes' ? (
+              <button
+                onClick={handleOpenSugestaoModal}
+                className="px-4 py-2 text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-all inline-flex items-center gap-2 shadow-sm"
+              >
+                <Lightbulb className="w-4 h-4 text-amber-500" />
+                Nova Sugestão / Melhoria
+              </button>
+            ) : (
+              <button onClick={handleOpenNormalModal} className="btn-primary">
+                <Plus className="w-4 h-4" />
+                Novo Comunicado
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Abas de Navegação do Mural */}
@@ -200,6 +205,7 @@ export default function MuralPage() {
                 key={pub.id}
                 pub={pub}
                 curtida={curtidasLocais[pub.id]}
+                canDelete={canDeleteMural}
                 onCurtir={handleToggleCurtida}
                 onToggleFixar={toggleFixarPublicacao}
                 onDelete={handleDelete}
@@ -222,6 +228,7 @@ export default function MuralPage() {
               key={pub.id}
               pub={pub}
               curtida={curtidasLocais[pub.id]}
+              canDelete={canDeleteMural}
               onCurtir={handleToggleCurtida}
               onToggleFixar={toggleFixarPublicacao}
               onDelete={handleDelete}
@@ -280,12 +287,14 @@ export default function MuralPage() {
 function PostCard({
   pub,
   curtida,
+  canDelete = true,
   onCurtir,
   onToggleFixar,
   onDelete,
 }: {
   pub: PublicacaoMural;
   curtida: boolean;
+  canDelete?: boolean;
   onCurtir: (id: string) => void;
   onToggleFixar: (id: string) => void;
   onDelete: (id: string) => void;
@@ -341,13 +350,15 @@ function PostCard({
           >
             <Pin className={`w-3.5 h-3.5 ${pub.fixado ? 'fill-current' : ''}`} />
           </button>
-          <button
-            onClick={() => onDelete(pub.id)}
-            title="Excluir publicação"
-            className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          {canDelete && (
+            <button
+              onClick={() => onDelete(pub.id)}
+              title="Excluir publicação"
+              className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
