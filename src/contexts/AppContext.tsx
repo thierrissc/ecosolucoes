@@ -6,7 +6,7 @@ import { tarefasSemanais as initialTarefas, metasMensais as initialMetas } from 
 import { publicacoes as initialMural } from '@/data/mural';
 import { eventos as initialEventos } from '@/data/calendario';
 import { notificacoes as initialNotificacoes } from '@/data/notificacoes';
-import { Setor, Tarefa, MetaMensal, PublicacaoMural, EventoCalendario, Notificacao, Status } from '@/types';
+import { Setor, Tarefa, MetaMensal, PublicacaoMural, EventoCalendario, Notificacao, Status, Funcionario, PermissoesFuncionario } from '@/types';
 import { AuthUser } from '@/lib/auth';
 
 interface AppContextType {
@@ -16,12 +16,21 @@ interface AppContextType {
   authLoading: boolean;
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
+  hasPermission: (permKey: keyof PermissoesFuncionario) => boolean;
 
   mobileMenuOpen: boolean;
   toggleMobileMenu: () => void;
   closeMobileMenu: () => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
+
+  // Funcionários / Colaboradores
+  funcionarios: Funcionario[];
+  funcionariosLoading: boolean;
+  refreshFuncionarios: () => Promise<void>;
+  addFuncionario: (func: Omit<Funcionario, 'id' | 'companyId' | 'createdAt'>) => Promise<{ success: boolean; error?: string; funcionario?: Funcionario }>;
+  updateFuncionario: (func: Partial<Funcionario> & { id: string }) => Promise<{ success: boolean; error?: string }>;
+  deleteFuncionario: (id: string) => Promise<{ success: boolean; error?: string }>;
 
   // Setores
   setores: Setor[];
@@ -93,7 +102,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [eventos, setEventos] = useState<EventoCalendario[]>([]);
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
 
+  // Estados dos Colaboradores
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+  const [funcionariosLoading, setFuncionariosLoading] = useState(false);
+
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ─── Buscar Funcionários da Empresa ───
+  const refreshFuncionarios = useCallback(async () => {
+    try {
+      setFuncionariosLoading(true);
+      const res = await fetch('/api/employees');
+      if (res.ok) {
+        const data = await res.json();
+        setFuncionarios(data.funcionarios || []);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar colaboradores:', err);
+    } finally {
+      setFuncionariosLoading(false);
+    }
+  }, []);
 
   // ─── Verificar Autenticação ───
   const checkAuth = useCallback(async () => {
@@ -104,6 +133,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (data.authenticated && data.user) {
         setUser(data.user);
+
+        // Se for gestor ou colaborador, carregar lista de colaboradores
+        refreshFuncionarios();
 
         // Carregar dados salvos no banco SQL do usuário
         try {
@@ -209,6 +241,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch {}
     setUser(null);
+    setFuncionarios([]);
     // Restaura os dados de exemplo para o modo visitante
     setSetores(initialSetores);
     setTarefasSemanais(initialTarefas);
@@ -216,6 +249,72 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setPublicacoes(initialMural);
     setEventos(initialEventos);
     setNotificacoes(initialNotificacoes);
+  };
+
+  // ─── Permissões de Usuário / Colaborador ───
+  const hasPermission = (permKey: keyof PermissoesFuncionario): boolean => {
+    if (!user) return true; // Visitante / Demonstração
+    if (user.role !== 'funcionario') return true; // Dono da empresa tem acesso irrestrito
+    return !!user.permissoes?.[permKey];
+  };
+
+  // ─── Gestão de Funcionários ───
+  const addFuncionario = async (
+    novo: Omit<Funcionario, 'id' | 'companyId' | 'createdAt'>
+  ): Promise<{ success: boolean; error?: string; funcionario?: Funcionario }> => {
+    try {
+      const res = await fetch('/api/employees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novo),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Erro ao cadastrar colaborador.' };
+      }
+      setFuncionarios((prev) => [data.funcionario, ...prev]);
+      return { success: true, funcionario: data.funcionario };
+    } catch {
+      return { success: false, error: 'Falha na comunicação com o servidor.' };
+    }
+  };
+
+  const updateFuncionario = async (
+    func: Partial<Funcionario> & { id: string }
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch('/api/employees', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(func),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Erro ao atualizar colaborador.' };
+      }
+      setFuncionarios((prev) =>
+        prev.map((f) => (f.id === func.id ? ({ ...f, ...func } as Funcionario) : f))
+      );
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Falha na comunicação com o servidor.' };
+    }
+  };
+
+  const deleteFuncionario = async (id: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch(`/api/employees?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Erro ao excluir colaborador.' };
+      }
+      setFuncionarios((prev) => prev.filter((f) => f.id !== id));
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Falha na comunicação com o servidor.' };
+    }
   };
 
   // ─── Setores ───
@@ -372,12 +471,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         authLoading,
         checkAuth,
         logout,
+        hasPermission,
 
         mobileMenuOpen,
         toggleMobileMenu: () => setMobileMenuOpen((c) => !c),
         closeMobileMenu: () => setMobileMenuOpen(false),
         searchQuery,
         setSearchQuery,
+
+        funcionarios,
+        funcionariosLoading,
+        refreshFuncionarios,
+        addFuncionario,
+        updateFuncionario,
+        deleteFuncionario,
 
         setores,
         addSetor,
