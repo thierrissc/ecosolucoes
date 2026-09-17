@@ -1,14 +1,32 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { verifyPassword, createSessionToken, AuthUser } from '@/lib/auth';
+import { checkRateLimit, isValidEmail } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'local_client';
+    const rateCheck = checkRateLimit(`login_empresa_${ip}`, 5, 5 * 60 * 1000);
+
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Muitas tentativas incorretas. Por segurança, tente novamente em ${rateCheck.retryAfterSeconds} segundos.` },
+        { status: 429 }
+      );
+    }
+
     const { email, password } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Informe e-mail e senha.' },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: 'Formato de e-mail corporativo inválido.' },
         { status: 400 }
       );
     }

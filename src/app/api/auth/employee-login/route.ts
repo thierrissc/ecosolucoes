@@ -1,9 +1,20 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { createSessionToken, AuthUser } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'local_client';
+    const rateCheck = checkRateLimit(`login_funcionario_${ip}`, 8, 5 * 60 * 1000);
+
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Muitas tentativas com códigos inválidos. Tente novamente em ${rateCheck.retryAfterSeconds} segundos.` },
+        { status: 429 }
+      );
+    }
+
     const { codigoAcesso } = await req.json();
 
     if (!codigoAcesso || typeof codigoAcesso !== 'string' || !codigoAcesso.trim()) {
