@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Camera,
   Save,
@@ -18,10 +19,6 @@ import {
   X,
   Pencil,
   Upload,
-  KeyRound,
-  Copy,
-  Check,
-  ShieldCheck,
   CheckCircle,
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
@@ -54,20 +51,43 @@ const DEFAULT_DATA: PerfilData = {
 };
 
 export default function PerfilPage() {
-  const { user, isAuthenticated, logout, checkAuth, limparDadosExemplo, restaurarDadosExemplo } = useApp();
+  const router = useRouter();
+  const { user, isAuthenticated, authLoading, logout, checkAuth, limparDadosExemplo, restaurarDadosExemplo } = useApp();
   const [data, setData] = useState<PerfilData>(DEFAULT_DATA);
   const [isClient, setIsClient] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [modalAction, setModalAction] = useState<'limpar' | 'restaurar' | null>(null);
   const [editDropdownOpen, setEditDropdownOpen] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
 
-  // Campos específicos do colaborador
   const [employeeEmail, setEmployeeEmail] = useState('');
   const [employeeAvatar, setEmployeeAvatar] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && !authLoading && (!isAuthenticated || !user)) {
+      window.location.replace('/');
+    }
+  }, [isClient, authLoading, isAuthenticated, user]);
+
+  useEffect(() => {
+    const handleNavigation = () => {
+      if (!isAuthenticated || !user) {
+        window.location.replace('/');
+      }
+    };
+    window.addEventListener('pageshow', handleNavigation);
+    window.addEventListener('popstate', handleNavigation);
+    return () => {
+      window.removeEventListener('pageshow', handleNavigation);
+      window.removeEventListener('popstate', handleNavigation);
+    };
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -84,8 +104,9 @@ export default function PerfilPage() {
   }, [editDropdownOpen]);
 
   useEffect(() => {
-    setIsClient(true);
-    if (user?.role === 'funcionario') {
+    if (!user) return;
+
+    if (user.role === 'funcionario') {
       setEmployeeEmail(user.email || '');
       setEmployeeAvatar(user.avatar || '');
       return;
@@ -98,22 +119,28 @@ export default function PerfilPage() {
         setData({
           ...DEFAULT_DATA,
           ...parsed,
-          nomeEmpresa: parsed.nomeEmpresa || user?.companyName || '',
-          cargo: parsed.cargo || user?.name || '',
-          email: parsed.email || user?.email || '',
-          avatarUrl: parsed.avatarUrl !== undefined ? parsed.avatarUrl : (user?.avatar || ''),
+          nomeEmpresa: parsed.nomeEmpresa || user.companyName || '',
+          cargo: parsed.cargo || user.name || '',
+          email: parsed.email || user.email || '',
+          avatarUrl: parsed.avatarUrl !== undefined ? parsed.avatarUrl : (user.avatar || ''),
         });
       } catch (e) {
-        console.error('Failed to parse saved profile data');
+        setData({
+          ...DEFAULT_DATA,
+          nomeEmpresa: user.companyName || '',
+          cargo: user.name || '',
+          email: user.email || '',
+          avatarUrl: user.avatar || '',
+        });
       }
-    } else if (user) {
-      setData((prev) => ({
-        ...prev,
+    } else {
+      setData({
+        ...DEFAULT_DATA,
         nomeEmpresa: user.companyName || '',
         cargo: user.name || '',
         email: user.email || '',
         avatarUrl: user.avatar || '',
-      }));
+      });
     }
   }, [user]);
 
@@ -124,26 +151,23 @@ export default function PerfilPage() {
   };
 
   const syncWithServer = async (updated: Partial<PerfilData>) => {
-    if (isAuthenticated) {
-      try {
-        await fetch('/api/user/profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-            user?.role === 'funcionario'
-              ? { email: employeeEmail, avatar: updated.avatarUrl !== undefined ? updated.avatarUrl : employeeAvatar }
-              : {
-                  companyName: updated.nomeEmpresa,
-                  name: updated.cargo || user?.name,
-                  avatar: updated.avatarUrl,
-                }
-          ),
-        });
-        await checkAuth();
-      } catch (err) {
-        console.error('Erro ao sincronizar perfil:', err);
-      }
-    }
+    if (!isAuthenticated) return;
+    try {
+      await fetch('/api/user/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          user?.role === 'funcionario'
+            ? { email: employeeEmail, avatar: updated.avatarUrl !== undefined ? updated.avatarUrl : employeeAvatar }
+            : {
+                companyName: updated.nomeEmpresa,
+                name: updated.cargo || user?.name,
+                avatar: updated.avatarUrl,
+              }
+        ),
+      });
+      await checkAuth();
+    } catch (err) {}
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -197,12 +221,18 @@ export default function PerfilPage() {
     await syncWithServer(updated);
   };
 
-  if (!isClient) return null;
+  const handleLogoutAction = async () => {
+    await logout();
+    if (typeof window !== 'undefined') {
+      window.location.replace('/');
+    }
+  };
 
-  // ══════════════════════════════════════════════════════════════════════════════
-  // VISÃO EXCLUSIVA DO COLABORADOR (Role === 'funcionario')
-  // ══════════════════════════════════════════════════════════════════════════════
-  if (user && user.role === 'funcionario') {
+  if (!isClient || authLoading || !isAuthenticated || !user) {
+    return null;
+  }
+
+  if (user.role === 'funcionario') {
     const permissoesAtivas = [
       { key: 'podeCriarMural', label: 'Publicar Avisos no Mural' },
       { key: 'podeApagarMural', label: 'Apagar Postagens do Mural' },
@@ -216,7 +246,6 @@ export default function PerfilPage() {
 
     return (
       <div className="space-y-6 md:space-y-8 animate-fade-up w-full pb-12">
-        {/* Header Colaborador */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">
@@ -227,7 +256,7 @@ export default function PerfilPage() {
             </p>
           </div>
           <button
-            onClick={logout}
+            onClick={handleLogoutAction}
             className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center gap-2 rounded-lg"
           >
             <LogOut className="w-4 h-4" /> Sair da Conta
@@ -235,7 +264,6 @@ export default function PerfilPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Card Resumo do Colaborador */}
           <div className="lg:col-span-5 xl:col-span-4 space-y-4">
             <div className="card overflow-hidden">
               <div className="h-24 gradient-mesh relative">
@@ -243,7 +271,6 @@ export default function PerfilPage() {
               </div>
 
               <div className="px-6 pb-6 -mt-12 relative flex flex-col items-center text-center">
-                {/* Avatar quadrado */}
                 <div className="relative mb-4" ref={dropdownRef}>
                   <div className="w-24 h-24 border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg relative rounded-xl">
                     {employeeAvatar ? (
@@ -255,7 +282,6 @@ export default function PerfilPage() {
                     )}
                   </div>
 
-                  {/* Botão [ Edit ] ancorado */}
                   <div className="absolute -bottom-2 -left-1 z-20">
                     <button
                       type="button"
@@ -328,9 +354,7 @@ export default function PerfilPage() {
             </div>
           </div>
 
-          {/* Dados & Permissões do Colaborador */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-5">
-            {/* Informações Funcionais */}
             <div className="card p-6 space-y-4">
               <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                 Informações Funcionais
@@ -369,7 +393,6 @@ export default function PerfilPage() {
               </div>
             </div>
 
-            {/* Minhas Permissões Ativas */}
             <div className="card p-6 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -402,7 +425,6 @@ export default function PerfilPage() {
               </div>
             </div>
 
-            {/* Contato Pessoal & Atualização */}
             <form onSubmit={handleSave} className="card p-6 space-y-4">
               <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                 Contato Pessoal
@@ -445,9 +467,6 @@ export default function PerfilPage() {
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════════
-  // VISÃO DA EMPRESA / GESTOR (Modo Empresa ou Visitante)
-  // ══════════════════════════════════════════════════════════════════════════════
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up w-full">
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -455,27 +474,22 @@ export default function PerfilPage() {
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Perfil da Empresa</h2>
           <p className="text-text-muted text-sm mt-1">Gerencie as informações corporativas.</p>
         </div>
-        {isAuthenticated && (
-          <button
-            onClick={logout}
-            className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center gap-2"
-          >
-            <LogOut className="w-4 h-4" /> Sair da Conta
-          </button>
-        )}
+        <button
+          onClick={handleLogoutAction}
+          className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center gap-2"
+        >
+          <LogOut className="w-4 h-4" /> Sair da Conta
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
-        {/* Profile Card */}
         <div className="lg:col-span-5 xl:col-span-4 space-y-4 md:space-y-5">
           <div className="card overflow-hidden">
-            {/* Cover gradient */}
             <div className="h-28 gradient-mesh relative">
               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface-1/80" />
             </div>
 
             <div className="px-6 pb-6 -mt-14 relative flex flex-col items-center text-center">
-              {/* Avatar quadrado com botão Edit dropdown */}
               <div className="relative mb-5" ref={dropdownRef}>
                 <div className="w-28 h-28 border-4 border-surface-1 overflow-hidden bg-surface-2 flex items-center justify-center shadow-lg relative">
                   {data.avatarUrl ? (
@@ -485,7 +499,6 @@ export default function PerfilPage() {
                   )}
                 </div>
 
-                {/* Botão [ Edit ] ancorado no canto inferior esquerdo */}
                 <div className="absolute -bottom-2 -left-1 z-20">
                   <button
                     type="button"
@@ -496,7 +509,6 @@ export default function PerfilPage() {
                     <span>Edit</span>
                   </button>
 
-                  {/* Dropdown ancorado com seta */}
                   {editDropdownOpen && (
                     <div className="absolute top-full left-0 mt-2 w-44 bg-surface-1 border border-surface-border rounded-lg shadow-2xl p-1.5 z-50 animate-scale-in text-left">
                       <div className="absolute -top-1.5 left-4 w-3 h-3 bg-surface-1 border-t border-l border-surface-border rotate-45" />
@@ -585,7 +597,6 @@ export default function PerfilPage() {
           </div>
         </div>
 
-        {/* Form Column */}
         <div className="lg:col-span-7 xl:col-span-8 space-y-4 md:space-y-5">
           <form onSubmit={handleSave} className="card p-5 md:p-7 space-y-5">
             <h3 className="text-text-primary font-bold text-base border-b border-surface-border pb-3">
@@ -755,7 +766,6 @@ export default function PerfilPage() {
             </div>
           </form>
 
-          {/* Demonstration mode settings (only for visitor/company owner) */}
           <div className="card p-5 md:p-6 space-y-4 border border-surface-border">
             <div>
               <h3 className="text-text-primary font-bold text-sm">Modo de Demonstração</h3>
