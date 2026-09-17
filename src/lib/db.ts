@@ -1,6 +1,9 @@
 import { Pool } from 'pg';
 
-const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const DEFAULT_DATABASE_URL =
+  'postgresql://neondb_owner:npg_DNKibx1St8MQ@ep-flat-feather-b56k68hu-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require';
+
+const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || DEFAULT_DATABASE_URL;
 
 let pool: Pool | null = null;
 let initialized = false;
@@ -13,6 +16,7 @@ export function getPool(): Pool | null {
       ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false },
       max: 10,
       idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
     });
   }
   return pool;
