@@ -257,7 +257,7 @@ export default function PerfilPage() {
           </div>
           <button
             onClick={handleLogoutAction}
-            className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center gap-2 rounded-lg"
+            className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center justify-center gap-2 rounded-lg w-full sm:w-auto"
           >
             <LogOut className="w-4 h-4" /> Sair da Conta
           </button>
@@ -446,16 +446,18 @@ export default function PerfilPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
                 {saveSuccess ? (
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4" /> Alterações salvas com sucesso!
+                  <span className="text-xs text-brand font-semibold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" /> E-mail atualizado!
                   </span>
-                ) : <span />}
+                ) : (
+                  <span />
+                )}
 
                 <button
                   type="submit"
-                  className="btn-primary px-5 py-2 text-xs font-bold shadow-md inline-flex items-center gap-2"
+                  className="btn-primary px-5 py-2 text-xs font-bold shadow-md inline-flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   <Save className="w-4 h-4" /> Salvar Contato
                 </button>
@@ -476,7 +478,7 @@ export default function PerfilPage() {
         </div>
         <button
           onClick={handleLogoutAction}
-          className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center gap-2"
+          className="px-3.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 transition-colors inline-flex items-center justify-center gap-2 w-full sm:w-auto"
         >
           <LogOut className="w-4 h-4" /> Sair da Conta
         </button>
@@ -752,7 +754,7 @@ export default function PerfilPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-surface-border">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-surface-border">
               {saveSuccess ? (
                 <span className="text-xs text-brand font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" /> Dados salvos com sucesso!
@@ -760,7 +762,7 @@ export default function PerfilPage() {
               ) : (
                 <span />
               )}
-              <button type="submit" className="btn-primary">
+              <button type="submit" className="btn-primary w-full sm:w-auto justify-center">
                 <Save className="w-4 h-4" /> Salvar Alterações
               </button>
             </div>
