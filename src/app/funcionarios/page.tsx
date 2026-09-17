@@ -244,18 +244,18 @@ export default function FuncionariosPage() {
   }
 
   return (
-    <div className="space-y-8 pb-16">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600/15 via-teal-600/10 to-transparent p-6 sm:p-8 border border-emerald-500/20">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+    <div className="space-y-6 sm:space-y-8 pb-16">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-600/15 via-teal-600/10 to-transparent p-4 sm:p-6 md:p-8 border border-emerald-500/20">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2 sm:mb-3">
               <ShieldCheck className="w-3.5 h-3.5" />
               Equipe & Controle de Acessos
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Gestão de Colaboradores
             </h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-2xl">
+            <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl">
               Cadastre sua equipe, defina contratos, salários, setores e distribua códigos de acesso individuais com permissões granulares.
             </p>
           </div>
@@ -263,7 +263,7 @@ export default function FuncionariosPage() {
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center justify-center w-full sm:w-auto gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/20 transition-all text-sm"
+              className="inline-flex items-center justify-center w-full sm:w-auto gap-2 px-4 sm:px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/20 transition-all text-xs sm:text-sm"
             >
               <Plus className="w-4 h-4" />
               Novo Colaborador
@@ -272,36 +272,36 @@ export default function FuncionariosPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white dark:bg-slate-900/60 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Total
               </p>
               <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
-                <span className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
+                <span className="text-base sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
                   {totalColaboradores}
                 </span>
-                <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                   {colaboradoresAtivos} ativ.
                 </span>
               </div>
             </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex-shrink-0">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex-shrink-0">
+              <Users className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/60 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Folha Mensal
               </p>
               <div className="flex items-baseline gap-1 sm:gap-2 mt-1">
-                <span className="text-sm sm:text-xl font-bold text-slate-900 dark:text-white truncate max-w-[120px] sm:max-w-none">
+                <span className="text-xs sm:text-base md:text-xl font-bold text-slate-900 dark:text-white truncate">
                   {folhaSalarialTotal.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
@@ -309,50 +309,50 @@ export default function FuncionariosPage() {
                 </span>
               </div>
             </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-500/20 flex-shrink-0">
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-500/20 flex-shrink-0">
+              <DollarSign className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/60 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Setores
               </p>
               <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
-                <span className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
+                <span className="text-base sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
                   {setoresAtendidos}
                 </span>
-                <span className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
                   de {setores.length}
                 </span>
               </div>
             </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 border border-purple-500/20 flex-shrink-0">
-              <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 border border-purple-500/20 flex-shrink-0">
+              <Building2 className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/60 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Acessos
               </p>
               <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
-                <span className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
+                <span className="text-base sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
                   {funcionarios.filter((f) => f.codigoAcesso).length}
                 </span>
-                <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                   gerados
                 </span>
               </div>
             </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-500/20 flex-shrink-0">
-              <KeyRound className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-500/20 flex-shrink-0">
+              <KeyRound className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
@@ -644,7 +644,7 @@ export default function FuncionariosPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-1">
+                  <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
                     <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
                       <span className="text-[10px] font-semibold text-slate-500">Acesso:</span>
                       <span className="font-mono text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -663,7 +663,7 @@ export default function FuncionariosPage() {
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 ml-auto">
                       <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/50">
                         <ShieldCheck className="w-3 h-3" />
                         {activePermsCount} lib.
@@ -693,26 +693,26 @@ export default function FuncionariosPage() {
       )}
 
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 w-full max-w-2xl shadow-2xl overflow-hidden my-8">
-            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 w-full max-w-2xl shadow-2xl overflow-hidden my-auto sm:my-8 max-h-[92vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex-shrink-0">
               <div>
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   {editingFuncionario ? 'Editar Colaborador' : 'Novo Colaborador'}
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
                   Defina os dados contratuais e selecione as permissões de acesso ao sistema.
                 </p>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+            <form onSubmit={handleSave} className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto flex-1">
               {feedbackError && (
                 <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-medium flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
