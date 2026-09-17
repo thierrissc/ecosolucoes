@@ -155,7 +155,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      <div className="relative overflow-hidden gradient-mesh p-7 md:p-10">
+      <div className="relative overflow-hidden gradient-mesh p-5 sm:p-7 md:p-10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 blur-2xl translate-y-1/2 -translate-x-1/4" />
 
@@ -217,13 +217,13 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 animate-stagger">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
             <div
               key={card.label}
-              className="card card-hover p-5 md:p-6 flex flex-col justify-between gap-4"
+              className="card card-hover p-3.5 sm:p-5 md:p-6 flex flex-col justify-between gap-3 sm:gap-4"
             >
               <div className="flex items-center justify-between">
                 <div className="w-9 h-9 border border-surface-border bg-surface-2/40 flex items-center justify-center">
@@ -238,7 +238,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div>
-                <h3 className="text-3xl md:text-4xl font-extrabold text-text-primary tracking-tight">{card.value}</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text-primary tracking-tight">{card.value}</h3>
                 <p className="text-text-muted text-xs font-medium mt-0.5">{card.label}</p>
                 <p className="text-text-muted text-[11px] mt-1 opacity-70">{card.change}</p>
               </div>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
-        <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7 flex flex-col">
+        <div className="lg:col-span-7 xl:col-span-8 card p-4 sm:p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-text-primary font-bold text-base">Demandas por Setor</h3>
@@ -286,7 +286,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="lg:col-span-5 xl:col-span-4 card p-5 md:p-7 flex flex-col">
+        <div className="lg:col-span-5 xl:col-span-4 card p-4 sm:p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h3 className="text-text-primary font-bold text-base">Status das Tarefas</h3>
@@ -350,7 +350,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-5">
-        <div className="card p-5 md:p-7 flex flex-col">
+        <div className="card p-4 sm:p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-text-primary font-bold text-base flex items-center gap-2">
               <CalendarClock className="w-5 h-5 text-brand" />
@@ -404,7 +404,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="card p-5 md:p-7 flex flex-col">
+        <div className="card p-4 sm:p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-text-primary font-bold text-base flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-brand" />
