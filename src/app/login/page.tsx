@@ -241,7 +241,7 @@ export default function LoginPage() {
                     autoFocus
                     value={codigoAcesso}
                     onChange={(e) => setCodigoAcesso(e.target.value.toUpperCase())}
-                    placeholder="Ex: ECO-7K9A"
+                    placeholder="Ex: ECO-XXXX"
                     className="input input-with-icon font-mono font-bold tracking-widest text-brand"
                   />
                 </div>

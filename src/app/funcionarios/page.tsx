@@ -560,11 +560,6 @@ export default function FuncionariosPage() {
                               Apagar Mural
                             </span>
                           )}
-                          {f.permissoes?.podeCriarDemandas && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                              Demandas
-                            </span>
-                          )}
                           {f.permissoes?.podeGerenciarSetores && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                               Setores

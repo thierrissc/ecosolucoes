@@ -6,6 +6,7 @@ import { tarefasSemanais as initialTarefas, metasMensais as initialMetas } from 
 import { publicacoes as initialMural } from '@/data/mural';
 import { eventos as initialEventos } from '@/data/calendario';
 import { notificacoes as initialNotificacoes } from '@/data/notificacoes';
+import { funcionariosDemonstracao } from '@/data/funcionarios';
 import { Setor, Tarefa, MetaMensal, PublicacaoMural, EventoCalendario, Notificacao, Status, Funcionario, PermissoesFuncionario } from '@/types';
 import { AuthUser } from '@/lib/auth';
 
@@ -83,6 +84,7 @@ const STORAGE_KEYS = {
   MURAL: 'ecosolucoes_mural',
   EVENTOS: 'ecosolucoes_eventos',
   NOTIFICACOES: 'ecosolucoes_notificacoes',
+  FUNCIONARIOS: 'ecosolucoes_funcionarios',
 };
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -178,6 +180,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
         const n = localStorage.getItem(STORAGE_KEYS.NOTIFICACOES);
         setNotificacoes(n ? JSON.parse(n) : initialNotificacoes);
+
+        const f = localStorage.getItem(STORAGE_KEYS.FUNCIONARIOS);
+        setFuncionarios(f ? JSON.parse(f) : funcionariosDemonstracao);
       }
     } catch {
       setUser(null);
@@ -187,6 +192,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setPublicacoes(initialMural);
       setEventos(initialEventos);
       setNotificacoes(initialNotificacoes);
+      setFuncionarios(funcionariosDemonstracao);
     } finally {
       setAuthLoading(false);
       setMounted(true);
@@ -262,6 +268,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addFuncionario = async (
     novo: Omit<Funcionario, 'id' | 'companyId' | 'createdAt'>
   ): Promise<{ success: boolean; error?: string; funcionario?: Funcionario }> => {
+    if (!user) {
+      // Modo visitante / demonstração
+      const novoDemo: Funcionario = {
+        ...novo,
+        id: `emp_demo_${Date.now()}`,
+        companyId: 'demo_company',
+        createdAt: new Date().toISOString(),
+      };
+      setFuncionarios((prev) => {
+        const updated = [novoDemo, ...prev];
+        try {
+          localStorage.setItem(STORAGE_KEYS.FUNCIONARIOS, JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+      return { success: true, funcionario: novoDemo };
+    }
+
     try {
       const res = await fetch('/api/employees', {
         method: 'POST',
@@ -282,6 +306,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const updateFuncionario = async (
     func: Partial<Funcionario> & { id: string }
   ): Promise<{ success: boolean; error?: string }> => {
+    if (!user) {
+      // Modo visitante / demonstração
+      setFuncionarios((prev) => {
+        const updated = prev.map((f) => (f.id === func.id ? ({ ...f, ...func } as Funcionario) : f));
+        try {
+          localStorage.setItem(STORAGE_KEYS.FUNCIONARIOS, JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+      return { success: true };
+    }
+
     try {
       const res = await fetch('/api/employees', {
         method: 'PUT',
@@ -302,6 +338,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteFuncionario = async (id: string): Promise<{ success: boolean; error?: string }> => {
+    if (!user) {
+      // Modo visitante / demonstração
+      setFuncionarios((prev) => {
+        const updated = prev.filter((f) => f.id !== id);
+        try {
+          localStorage.setItem(STORAGE_KEYS.FUNCIONARIOS, JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+      return { success: true };
+    }
+
     try {
       const res = await fetch(`/api/employees?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
@@ -444,6 +492,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setPublicacoes([]);
     setEventos([]);
     setNotificacoes([]);
+    setFuncionarios([]);
     try {
       localStorage.removeItem(STORAGE_KEYS.SETORES);
       localStorage.removeItem(STORAGE_KEYS.TAREFAS);
@@ -451,6 +500,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(STORAGE_KEYS.MURAL);
       localStorage.removeItem(STORAGE_KEYS.EVENTOS);
       localStorage.removeItem(STORAGE_KEYS.NOTIFICACOES);
+      localStorage.removeItem(STORAGE_KEYS.FUNCIONARIOS);
     } catch {}
   };
 
@@ -461,6 +511,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setPublicacoes(initialMural);
     setEventos(initialEventos);
     setNotificacoes(initialNotificacoes);
+    setFuncionarios(funcionariosDemonstracao);
   };
 
   return (
