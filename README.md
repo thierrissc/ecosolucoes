@@ -6,16 +6,19 @@
   <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Node.js-18+-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Node.js-18+-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
 </p>
+
 
 ## Sobre
 
 O **Eco Soluções** é uma solução corporativa completa projetada para centralizar a operação interna de empresas. O sistema combina controle de produtividade por setor, planejamento semanal e mensal, relatórios gráficos com exportação e um canal direto de comunicação interna.
 
 O projeto oferece suporte a múltiplos dispositivos simultâneos, permitindo que a liderança e os colaboradores acessem do celular ou computador mantendo os mesmos dados atualizados. Para novos visitantes, inclui um modo didático de demonstração que pode ser zerado a qualquer momento para uso corporativo real.
+
+
 
 ## Funcionalidades Principais
 
@@ -28,16 +31,20 @@ O projeto oferece suporte a múltiplos dispositivos simultâneos, permitindo que
 - **Perfil da Empresa & Upload Dinâmico:** Edição de dados cadastrais, cargo, arroba da empresa e gerenciamento de foto de perfil com opções diretas de carregar ou remover.
 - **Tema Adaptável ao Navegador:** Detecção automática do modo escuro/claro do sistema operacional e botão manual para alternância rápida.
 
+
+
 ## Tecnologias Utilizadas
 
 - **Core:** [Next.js](https://nextjs.org/) (App Router) & [React](https://react.dev/)
-- **Ambiente de Execução:** [Node.js](https://nodejs.org/)
+ **Ambiente de Execução:** [Node.js](https://nodejs.org/)
 - **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
 - **Estilização:** [Tailwind CSS](https://tailwindcss.com/) & CSS Variables
 - **Banco de Dados:** PostgreSQL Serverless com pooling de conexões
 - **Autenticação:** Web Crypto API nativa (PBKDF2 + JWT assinado HMAC-SHA256 via Cookies HttpOnly)
 - **Gráficos:** [Recharts](https://recharts.org/)
 - **Ícones:** [Lucide React](https://lucide.dev/)
+
+
 
 ## Como Executar o Projeto Localmente
 
@@ -62,6 +69,8 @@ npm run dev
 ```
 
 Abra [http://localhost:3000](http://localhost:3000) no seu navegador para visualizar a plataforma.
+
+
 
 ## Licença
 
