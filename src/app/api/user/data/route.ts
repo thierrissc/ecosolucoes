@@ -17,13 +17,15 @@ export async function GET() {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
+    const workspaceId = user.companyId || user.id;
+
     try {
       const rows = await query(
         `SELECT setores, tarefas, metas, mural, eventos, notificacoes
          FROM user_workspaces
          WHERE user_id = $1
          LIMIT 1`,
-        [user.id]
+        [workspaceId]
       );
 
       if (rows.length === 0) {
@@ -75,6 +77,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { setores, tarefas, metas, mural, eventos, notificacoes } = body;
+    const workspaceId = user.companyId || user.id;
 
     try {
       await query(
@@ -89,7 +92,7 @@ export async function POST(req: Request) {
            notificacoes = EXCLUDED.notificacoes,
            updated_at = CURRENT_TIMESTAMP`,
         [
-          user.id,
+          workspaceId,
           JSON.stringify(setores || []),
           JSON.stringify(tarefas || []),
           JSON.stringify(metas || []),
