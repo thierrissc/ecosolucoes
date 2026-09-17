@@ -143,7 +143,7 @@ export default function TopNav({ pathname }: TopNavProps) {
   }, [pathname]);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (
         searchOpen &&
         searchContainerRef.current &&
@@ -157,8 +157,10 @@ export default function TopNav({ pathname }: TopNavProps) {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [searchOpen]);
 
@@ -318,11 +320,11 @@ export default function TopNav({ pathname }: TopNavProps) {
                 })}
               </nav>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 sm:gap-1.5">
                 <button
                   ref={searchBtnRef}
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className="hidden md:flex w-9 h-9 items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all"
+                  className="flex w-9 h-9 items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all"
                 >
                   <Search className="w-[18px] h-[18px]" />
                 </button>
@@ -408,7 +410,7 @@ export default function TopNav({ pathname }: TopNavProps) {
         {searchOpen && (
           <div
             ref={searchContainerRef}
-            className="hidden md:block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up relative z-50"
+            className="block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up relative z-50"
           >
             <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3">
               <div className="relative max-w-xl mx-auto">
@@ -635,6 +637,12 @@ export default function TopNav({ pathname }: TopNavProps) {
           </div>
         )}
       </header>
+      {mobileMenuOpen && (
+        <div
+          onClick={closeMobileMenu}
+          className="fixed inset-0 top-16 md:top-[68px] bg-black/40 backdrop-blur-xs z-40 lg:hidden animate-fade-in"
+        />
+      )}
     </>
   );
 }
