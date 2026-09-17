@@ -106,10 +106,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [setores, setSetores] = useState<Setor[]>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
-        if (cachedWs) {
-          const parsed = JSON.parse(cachedWs);
-          if (parsed.setores && parsed.setores.length > 0) return parsed.setores;
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+          if (cachedWs) {
+            const parsed = JSON.parse(cachedWs);
+            if (Array.isArray(parsed.setores)) return parsed.setores;
+          }
+          return [];
         }
         const s = localStorage.getItem(STORAGE_KEYS.SETORES);
         if (s) return JSON.parse(s);
@@ -121,10 +125,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
-        if (cachedWs) {
-          const parsed = JSON.parse(cachedWs);
-          if (parsed.tarefas && parsed.tarefas.length > 0) return parsed.tarefas;
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+          if (cachedWs) {
+            const parsed = JSON.parse(cachedWs);
+            if (Array.isArray(parsed.tarefas)) return parsed.tarefas;
+          }
+          return [];
         }
         const t = localStorage.getItem(STORAGE_KEYS.TAREFAS);
         if (t) return JSON.parse(t);
@@ -136,10 +144,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [metasMensais, setMetasMensais] = useState<MetaMensal[]>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
-        if (cachedWs) {
-          const parsed = JSON.parse(cachedWs);
-          if (parsed.metas && parsed.metas.length > 0) return parsed.metas;
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+          if (cachedWs) {
+            const parsed = JSON.parse(cachedWs);
+            if (Array.isArray(parsed.metas)) return parsed.metas;
+          }
+          return [];
         }
         const m = localStorage.getItem(STORAGE_KEYS.METAS);
         if (m) return JSON.parse(m);
@@ -151,10 +163,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [publicacoes, setPublicacoes] = useState<PublicacaoMural[]>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
-        if (cachedWs) {
-          const parsed = JSON.parse(cachedWs);
-          if (parsed.mural && parsed.mural.length > 0) return parsed.mural;
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+          if (cachedWs) {
+            const parsed = JSON.parse(cachedWs);
+            if (Array.isArray(parsed.mural)) return parsed.mural;
+          }
+          return [];
         }
         const mu = localStorage.getItem(STORAGE_KEYS.MURAL);
         if (mu) return JSON.parse(mu);
@@ -166,10 +182,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [eventos, setEventos] = useState<EventoCalendario[]>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
-        if (cachedWs) {
-          const parsed = JSON.parse(cachedWs);
-          if (parsed.eventos && parsed.eventos.length > 0) return parsed.eventos;
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+          if (cachedWs) {
+            const parsed = JSON.parse(cachedWs);
+            if (Array.isArray(parsed.eventos)) return parsed.eventos;
+          }
+          return [];
         }
         const e = localStorage.getItem(STORAGE_KEYS.EVENTOS);
         if (e) return JSON.parse(e);
@@ -181,10 +201,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
-        if (cachedWs) {
-          const parsed = JSON.parse(cachedWs);
-          if (parsed.notificacoes && parsed.notificacoes.length > 0) return parsed.notificacoes;
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+          if (cachedWs) {
+            const parsed = JSON.parse(cachedWs);
+            if (Array.isArray(parsed.notificacoes)) return parsed.notificacoes;
+          }
+          return [];
         }
         const n = localStorage.getItem(STORAGE_KEYS.NOTIFICACOES);
         if (n) return JSON.parse(n);
@@ -193,7 +217,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return initialNotificacoes;
   });
 
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedUser = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cachedUser) {
+          const cachedEmp = localStorage.getItem('@eco-solucoes:employees_cache');
+          if (cachedEmp) return JSON.parse(cachedEmp);
+          return [];
+        }
+        const f = localStorage.getItem(STORAGE_KEYS.FUNCIONARIOS);
+        if (f) return JSON.parse(f);
+      } catch {}
+    }
+    return [];
+  });
   const [funcionariosLoading, setFuncionariosLoading] = useState(false);
 
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -204,7 +242,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch('/api/employees');
       if (res.ok) {
         const data = await res.json();
-        setFuncionarios(data.funcionarios || []);
+        const emps = data.funcionarios || [];
+        setFuncionarios(emps);
+        try {
+          localStorage.setItem('@eco-solucoes:employees_cache', JSON.stringify(emps));
+        } catch {}
       }
     } catch (err) {
     } finally {
@@ -252,6 +294,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         try {
           localStorage.removeItem('@eco-solucoes:auth_user');
           localStorage.removeItem('@eco-solucoes:user_workspace');
+          localStorage.removeItem('@eco-solucoes:employees_cache');
         } catch {}
 
         const s = localStorage.getItem(STORAGE_KEYS.SETORES);
@@ -280,6 +323,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       try {
         localStorage.removeItem('@eco-solucoes:auth_user');
         localStorage.removeItem('@eco-solucoes:user_workspace');
+        localStorage.removeItem('@eco-solucoes:employees_cache');
       } catch {}
       setSetores(initialSetores);
       setTarefasSemanais(initialTarefas);
@@ -340,6 +384,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.removeItem('@eco-solucoes:auth_user');
       localStorage.removeItem('@eco-solucoes:user_workspace');
+      localStorage.removeItem('@eco-solucoes:employees_cache');
       localStorage.removeItem('@eco-solucoes:perfil');
       sessionStorage.clear();
       window.dispatchEvent(new CustomEvent('perfilUpdated', { detail: {} }));
