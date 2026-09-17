@@ -11,7 +11,6 @@ import { Setor, Tarefa, MetaMensal, PublicacaoMural, EventoCalendario, Notificac
 import { AuthUser } from '@/lib/auth';
 
 interface AppContextType {
-  // Autenticação
   user: AuthUser | null;
   isAuthenticated: boolean;
   authLoading: boolean;
@@ -25,7 +24,6 @@ interface AppContextType {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
 
-  // Funcionários / Colaboradores
   funcionarios: Funcionario[];
   funcionariosLoading: boolean;
   refreshFuncionarios: () => Promise<void>;
@@ -33,36 +31,30 @@ interface AppContextType {
   updateFuncionario: (func: Partial<Funcionario> & { id: string }) => Promise<{ success: boolean; error?: string }>;
   deleteFuncionario: (id: string) => Promise<{ success: boolean; error?: string }>;
 
-  // Setores
   setores: Setor[];
   addSetor: (setor: Omit<Setor, 'id' | 'demandasSemanais' | 'demandasMensais' | 'desempenho'>) => void;
   deleteSetor: (id: string) => void;
 
-  // Demandas Semanais
   tarefasSemanais: Tarefa[];
   addTarefaSemanal: (tarefa: Omit<Tarefa, 'id' | 'tipo'>) => void;
   updateTarefaStatus: (id: string, status: Status) => void;
   deleteTarefaSemanal: (id: string) => void;
 
-  // Demandas Mensais
   metasMensais: MetaMensal[];
   addMetaMensal: (meta: Omit<MetaMensal, 'id'>) => void;
   updateMetaProgresso: (id: string, progresso: number) => void;
   deleteMetaMensal: (id: string) => void;
 
-  // Mural
   publicacoes: PublicacaoMural[];
   addPublicacao: (pub: Omit<PublicacaoMural, 'id' | 'curtidas' | 'visualizacoes' | 'data'>) => void;
   toggleCurtidaMural: (id: string) => void;
   deletePublicacao: (id: string) => void;
   toggleFixarPublicacao: (id: string) => void;
 
-  // Calendário
   eventos: EventoCalendario[];
   addEvento: (evento: Omit<EventoCalendario, 'id'>) => void;
   deleteEvento: (id: string) => void;
 
-  // Notificações
   notificacoes: Notificacao[];
   marcarLida: (id: string) => void;
   marcarTodasLidas: () => void;
@@ -70,7 +62,6 @@ interface AppContextType {
   deleteNotificacao: (id: string) => void;
   naoLidasCount: number;
 
-  // Gestão de Dados
   limparDadosExemplo: () => void;
   restaurarDadosExemplo: () => void;
 }
@@ -92,11 +83,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
 
-  // Estado de Autenticação
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Estados dos Dados
   const [setores, setSetores] = useState<Setor[]>([]);
   const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>([]);
   const [metasMensais, setMetasMensais] = useState<MetaMensal[]>([]);
@@ -104,13 +93,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [eventos, setEventos] = useState<EventoCalendario[]>([]);
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
 
-  // Estados dos Colaboradores
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [funcionariosLoading, setFuncionariosLoading] = useState(false);
 
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ─── Buscar Funcionários da Empresa ───
   const refreshFuncionarios = useCallback(async () => {
     try {
       setFuncionariosLoading(true);
@@ -120,13 +107,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setFuncionarios(data.funcionarios || []);
       }
     } catch (err) {
-      console.error('Erro ao buscar colaboradores:', err);
     } finally {
       setFuncionariosLoading(false);
     }
   }, []);
 
-  // ─── Verificar Autenticação ───
   const checkAuth = useCallback(async () => {
     try {
       setAuthLoading(true);
@@ -135,11 +120,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (data.authenticated && data.user) {
         setUser(data.user);
-
-        // Se for gestor ou colaborador, carregar lista de colaboradores
         refreshFuncionarios();
 
-        // Carregar dados salvos no banco SQL do usuário
         try {
           const dataRes = await fetch('/api/user/data');
           if (dataRes.ok) {
@@ -152,7 +134,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             setNotificacoes(userData.notificacoes || []);
           }
         } catch {
-          // Mantém estado limpo
           setSetores([]);
           setTarefasSemanais([]);
           setMetasMensais([]);
@@ -162,7 +143,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         setUser(null);
-        // Modo Visitante: exibe os dados didáticos de exemplo
         const s = localStorage.getItem(STORAGE_KEYS.SETORES);
         setSetores(s ? JSON.parse(s) : initialSetores);
 
@@ -197,18 +177,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setAuthLoading(false);
       setMounted(true);
     }
-  }, []);
+  }, [refreshFuncionarios]);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  // ─── Sincronização de Dados ───
   useEffect(() => {
     if (!mounted || authLoading) return;
 
     if (user) {
-      // Usuário autenticado: salva no banco de dados SQL com debounce
       if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
       syncTimeoutRef.current = setTimeout(async () => {
         try {
@@ -224,12 +202,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               notificacoes,
             }),
           });
-        } catch (err) {
-          console.error('Erro ao sincronizar com banco de dados:', err);
-        }
+        } catch (err) {}
       }, 800);
     } else {
-      // Visitante: armazena alterações temporárias no localStorage
       try {
         localStorage.setItem(STORAGE_KEYS.SETORES, JSON.stringify(setores));
         localStorage.setItem(STORAGE_KEYS.TAREFAS, JSON.stringify(tarefasSemanais));
@@ -241,35 +216,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setores, tarefasSemanais, metasMensais, publicacoes, eventos, notificacoes, user, mounted, authLoading]);
 
-  // ─── Logout ───
   const logout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch {}
     setUser(null);
     setFuncionarios([]);
-    // Restaura os dados de exemplo para o modo visitante
+    try {
+      localStorage.removeItem('@eco-solucoes:perfil');
+      sessionStorage.clear();
+      window.dispatchEvent(new CustomEvent('perfilUpdated', { detail: {} }));
+    } catch {}
     setSetores(initialSetores);
     setTarefasSemanais(initialTarefas);
     setMetasMensais(initialMetas);
     setPublicacoes(initialMural);
     setEventos(initialEventos);
     setNotificacoes(initialNotificacoes);
+    if (typeof window !== 'undefined') {
+      window.location.replace('/');
+    }
   };
 
-  // ─── Permissões de Usuário / Colaborador ───
   const hasPermission = (permKey: keyof PermissoesFuncionario): boolean => {
-    if (!user) return true; // Visitante / Demonstração
-    if (user.role !== 'funcionario') return true; // Dono da empresa tem acesso irrestrito
+    if (!user) return true;
+    if (user.role !== 'funcionario') return true;
     return !!user.permissoes?.[permKey];
   };
 
-  // ─── Gestão de Funcionários ───
   const addFuncionario = async (
     novo: Omit<Funcionario, 'id' | 'companyId' | 'createdAt'>
   ): Promise<{ success: boolean; error?: string; funcionario?: Funcionario }> => {
     if (!user) {
-      // Modo visitante / demonstração
       const novoDemo: Funcionario = {
         ...novo,
         id: `emp_demo_${Date.now()}`,
@@ -307,7 +285,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     func: Partial<Funcionario> & { id: string }
   ): Promise<{ success: boolean; error?: string }> => {
     if (!user) {
-      // Modo visitante / demonstração
       setFuncionarios((prev) => {
         const updated = prev.map((f) => (f.id === func.id ? ({ ...f, ...func } as Funcionario) : f));
         try {
@@ -339,7 +316,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const deleteFuncionario = async (id: string): Promise<{ success: boolean; error?: string }> => {
     if (!user) {
-      // Modo visitante / demonstração
       setFuncionarios((prev) => {
         const updated = prev.filter((f) => f.id !== id);
         try {
@@ -365,7 +341,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // ─── Setores ───
   const addSetor = (novo: Omit<Setor, 'id' | 'demandasSemanais' | 'demandasMensais' | 'desempenho'>) => {
     const s: Setor = {
       ...novo,
@@ -381,7 +356,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setSetores((prev) => prev.filter((s) => s.id !== id));
   };
 
-  // ─── Demandas Semanais ───
   const addTarefaSemanal = (nova: Omit<Tarefa, 'id' | 'tipo'>) => {
     const t: Tarefa = {
       ...nova,
@@ -401,7 +375,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setTarefasSemanais((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // ─── Demandas Mensais ───
   const addMetaMensal = (nova: Omit<MetaMensal, 'id'>) => {
     const m: MetaMensal = {
       ...nova,
@@ -420,7 +393,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMetasMensais((prev) => prev.filter((m) => m.id !== id));
   };
 
-  // ─── Mural ───
   const addPublicacao = (pub: Omit<PublicacaoMural, 'id' | 'curtidas' | 'visualizacoes' | 'data'>) => {
     const nova: PublicacaoMural = {
       ...pub,
@@ -448,7 +420,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  // ─── Calendário ───
   const addEvento = (evento: Omit<EventoCalendario, 'id'>) => {
     const e: EventoCalendario = {
       ...evento,
@@ -461,7 +432,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setEventos((prev) => prev.filter((e) => e.id !== id));
   };
 
-  // ─── Notificações ───
   const marcarLida = (id: string) => {
     setNotificacoes((prev) =>
       prev.map((n) => (n.id === id ? { ...n, lida: true } : n))
@@ -484,7 +454,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const naoLidasCount = notificacoes.filter((n) => !n.lida).length;
 
-  // ─── Gestão de Dados ───
   const limparDadosExemplo = () => {
     setSetores([]);
     setTarefasSemanais([]);
