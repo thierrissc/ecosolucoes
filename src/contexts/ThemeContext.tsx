@@ -13,7 +13,15 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('eco-theme');
+        if (saved !== null) return saved === 'dark';
+      } catch {}
+    }
+    return true;
+  });
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
