@@ -260,10 +260,10 @@ export default function FuncionariosPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/20 transition-all text-sm"
+              className="inline-flex items-center justify-center w-full sm:w-auto gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/20 transition-all text-sm"
             >
               <Plus className="w-4 h-4" />
               Novo Colaborador
@@ -272,36 +272,36 @@ export default function FuncionariosPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Total de Colaboradores
+              <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Total
               </p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
+                <span className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
                   {totalColaboradores}
                 </span>
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                  {colaboradoresAtivos} ativos
+                <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                  {colaboradoresAtivos} ativ.
                 </span>
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              <Users className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex-shrink-0">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Folha Mensal Estimada
+              <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Folha Mensal
               </p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="flex items-baseline gap-1 sm:gap-2 mt-1">
+                <span className="text-sm sm:text-xl font-bold text-slate-900 dark:text-white truncate max-w-[120px] sm:max-w-none">
                   {folhaSalarialTotal.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
@@ -309,50 +309,50 @@ export default function FuncionariosPage() {
                 </span>
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-500/20">
-              <DollarSign className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-500/20 flex-shrink-0">
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Setores Atendidos
+              <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Setores
               </p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
+                <span className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
                   {setoresAtendidos}
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  de {setores.length} setores
+                <span className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  de {setores.length}
                 </span>
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 border border-purple-500/20">
-              <Building2 className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 border border-purple-500/20 flex-shrink-0">
+              <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/60 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Acessos Gerados
+              <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Acessos
               </p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
+                <span className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
                   {funcionarios.filter((f) => f.codigoAcesso).length}
                 </span>
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                  códigos únicos
+                <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                  gerados
                 </span>
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              <KeyRound className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-500/20 flex-shrink-0">
+              <KeyRound className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
@@ -370,11 +370,11 @@ export default function FuncionariosPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
           <select
             value={filterSetor}
             onChange={(e) => setFilterSetor(e.target.value)}
-            className="px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 dark:text-slate-300"
+            className="w-full sm:w-auto px-2.5 sm:px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 dark:text-slate-300"
           >
             <option value="todos">Todos os Setores</option>
             {setores.map((s) => (
@@ -387,7 +387,7 @@ export default function FuncionariosPage() {
           <select
             value={filterContrato}
             onChange={(e) => setFilterContrato(e.target.value)}
-            className="px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 dark:text-slate-300"
+            className="w-full sm:w-auto px-2.5 sm:px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 dark:text-slate-300"
           >
             <option value="todos">Todos os Contratos</option>
             {TIPOS_CONTRATO.map((c) => (
@@ -431,7 +431,7 @@ export default function FuncionariosPage() {
         </div>
       ) : (
         <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-50/80 dark:bg-slate-800/50 text-xs font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-800 uppercase tracking-wider">
                 <tr>
@@ -579,6 +579,115 @@ export default function FuncionariosPage() {
                 })}
               </tbody>
             </table>
+          </div>
+
+          <div className="lg:hidden divide-y divide-slate-200/60 dark:divide-slate-800/60">
+            {filteredFuncionarios.map((f) => {
+              const initials = f.nome
+                .split(' ')
+                .map((n) => n[0])
+                .slice(0, 2)
+                .join('')
+                .toUpperCase();
+
+              const activePermsCount = Object.values(f.permissoes || {}).filter(Boolean).length;
+
+              return (
+                <div key={f.id} className="p-4 space-y-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-sm flex-shrink-0">
+                        {initials || 'CO'}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-semibold text-slate-900 dark:text-white truncate text-sm">
+                          {f.nome}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                          {f.cargo}
+                        </div>
+                        {f.email && (
+                          <div className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
+                            {f.email}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold flex-shrink-0 ${
+                        f.ativo
+                          ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${f.ativo ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                      {f.ativo ? 'Ativo' : 'Inativo'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                      <span className="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">Setor & Contrato</span>
+                      <div className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-200 truncate">
+                        <Layers className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                        <span className="truncate">{f.setorNome || 'Geral'}</span>
+                        <span className="text-[10px] px-1 py-0.2 bg-emerald-500/10 text-emerald-600 rounded ml-1 font-semibold">{f.tipoContrato}</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                      <span className="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">Remuneração</span>
+                      <div className="font-semibold text-slate-800 dark:text-slate-200">
+                        {f.salario ? f.salario.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '—'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
+                      <span className="text-[10px] font-semibold text-slate-500">Acesso:</span>
+                      <span className="font-mono text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400">
+                        {f.codigoAcesso}
+                      </span>
+                      <button
+                        onClick={() => handleCopyCode(f.id, f.codigoAcesso)}
+                        className="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors p-0.5"
+                        title="Copiar código"
+                      >
+                        {copiedCodeId === f.id ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/50">
+                        <ShieldCheck className="w-3 h-3" />
+                        {activePermsCount} lib.
+                      </span>
+
+                      <button
+                        onClick={() => openEditModal(f)}
+                        className="p-1.5 text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 rounded-lg transition-colors"
+                        title="Editar"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setDeletingId(f.id)}
+                        className="p-1.5 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 bg-rose-50 dark:bg-rose-950/30 rounded-lg transition-colors"
+                        title="Excluir"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -912,18 +1021,18 @@ export default function FuncionariosPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 pt-6 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-center w-full sm:w-auto"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-xl shadow-lg shadow-emerald-600/20 transition-all disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-xl shadow-lg shadow-emerald-600/20 transition-all disabled:opacity-50 w-full sm:w-auto"
                 >
                   {saving ? (
                     <>
