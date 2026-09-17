@@ -50,7 +50,6 @@ export async function GET() {
       });
     } catch (dbErr: any) {
       if (dbErr.message === 'DATABASE_URL_NOT_CONFIGURED') {
-        // Modo local/fallback
         return NextResponse.json({
           setores: [],
           tarefas: [],

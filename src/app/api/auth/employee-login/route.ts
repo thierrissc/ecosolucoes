@@ -27,7 +27,6 @@ export async function POST(req: Request) {
     const cleanCode = codigoAcesso.trim().toUpperCase();
 
     try {
-      // Buscar colaborador pelo código de acesso
       const employeeRows = await query<{
         id: string;
         company_id: string;
@@ -58,7 +57,6 @@ export async function POST(req: Request) {
         );
       }
 
-      // Buscar nome da empresa
       const companyRows = await query<{
         id: string;
         company_name: string;
@@ -97,7 +95,7 @@ export async function POST(req: Request) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 60 * 60 * 24 * 30, // 30 dias
+        maxAge: 60 * 60 * 24 * 30,
       });
 
       return response;

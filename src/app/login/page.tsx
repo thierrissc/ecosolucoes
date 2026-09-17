@@ -23,12 +23,10 @@ export default function LoginPage() {
 
   const [tab, setTab] = useState<'empresa' | 'colaborador'>('empresa');
 
-  // Login Empresa
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // Login Colaborador
   const [codigoAcesso, setCodigoAcesso] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -99,9 +97,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-[85vh] flex items-center justify-center py-8 px-4 sm:px-6">
       <div className="w-full max-w-md card overflow-hidden shadow-2xl animate-fade-up">
-        {/* ─── Hero Banner com o Degradê gradient-mesh ─── */}
         <div className="relative overflow-hidden gradient-mesh p-8 text-white">
-          {/* Decorative glowing orbs */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/15 blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-36 h-36 bg-white/10 blur-2xl translate-y-1/2 -translate-x-1/4" />
 
@@ -122,7 +118,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* ─── Abas de Login (Empresa vs Colaborador) ─── */}
         <div className="flex border-b border-surface-border bg-surface-2/40">
           <button
             type="button"
@@ -156,7 +151,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* ─── Formulário ─── */}
         <div className="p-6 sm:p-8 bg-surface-1">
           {error && (
             <div className="mb-5 p-3.5 bg-red-500/10 border border-red-500/30 text-red-500 text-xs flex items-center gap-2 animate-fade-up">
@@ -166,7 +160,6 @@ export default function LoginPage() {
           )}
 
           {tab === 'empresa' ? (
-            /* Formulário Empresa */
             <form onSubmit={handleEmpresaSubmit} className="space-y-4">
               <div>
                 <label className="block text-text-secondary text-xs font-semibold mb-1.5 uppercase tracking-wider">
@@ -227,7 +220,6 @@ export default function LoginPage() {
               </button>
             </form>
           ) : (
-            /* Formulário Colaborador */
             <form onSubmit={handleColaboradorSubmit} className="space-y-4">
               <div>
                 <label className="block text-text-secondary text-xs font-semibold mb-1.5 uppercase tracking-wider">

@@ -62,7 +62,6 @@ export default function RelatoriosPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Eco Soluções</h2>
@@ -73,7 +72,6 @@ export default function RelatoriosPage() {
         </button>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
         {[
           { label: 'Demandas Concluídas', value: totalConcluidas, icon: CheckCircle },
@@ -96,9 +94,7 @@ export default function RelatoriosPage() {
         })}
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
-        {/* Bar Chart */}
         <div className="card p-5 md:p-7 flex flex-col overflow-hidden">
           <div className="mb-5">
             <h3 className="text-text-primary font-bold text-base">Demandas por Setor</h3>
@@ -140,7 +136,6 @@ export default function RelatoriosPage() {
           )}
         </div>
 
-        {/* Line Chart */}
         <div className="card p-5 md:p-7 flex flex-col overflow-hidden">
           <div className="mb-5">
             <h3 className="text-text-primary font-bold text-base">Evolução Mensal</h3>
@@ -188,9 +183,7 @@ export default function RelatoriosPage() {
         </div>
       </div>
 
-      {/* Pie + Ranking */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
-        {/* Pie */}
         <div className="lg:col-span-5 xl:col-span-4 card p-5 md:p-7 flex flex-col overflow-hidden">
           <div className="mb-3">
             <h3 className="text-text-primary font-bold text-base">Distribuição por Status</h3>
@@ -220,7 +213,6 @@ export default function RelatoriosPage() {
           </div>
         </div>
 
-        {/* Ranking */}
         <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7 flex flex-col overflow-hidden">
           <div className="mb-5">
             <h3 className="text-text-primary font-bold text-base">Ranking de Setores</h3>

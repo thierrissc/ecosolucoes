@@ -1,7 +1,5 @@
 import { PermissoesFuncionario } from '@/types';
 
-// Autenticação Criptográfica com Web Crypto API nativa
-
 const JWT_SECRET = process.env.JWT_SECRET || 'ecosolucoes_default_secure_key_2026';
 
 export interface AuthUser {
@@ -15,8 +13,6 @@ export interface AuthUser {
   cargo?: string;
   permissoes?: PermissoesFuncionario;
 }
-
-// ─── Hash e Verificação de Senha (PBKDF2 com Salt) ───
 
 export async function hashPassword(password: string): Promise<string> {
   const enc = new TextEncoder();
@@ -82,8 +78,6 @@ export async function verifyPassword(password: string, storedHash: string): Prom
   return hashHex === originalHashHex;
 }
 
-// ─── Token de Sessão Assinado (HMAC-SHA256) ───
-
 function base64UrlEncode(str: string): string {
   return Buffer.from(str)
     .toString('base64')
@@ -103,7 +97,7 @@ export async function createSessionToken(user: AuthUser): Promise<string> {
   const payload = base64UrlEncode(
     JSON.stringify({
       ...user,
-      exp: Date.now() + 1000 * 60 * 60 * 24 * 30, // 30 dias
+      exp: Date.now() + 1000 * 60 * 60 * 24 * 30,
     })
   );
 

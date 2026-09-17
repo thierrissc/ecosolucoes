@@ -24,7 +24,6 @@ export default function DemandasMensaisPage() {
   const [showModal, setShowModal] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Form state
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [responsavel, setResponsavel] = useState('');
@@ -62,7 +61,6 @@ export default function DemandasMensaisPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Demandas Mensais</h2>
@@ -74,7 +72,6 @@ export default function DemandasMensaisPage() {
         </button>
       </div>
 
-      {/* Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 animate-stagger">
         {(['meta', 'projeto', 'relatorio'] as MetaMensal['categoria'][]).map((cat) => {
           const cfg = categoriaConfig[cat];
@@ -97,7 +94,6 @@ export default function DemandasMensaisPage() {
         })}
       </div>
 
-      {/* Filters (Compact) */}
       <div className="card p-3 inline-block max-w-full">
         <div className="flex items-center gap-2.5 flex-wrap">
           <Filter className="w-4 h-4 text-text-muted flex-shrink-0" />
@@ -119,7 +115,6 @@ export default function DemandasMensaisPage() {
         </div>
       </div>
 
-      {/* Cards */}
       {filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <Target className="w-12 h-12 text-text-muted mx-auto mb-3 opacity-40" />
@@ -203,7 +198,6 @@ export default function DemandasMensaisPage() {
         </div>
       )}
 
-      {/* Modal Nova Meta */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="card p-6 md:p-7 w-full max-w-lg animate-scale-in" onClick={(e) => e.stopPropagation()}>
@@ -306,7 +300,6 @@ export default function DemandasMensaisPage() {
         </div>
       )}
 
-      {/* Modal de Confirmação de Exclusão */}
       <ConfirmModal
         isOpen={!!deletingId}
         onClose={() => setDeletingId(null)}

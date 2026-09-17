@@ -218,7 +218,6 @@ export default function TopNav({ pathname }: TopNavProps) {
         <div className="bg-surface-1/80 backdrop-blur-xl border-b border-surface-border w-full">
           <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
             <div className="flex items-center justify-between h-16 md:h-[68px]">
-              {/* Logo */}
               <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
                 <img
                   src="/logo.png"
@@ -230,7 +229,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                 </span>
               </Link>
 
-              {/* Desktop Nav */}
               <nav className="hidden lg:flex items-center gap-1">
                 {visibleNavItems.map((item) => {
                   if ('children' in item && item.children) {
@@ -296,9 +294,7 @@ export default function TopNav({ pathname }: TopNavProps) {
                 })}
               </nav>
 
-              {/* Right Actions */}
               <div className="flex items-center gap-1.5">
-                {/* Search Toggle (Desktop) */}
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
                   className="hidden md:flex w-9 h-9 items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all"
@@ -306,7 +302,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   <Search className="w-[18px] h-[18px]" />
                 </button>
 
-                {/* Theme Toggle */}
                 <button
                   onClick={toggleDarkMode}
                   className="w-9 h-9 flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all"
@@ -318,7 +313,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   )}
                 </button>
 
-                {/* Notifications */}
                 <Link
                   href="/notificacoes"
                   className={cn(
@@ -336,7 +330,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   )}
                 </Link>
 
-                {/* Autenticação: Login/Cadastro ou Perfil */}
                 {isAuthenticated ? (
                   <Link
                     href="/perfil"
@@ -376,7 +369,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   </div>
                 )}
 
-                {/* Mobile hamburger */}
                 <button
                   onClick={toggleMobileMenu}
                   className="lg:hidden w-9 h-9 flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all ml-0.5"
@@ -388,7 +380,6 @@ export default function TopNav({ pathname }: TopNavProps) {
           </div>
         </div>
 
-        {/* Search bar (expandable) */}
         {searchOpen && (
           <div className="hidden md:block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up relative z-50">
             <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3">
@@ -424,7 +415,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   </button>
                 )}
 
-                {/* Dropdown de Resultados */}
                 {searchTerm.trim() && (
                   <div className="absolute top-full left-0 right-0 mt-2 card p-2 bg-surface-1 border border-surface-border shadow-2xl z-50 max-h-80 overflow-y-auto">
                     {desktopSearchResults.length > 0 ? (
@@ -463,11 +453,9 @@ export default function TopNav({ pathname }: TopNavProps) {
           </div>
         )}
 
-        {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-surface-1/98 backdrop-blur-xl border-b border-surface-border animate-fade-up">
             <div className="w-full px-4 sm:px-6 py-4">
-              {/* Mobile Search */}
               <div className="relative mb-4">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
                 <input
@@ -486,7 +474,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   </button>
                 )}
 
-                {/* Mobile Dropdown de Resultados */}
                 {mobileSearchTerm.trim() && (
                   <div className="mt-2 card p-2 bg-surface-1 border border-surface-border shadow-xl max-h-60 overflow-y-auto">
                     {mobileSearchResults.length > 0 ? (
@@ -564,7 +551,6 @@ export default function TopNav({ pathname }: TopNavProps) {
                   );
                 })}
 
-                {/* Mobile Auth Bottom Section */}
                 <div className="pt-2 mt-2 border-t border-surface-border">
                   {isAuthenticated ? (
                     <div className="space-y-1">

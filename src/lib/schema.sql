@@ -1,5 +1,3 @@
--- Eco Soluções - Schema do Banco de Dados SQL (PostgreSQL / MySQL)
-
 CREATE TABLE IF NOT EXISTS users (
   id VARCHAR(64) PRIMARY KEY,
   name VARCHAR(255) NOT NULL,

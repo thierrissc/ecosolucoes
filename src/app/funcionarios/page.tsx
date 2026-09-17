@@ -54,17 +54,14 @@ export default function FuncionariosPage() {
   const [filterContrato, setFilterContrato] = useState('todos');
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
 
-  // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [editingFuncionario, setEditingFuncionario] = useState<Funcionario | null>(null);
   const [saving, setSaving] = useState(false);
   const [feedbackError, setFeedbackError] = useState('');
 
-  // Delete State
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Form Fields
   const [nome, setNome] = useState('');
   const [cargo, setCargo] = useState('');
   const [setorId, setSetorId] = useState('');
@@ -76,7 +73,6 @@ export default function FuncionariosPage() {
   const [ativo, setAtivo] = useState(true);
   const [dataAdmissao, setDataAdmissao] = useState('');
 
-  // Permissões
   const [permissoes, setPermissoes] = useState<PermissoesFuncionario>({
     podeCriarMural: true,
     podeApagarMural: false,
@@ -88,7 +84,6 @@ export default function FuncionariosPage() {
     podeVisualizarRelatorios: false,
   });
 
-  // Copiar código de acesso
   const handleCopyCode = (id: string, code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCodeId(id);
@@ -207,7 +202,6 @@ export default function FuncionariosPage() {
     setDeletingId(null);
   };
 
-  // Filtragem dos funcionários
   const filteredFuncionarios = useMemo(() => {
     return funcionarios.filter((f) => {
       const matchSearch =
@@ -222,13 +216,11 @@ export default function FuncionariosPage() {
     });
   }, [funcionarios, search, filterSetor, filterContrato]);
 
-  // Métricas
   const totalColaboradores = funcionarios.length;
   const colaboradoresAtivos = funcionarios.filter((f) => f.ativo).length;
   const folhaSalarialTotal = funcionarios.reduce((acc, f) => acc + (f.salario || 0), 0);
   const setoresAtendidos = new Set(funcionarios.map((f) => f.setorId).filter(Boolean)).size;
 
-  // Se o usuário logado for colaborador simples (não gestor da empresa)
   if (user && user.role === 'funcionario') {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4 text-center">
@@ -253,7 +245,6 @@ export default function FuncionariosPage() {
 
   return (
     <div className="space-y-8 pb-16">
-      {/* Header com degrade suave */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600/15 via-teal-600/10 to-transparent p-6 sm:p-8 border border-emerald-500/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
@@ -281,7 +272,6 @@ export default function FuncionariosPage() {
         </div>
       </div>
 
-      {/* Cards de Métricas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-sm">
           <div className="flex items-center justify-between">
@@ -368,7 +358,6 @@ export default function FuncionariosPage() {
         </div>
       </div>
 
-      {/* Barra de Filtros e Busca */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -410,7 +399,6 @@ export default function FuncionariosPage() {
         </div>
       </div>
 
-      {/* Lista de Colaboradores */}
       {funcionariosLoading ? (
         <div className="text-center py-12">
           <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
@@ -472,7 +460,6 @@ export default function FuncionariosPage() {
                       key={f.id}
                       className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
                     >
-                      {/* Colaborador */}
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-sm flex-shrink-0">
@@ -494,7 +481,6 @@ export default function FuncionariosPage() {
                         </div>
                       </td>
 
-                      {/* Setor & Contrato */}
                       <td className="py-4 px-4">
                         <div className="space-y-1">
                           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
@@ -509,7 +495,6 @@ export default function FuncionariosPage() {
                         </div>
                       </td>
 
-                      {/* Remuneração */}
                       <td className="py-4 px-4">
                         <span className="font-medium text-slate-800 dark:text-slate-200">
                           {f.salario
@@ -521,7 +506,6 @@ export default function FuncionariosPage() {
                         </span>
                       </td>
 
-                      {/* Código de Acesso */}
                       <td className="py-4 px-4">
                         <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
                           <span className="font-mono text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -546,7 +530,6 @@ export default function FuncionariosPage() {
                         )}
                       </td>
 
-                      {/* Permissões */}
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-1.5">
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/50">
@@ -554,21 +537,8 @@ export default function FuncionariosPage() {
                             {activePermsCount} liberadas
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-1 mt-1.5 max-w-[220px]">
-                          {f.permissoes?.podeApagarMural && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-                              Apagar Mural
-                            </span>
-                          )}
-                          {f.permissoes?.podeGerenciarSetores && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                              Setores
-                            </span>
-                          )}
-                        </div>
                       </td>
 
-                      {/* Status */}
                       <td className="py-4 px-4">
                         <span
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
@@ -586,7 +556,6 @@ export default function FuncionariosPage() {
                         </span>
                       </td>
 
-                      {/* Ações */}
                       <td className="py-4 px-4 text-right">
                         <div className="inline-flex items-center gap-1">
                           <button
@@ -614,7 +583,6 @@ export default function FuncionariosPage() {
         </div>
       )}
 
-      {/* Modal de Cadastro / Edição */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 w-full max-w-2xl shadow-2xl overflow-hidden my-8">
@@ -643,7 +611,6 @@ export default function FuncionariosPage() {
                 </div>
               )}
 
-              {/* Dados Básicos */}
               <div className="space-y-4">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                   1. Informações Pessoais & Contrato
@@ -759,7 +726,6 @@ export default function FuncionariosPage() {
                 </div>
               </div>
 
-              {/* Código de Acesso e Status */}
               <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                   2. Credencial de Acesso
@@ -817,7 +783,6 @@ export default function FuncionariosPage() {
                 </div>
               </div>
 
-              {/* Matriz de Permissões Granulares */}
               <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <div className="flex items-center justify-between">
                   <div>
@@ -831,7 +796,6 @@ export default function FuncionariosPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {/* Mural */}
                   <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
@@ -870,7 +834,6 @@ export default function FuncionariosPage() {
                     </div>
                   </label>
 
-                  {/* Demandas */}
                   <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
@@ -909,7 +872,6 @@ export default function FuncionariosPage() {
                     </div>
                   </label>
 
-                  {/* Setores & Calendário */}
                   <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
@@ -950,7 +912,6 @@ export default function FuncionariosPage() {
                 </div>
               </div>
 
-              {/* Botões do Modal */}
               <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
@@ -982,7 +943,6 @@ export default function FuncionariosPage() {
         </div>
       )}
 
-      {/* Confirmação de Exclusão */}
       <ConfirmModal
         isOpen={!!deletingId}
         title="Excluir Colaborador"

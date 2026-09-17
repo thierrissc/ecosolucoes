@@ -32,7 +32,6 @@ export async function POST(req: Request) {
     };
 
     try {
-      // 1. Verificar se e-mail já existe
       const existing = await query('SELECT id FROM users WHERE email = $1 LIMIT 1', [normalizedEmail]);
       if (existing.length > 0) {
         return NextResponse.json(
@@ -41,14 +40,12 @@ export async function POST(req: Request) {
         );
       }
 
-      // 2. Inserir novo usuário na tabela SQL
       await query(
         `INSERT INTO users (id, name, company_name, email, password_hash)
          VALUES ($1, $2, $3, $4, $5)`,
         [userId, user.name, user.companyName, normalizedEmail, passwordHash]
       );
 
-      // 3. Inicializar workspace zerado para a empresa do usuário
       await query(
         `INSERT INTO user_workspaces (user_id, setores, tarefas, metas, mural, eventos, notificacoes)
          VALUES ($1, '[]', '[]', '[]', '[]', '[]', '[]')`,
@@ -62,7 +59,6 @@ export async function POST(req: Request) {
           { status: 500 }
         );
       }
-      // Se DATABASE_URL não foi configurado ainda, prossegue no modo fallback
     }
 
     const token = await createSessionToken(user);
@@ -73,7 +69,7 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 dias
+      maxAge: 60 * 60 * 24 * 30,
     });
 
     return response;

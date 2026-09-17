@@ -19,7 +19,6 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    // ─── Validação de Avatar (Restrição de upload - item 16) ───
     if (body.avatar) {
       const avatarVal = validateAvatarPayload(body.avatar);
       if (!avatarVal.valid) {
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // ─── Se for Colaborador: Atualizar apenas sua linha em company_employees (RLS e Block tampering) ───
     if (currentUser.role === 'funcionario') {
       const { email, avatar } = body;
       const cleanEmail = email ? sanitizeText(email, 120) : currentUser.email;
@@ -69,7 +67,6 @@ export async function POST(req: Request) {
       return res;
     }
 
-    // ─── Se for Empresa / Gestor: Atualizar tabela users ───
     const { companyName, name, avatar } = body;
     const newCompanyName = companyName ? sanitizeText(companyName, 120) : currentUser.companyName;
     const newName = name ? sanitizeText(name, 120) : currentUser.name;

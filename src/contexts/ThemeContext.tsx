@@ -39,7 +39,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {}
 
-    // Ouvir alterações de tema no sistema se o usuário não definiu manualmente
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemThemeChange = (e: MediaQueryListEvent) => {
       try {

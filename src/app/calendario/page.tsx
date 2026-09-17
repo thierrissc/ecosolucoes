@@ -91,7 +91,6 @@ export default function CalendarioPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      {/* Top action header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Calendário Corporativo</h2>
@@ -104,9 +103,7 @@ export default function CalendarioPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
-        {/* Calendar Grid */}
         <div className="lg:col-span-7 xl:col-span-8 card p-4 sm:p-5 md:p-7 flex flex-col overflow-x-auto">
-          {/* Month Nav */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-text-primary font-extrabold text-xl md:text-2xl">
               {MONTHS[month]} {year}
@@ -125,14 +122,12 @@ export default function CalendarioPage() {
           </div>
 
           <div className="min-w-[340px]">
-            {/* Weekday headers */}
             <div className="grid grid-cols-7 gap-1 mb-2">
               {WEEKDAYS.map((d) => (
                 <div key={d} className="text-center text-text-muted text-xs font-bold uppercase tracking-wider py-2">{d}</div>
               ))}
             </div>
 
-            {/* Days Grid */}
             <div className="grid grid-cols-7 gap-1.5">
               {Array.from({ length: firstDay }).map((_, i) => (
                 <div key={`empty-${i}`} className="min-h-[85px] md:min-h-[105px] bg-surface-2/20 border border-transparent" />
@@ -168,7 +163,6 @@ export default function CalendarioPage() {
                       )}
                     </div>
 
-                    {/* Tags com cores dos eventos */}
                     <div className="w-full space-y-1 overflow-hidden">
                       {dayEvents.slice(0, 2).map((e) => {
                         const eventColor = e.cor || tipoEventoColor[e.tipo] || '#16a34a';
@@ -200,9 +194,7 @@ export default function CalendarioPage() {
           </div>
         </div>
 
-        {/* Side Panel */}
         <div className="lg:col-span-5 xl:col-span-4 space-y-4 md:space-y-5">
-          {/* Selected Day Details */}
           {selectedDay && (
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
@@ -274,7 +266,6 @@ export default function CalendarioPage() {
             </div>
           )}
 
-          {/* Upcoming Events (with delete capability) */}
           <div className="card p-5">
             <h3 className="text-text-primary font-bold text-base mb-4">Próximos Eventos</h3>
             <div className="space-y-2">
@@ -309,7 +300,6 @@ export default function CalendarioPage() {
         </div>
       </div>
 
-      {/* Modal Novo Evento */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-up">
           <div className="card w-full max-w-md p-6 bg-surface-1 border border-surface-border">
@@ -383,7 +373,6 @@ export default function CalendarioPage() {
                 />
               </div>
 
-              {/* Seletor de Cor do Evento */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2 flex items-center gap-1.5">
                   <Palette className="w-3.5 h-3.5 text-brand" />
@@ -430,7 +419,6 @@ export default function CalendarioPage() {
           </div>
         </div>
       )}
-      {/* Confirmation Modal */}
       <ConfirmModal
         isOpen={!!deletingEvento}
         title="Excluir Evento"

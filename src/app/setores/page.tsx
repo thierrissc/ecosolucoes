@@ -32,7 +32,6 @@ export default function SetoresPage() {
   const [showModal, setShowModal] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Form state
   const [nome, setNome] = useState('');
   const [responsavel, setResponsavel] = useState('');
   const [colaboradores, setColaboradores] = useState(1);
@@ -85,7 +84,6 @@ export default function SetoresPage() {
         </button>
       </div>
 
-      {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
         {[
           { label: 'Colaboradores', value: totalColaboradores, icon: Users },
@@ -106,7 +104,6 @@ export default function SetoresPage() {
         })}
       </div>
 
-      {/* Cards */}
       {setores.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 animate-stagger">
           {setores.map((setor) => {
@@ -116,14 +113,12 @@ export default function SetoresPage() {
 
             return (
               <div key={setor.id} className="card card-hover overflow-hidden flex flex-col relative group">
-                {/* Header with gradient */}
                 <div
                   className="h-2 w-full"
                   style={{ background: `linear-gradient(90deg, ${setor.cor}, ${setor.cor}88)` }}
                 />
 
                 <div className="p-5 md:p-6 flex flex-col flex-1">
-                  {/* Top */}
                   <div className="flex items-start justify-between gap-3.5 mb-5">
                     <div className="flex items-start gap-3.5 min-w-0">
                       <div
@@ -147,7 +142,6 @@ export default function SetoresPage() {
                     </button>
                   </div>
 
-                  {/* Stats */}
                   <div className="grid grid-cols-3 gap-2 mb-5">
                     {[
                       { label: 'Equipe', value: setor.colaboradores, color: 'text-blue-500' },
@@ -161,7 +155,6 @@ export default function SetoresPage() {
                     ))}
                   </div>
 
-                  {/* Performance */}
                   <div className="space-y-2 mt-auto">
                     <div className="flex justify-between items-center">
                       <span className="text-text-muted text-xs font-medium">Desempenho</span>
@@ -170,7 +163,6 @@ export default function SetoresPage() {
                     <ProgressBar value={setor.desempenho} size="sm" color={setor.cor} />
                   </div>
 
-                  {/* Weekly tasks */}
                   {tarefasSetor.length > 0 && (
                     <div className="mt-4 pt-3 border-t border-surface-border">
                       <p className="text-text-muted text-xs">
@@ -198,7 +190,6 @@ export default function SetoresPage() {
         </div>
       )}
 
-      {/* Modal Novo Setor */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="card p-6 md:p-7 w-full max-w-lg animate-scale-in" onClick={(e) => e.stopPropagation()}>
@@ -296,7 +287,6 @@ export default function SetoresPage() {
         </div>
       )}
 
-      {/* Confirmation Modal */}
       <ConfirmModal
         isOpen={!!deletingId}
         title="Excluir Setor"

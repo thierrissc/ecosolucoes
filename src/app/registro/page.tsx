@@ -66,9 +66,7 @@ export default function RegistroPage() {
   return (
     <div className="min-h-[85vh] flex items-center justify-center py-8 px-4 sm:px-6">
       <div className="w-full max-w-lg card overflow-hidden shadow-2xl animate-fade-up">
-        {/* ─── Hero Banner com o Degradê gradient-mesh ─── */}
         <div className="relative overflow-hidden gradient-mesh p-8 text-white">
-          {/* Decorative glowing orbs */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/15 blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-36 h-36 bg-white/10 blur-2xl translate-y-1/2 -translate-x-1/4" />
 
@@ -87,7 +85,6 @@ export default function RegistroPage() {
           </div>
         </div>
 
-        {/* ─── Formulário de Cadastro ─── */}
         <div className="p-6 sm:p-8 bg-surface-1">
           {error && (
             <div className="mb-5 p-3.5 bg-red-500/10 border border-red-500/30 text-red-500 text-xs flex items-center gap-2 animate-fade-up">

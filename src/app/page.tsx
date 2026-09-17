@@ -155,9 +155,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      {/* ─── Hero Banner ─── */}
       <div className="relative overflow-hidden gradient-mesh p-7 md:p-10">
-        {/* Decorative orbs */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 blur-2xl translate-y-1/2 -translate-x-1/4" />
 
@@ -171,7 +169,7 @@ export default function DashboardPage() {
               {!isAuthenticated && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-400/20 text-yellow-200 border border-yellow-400/30 text-xs font-bold backdrop-blur-sm">
                   <Sparkles className="w-3 h-3 text-yellow-300" />
-                  Modo Demonstração (Dados de Exemplo)
+                  Modo Demonstração
                 </span>
               )}
             </div>
@@ -219,7 +217,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ─── Stat Cards ─── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 animate-stagger">
         {statCards.map((card) => {
           const Icon = card.icon;
@@ -250,9 +247,7 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* ─── Charts Row (Bento Grid) ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5">
-        {/* Bar Chart — spans 7/8 cols */}
         <div className="lg:col-span-7 xl:col-span-8 card p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
@@ -291,7 +286,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Pie Chart — spans 5/4 cols */}
         <div className="lg:col-span-5 xl:col-span-4 card p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <div>
@@ -335,7 +329,6 @@ export default function DashboardPage() {
             </ResponsiveContainer>
           </div>
 
-          {/* Legend */}
           <div className="space-y-2 mt-3 pt-4 border-t border-surface-border">
             {pieData.map((item) => {
               const pct = totalTarefas > 0 ? Math.round((item.value / totalTarefas) * 100) : 0;
@@ -356,9 +349,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ─── Bottom Row ─── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-5">
-        {/* Próximos Prazos — Timeline */}
         <div className="card p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-text-primary font-bold text-base flex items-center gap-2">
@@ -375,7 +366,6 @@ export default function DashboardPage() {
               const days = getDaysUntil(t.prazo);
               return (
                 <div key={t.id} className="flex items-center gap-4 py-3 px-3 hover:bg-surface-hover transition-colors group">
-                  {/* Timeline dot + line */}
                   <div className="flex flex-col items-center gap-1 flex-shrink-0">
                     <div
                       className={`w-2.5 h-2.5 rounded-full dot ${
@@ -414,7 +404,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Desempenho por Setor */}
         <div className="card p-5 md:p-7 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-text-primary font-bold text-base flex items-center gap-2">

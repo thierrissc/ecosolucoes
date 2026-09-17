@@ -20,7 +20,6 @@ function generateAccessCode(): string {
   return `ECO-${code}`;
 }
 
-// GET: Listar todos os colaboradores da empresa
 export async function GET() {
   try {
     const user = await getAuthenticatedUser();
@@ -64,7 +63,6 @@ export async function GET() {
   }
 }
 
-// POST: Criar novo colaborador
 export async function POST(req: Request) {
   try {
     const user = await getAuthenticatedUser();
@@ -110,7 +108,6 @@ export async function POST(req: Request) {
     const finalAtivo = ativo !== false;
     const finalPermissoes = permissoes || {};
 
-    // Verificar unicidade do código
     const existingCode = await query('SELECT id FROM company_employees WHERE UPPER(codigo_acesso) = $1 LIMIT 1', [
       finalCodigo,
     ]);
@@ -171,7 +168,6 @@ export async function POST(req: Request) {
   }
 }
 
-// PUT: Atualizar colaborador existente
 export async function PUT(req: Request) {
   try {
     const user = await getAuthenticatedUser();
@@ -269,7 +265,6 @@ export async function PUT(req: Request) {
   }
 }
 
-// DELETE: Remover colaborador
 export async function DELETE(req: Request) {
   try {
     const user = await getAuthenticatedUser();

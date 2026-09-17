@@ -66,7 +66,6 @@ export default function MuralPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl tracking-tight">Mural Corporativo</h2>
@@ -94,7 +93,6 @@ export default function MuralPage() {
         )}
       </div>
 
-      {/* Abas de Navegação do Mural */}
       <div className="flex items-center gap-2 border-b border-surface-border pb-1">
         <button
           onClick={() => {
@@ -132,7 +130,6 @@ export default function MuralPage() {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="card p-4 md:p-5 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
@@ -178,7 +175,6 @@ export default function MuralPage() {
         </div>
       </div>
 
-      {/* Banner explicativo na aba de sugestões */}
       {abaAtiva === 'sugestoes' && (
         <div className="p-4 bg-amber-500/10 border border-amber-500/25 flex items-start gap-3.5">
           <div className="w-9 h-9 bg-amber-500/20 text-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -193,7 +189,6 @@ export default function MuralPage() {
         </div>
       )}
 
-      {/* Fixadas */}
       {fixadas.length > 0 && (
         <div className="space-y-3">
           <h3 className="text-text-muted text-xs font-bold uppercase tracking-widest flex items-center gap-2">
@@ -215,7 +210,6 @@ export default function MuralPage() {
         </div>
       )}
 
-      {/* Normais */}
       <div className="space-y-3">
         {fixadas.length > 0 && (
           <h3 className="text-text-muted text-xs font-bold uppercase tracking-widest">
@@ -253,7 +247,6 @@ export default function MuralPage() {
         </div>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <NewPostModal
           isSugestaoDefault={modalIsSugestao}
@@ -266,7 +259,6 @@ export default function MuralPage() {
         />
       )}
 
-      {/* Modal de Exclusão */}
       <ConfirmModal
         isOpen={deletingId !== null}
         title="Excluir Publicação"
@@ -313,7 +305,6 @@ function PostCard({
         isSugestao ? 'border-l-amber-500 bg-amber-500/[0.015]' : prioridadeBorder[pub.prioridade]
       }`}
     >
-      {/* Top */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           {isSugestao ? (
@@ -362,13 +353,11 @@ function PostCard({
         </div>
       </div>
 
-      {/* Content */}
       <div>
         <h4 className="text-text-primary font-semibold text-sm leading-snug mb-1.5">{pub.titulo}</h4>
         <p className="text-text-muted text-xs leading-relaxed line-clamp-3">{pub.descricao}</p>
       </div>
 
-      {/* Footer */}
       <div className="flex items-center gap-2 pt-3 border-t border-surface-border mt-auto">
         <div
           className={`w-7 h-7 flex items-center justify-center flex-shrink-0 ${
@@ -541,7 +530,6 @@ function NewPostModal({
             />
           </div>
 
-          {/* Opção de Envio Anônimo (para sugestões) */}
           {tipo === 'sugestao' && (
             <div className="p-3.5 bg-surface-2 border border-surface-border space-y-2">
               <label className="flex items-center gap-2.5 cursor-pointer select-none">

@@ -5,7 +5,6 @@ const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 let pool: Pool | null = null;
 let initialized = false;
 
-// Obter pool de conexões com PostgreSQL
 export function getPool(): Pool | null {
   if (!databaseUrl) return null;
   if (!pool) {
@@ -19,7 +18,6 @@ export function getPool(): Pool | null {
   return pool;
 }
 
-// Inicializar tabelas SQL automaticamente se ainda não existirem
 export async function ensureTablesExist() {
   const p = getPool();
   if (!p || initialized) return;
@@ -82,7 +80,6 @@ export async function ensureTablesExist() {
   }
 }
 
-// Helper para executar queries SQL parametrizadas
 export async function query<T = any>(sql: string, params: any[] = []): Promise<T[]> {
   const p = getPool();
   if (!p) {

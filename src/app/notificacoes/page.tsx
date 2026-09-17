@@ -64,7 +64,6 @@ export default function NotificacoesPage() {
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-up">
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-text-primary font-extrabold text-2xl md:text-3xl flex items-center gap-3 tracking-tight">
@@ -87,7 +86,6 @@ export default function NotificacoesPage() {
         )}
       </div>
 
-      {/* Segmented Filters */}
       <div className="segmented-control flex-wrap">
         {filterOptions.map((f) => (
           <button
@@ -100,7 +98,6 @@ export default function NotificacoesPage() {
         ))}
       </div>
 
-      {/* Notifications List */}
       <div className="space-y-3">
         {filtered.map((notif) => {
           const cfg = tipoConfig[notif.tipo] || tipoConfig.aviso;
@@ -117,13 +114,11 @@ export default function NotificacoesPage() {
               }`}
             >
               <div className="flex items-start gap-3.5">
-                {/* Subtle, transparent icon */}
                 <div className="w-9 h-9 border border-surface-border bg-surface-2/60 text-text-muted flex items-center justify-center flex-shrink-0 group-hover:text-brand group-hover:border-brand/40 transition-colors">
                   <Icon className="w-4 h-4" />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  {/* Top Bar: Title, Badge, Time & Actions */}
                   <div className="flex items-start justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant={cfg.badgeVariant}>
@@ -152,7 +147,6 @@ export default function NotificacoesPage() {
                         {timeAgo(notif.timestamp)}
                       </span>
 
-                      {/* Botão marcar como lida/não lida */}
                       <button
                         onClick={() => toggleLidaNotificacao(notif.id)}
                         className={`px-2 py-1 text-xs font-semibold flex items-center gap-1 transition-all border ${
@@ -166,7 +160,6 @@ export default function NotificacoesPage() {
                         {notif.lida ? 'Lida' : 'Marcar lida'}
                       </button>
 
-                      {/* Botão excluir notificação */}
                       <button
                         onClick={() => deleteNotificacao(notif.id)}
                         className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
@@ -177,13 +170,11 @@ export default function NotificacoesPage() {
                     </div>
                   </div>
 
-                  {/* Message body */}
                   <div className="mt-2 text-xs text-text-muted leading-relaxed">
                     <p className={isExpanded ? '' : 'line-clamp-2'}>
                       {notif.descricao}
                     </p>
 
-                    {/* Expand/Collapse Button */}
                     {notif.descricao.length > 70 && (
                       <button
                         onClick={() => toggleExpand(notif.id)}
@@ -202,7 +193,6 @@ export default function NotificacoesPage() {
                     )}
                   </div>
 
-                  {/* External link if provided */}
                   {notif.link && (
                     <div className="mt-3 pt-2 border-t border-surface-border/60">
                       <Link
