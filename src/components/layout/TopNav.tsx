@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import {
   LayoutDashboard,
@@ -79,6 +79,8 @@ export default function TopNav({ pathname }: TopNavProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileSearchTerm, setMobileSearchTerm] = useState('');
+  const searchContainerRef = useRef<HTMLDivElement | null>(null);
+  const searchBtnRef = useRef<HTMLButtonElement | null>(null);
   const [localProfile, setLocalProfile] = useState<{
     companyName?: string;
     cargo?: string;
@@ -136,7 +138,29 @@ export default function TopNav({ pathname }: TopNavProps) {
   useEffect(() => {
     closeMobileMenu();
     setDemandasOpen(false);
+    setSearchOpen(false);
+    setSearchTerm('');
   }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        searchOpen &&
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target as Node) &&
+        searchBtnRef.current &&
+        !searchBtnRef.current.contains(e.target as Node)
+      ) {
+        setSearchOpen(false);
+        setSearchTerm('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchOpen]);
 
   const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
   const isDemandasActive = pathname.startsWith('/demandas');
@@ -296,6 +320,7 @@ export default function TopNav({ pathname }: TopNavProps) {
 
               <div className="flex items-center gap-1.5">
                 <button
+                  ref={searchBtnRef}
                   onClick={() => setSearchOpen(!searchOpen)}
                   className="hidden md:flex w-9 h-9 items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-all"
                 >
@@ -381,7 +406,10 @@ export default function TopNav({ pathname }: TopNavProps) {
         </div>
 
         {searchOpen && (
-          <div className="hidden md:block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up relative z-50">
+          <div
+            ref={searchContainerRef}
+            className="hidden md:block bg-surface-1/95 backdrop-blur-xl border-b border-surface-border animate-fade-up relative z-50"
+          >
             <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3">
               <div className="relative max-w-xl mx-auto">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
