@@ -103,13 +103,19 @@
 
   html {
     scroll-behavior: smooth;
+    background-color: #0a0f1a;
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    background-color: #f0f4f8;
+    color-scheme: light;
   }
 
   body {
     font-family: 'Outfit', system-ui, sans-serif;
     background: var(--surface-0);
     color: var(--text-primary);
-    transition: background-color 0.4s ease, color 0.4s ease;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
