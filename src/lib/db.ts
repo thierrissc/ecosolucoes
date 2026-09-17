@@ -53,6 +53,29 @@ export async function ensureTablesExist() {
       );
 
       CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+ 
+      CREATE TABLE IF NOT EXISTS company_employees (
+        id VARCHAR(64) PRIMARY KEY,
+        company_id VARCHAR(64) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        nome VARCHAR(255) NOT NULL,
+        cargo VARCHAR(255) NOT NULL,
+        setor_id VARCHAR(64),
+        setor_nome VARCHAR(255),
+        tipo_contrato VARCHAR(64) NOT NULL DEFAULT 'CLT',
+        salario NUMERIC(12, 2) DEFAULT 0,
+        email VARCHAR(255),
+        telefone VARCHAR(64),
+        codigo_acesso VARCHAR(64) UNIQUE NOT NULL,
+        permissoes JSONB NOT NULL DEFAULT '{}',
+        ativo BOOLEAN NOT NULL DEFAULT TRUE,
+        data_admissao VARCHAR(64),
+        avatar TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_company_employees_company ON company_employees(company_id);
+      CREATE INDEX IF NOT EXISTS idx_company_employees_codigo ON company_employees(codigo_acesso);
     `);
     initialized = true;
   } catch (error) {

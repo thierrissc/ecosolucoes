@@ -103,3 +103,35 @@ export interface MetaMensal {
   responsavel: string;
   categoria: 'meta' | 'projeto' | 'relatorio';
 }
+
+export type TipoContrato = 'CLT' | 'PJ' | 'Estágio' | 'Temporário' | 'Jovem Aprendiz' | 'Outro';
+
+export interface PermissoesFuncionario {
+  podeCriarMural?: boolean;
+  podeApagarMural?: boolean;
+  podeCriarDemandas?: boolean;
+  podeEditarDemandas?: boolean;
+  podeApagarDemandas?: boolean;
+  podeGerenciarSetores?: boolean;
+  podeGerenciarCalendario?: boolean;
+  podeVisualizarRelatorios?: boolean;
+}
+
+export interface Funcionario {
+  id: string;
+  companyId: string;
+  nome: string;
+  cargo: string;
+  setorId?: string;
+  setorNome?: string;
+  tipoContrato: TipoContrato;
+  salario: number;
+  email?: string;
+  telefone?: string;
+  codigoAcesso: string;
+  permissoes: PermissoesFuncionario;
+  ativo: boolean;
+  dataAdmissao?: string;
+  avatar?: string;
+  createdAt?: string;
+}
