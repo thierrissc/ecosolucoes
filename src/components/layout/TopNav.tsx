@@ -71,6 +71,7 @@ export default function TopNav({ pathname }: TopNavProps) {
     eventos,
     user,
     isAuthenticated,
+    authLoading,
     logout,
   } = useApp();
   const { darkMode, toggleDarkMode } = useTheme();
@@ -85,7 +86,22 @@ export default function TopNav({ pathname }: TopNavProps) {
     companyName?: string;
     cargo?: string;
     avatarUrl?: string;
-  }>({});
+  }>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('@eco-solucoes:perfil');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            companyName: parsed.nomeEmpresa,
+            cargo: parsed.cargo,
+            avatarUrl: parsed.avatarUrl,
+          };
+        }
+      } catch (e) {}
+    }
+    return {};
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -379,6 +395,8 @@ export default function TopNav({ pathname }: TopNavProps) {
                       </p>
                     </div>
                   </Link>
+                ) : authLoading ? (
+                  <div className="w-20 sm:w-28 h-8 sm:h-9 bg-surface-2/60 animate-pulse border border-surface-border ml-1" />
                 ) : (
                   <div className="flex items-center gap-2 ml-1">
                     <Link
@@ -613,6 +631,8 @@ export default function TopNav({ pathname }: TopNavProps) {
                         Sair da conta
                       </button>
                     </div>
+                  ) : authLoading ? (
+                    <div className="h-10 bg-surface-2/60 animate-pulse mx-3 my-2" />
                   ) : (
                     <div className="grid grid-cols-2 gap-2 px-3 py-2">
                       <Link
