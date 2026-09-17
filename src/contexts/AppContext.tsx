@@ -83,15 +83,115 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
 
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cached) return JSON.parse(cached);
+      } catch {}
+    }
+    return null;
+  });
 
-  const [setores, setSetores] = useState<Setor[]>([]);
-  const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>([]);
-  const [metasMensais, setMetasMensais] = useState<MetaMensal[]>([]);
-  const [publicacoes, setPublicacoes] = useState<PublicacaoMural[]>([]);
-  const [eventos, setEventos] = useState<EventoCalendario[]>([]);
-  const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
+  const [authLoading, setAuthLoading] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('@eco-solucoes:auth_user');
+        if (cached) return false;
+      } catch {}
+    }
+    return true;
+  });
+
+  const [setores, setSetores] = useState<Setor[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+        if (cachedWs) {
+          const parsed = JSON.parse(cachedWs);
+          if (parsed.setores && parsed.setores.length > 0) return parsed.setores;
+        }
+        const s = localStorage.getItem(STORAGE_KEYS.SETORES);
+        if (s) return JSON.parse(s);
+      } catch {}
+    }
+    return initialSetores;
+  });
+
+  const [tarefasSemanais, setTarefasSemanais] = useState<Tarefa[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+        if (cachedWs) {
+          const parsed = JSON.parse(cachedWs);
+          if (parsed.tarefas && parsed.tarefas.length > 0) return parsed.tarefas;
+        }
+        const t = localStorage.getItem(STORAGE_KEYS.TAREFAS);
+        if (t) return JSON.parse(t);
+      } catch {}
+    }
+    return initialTarefas;
+  });
+
+  const [metasMensais, setMetasMensais] = useState<MetaMensal[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+        if (cachedWs) {
+          const parsed = JSON.parse(cachedWs);
+          if (parsed.metas && parsed.metas.length > 0) return parsed.metas;
+        }
+        const m = localStorage.getItem(STORAGE_KEYS.METAS);
+        if (m) return JSON.parse(m);
+      } catch {}
+    }
+    return initialMetas;
+  });
+
+  const [publicacoes, setPublicacoes] = useState<PublicacaoMural[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+        if (cachedWs) {
+          const parsed = JSON.parse(cachedWs);
+          if (parsed.mural && parsed.mural.length > 0) return parsed.mural;
+        }
+        const mu = localStorage.getItem(STORAGE_KEYS.MURAL);
+        if (mu) return JSON.parse(mu);
+      } catch {}
+    }
+    return initialMural;
+  });
+
+  const [eventos, setEventos] = useState<EventoCalendario[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+        if (cachedWs) {
+          const parsed = JSON.parse(cachedWs);
+          if (parsed.eventos && parsed.eventos.length > 0) return parsed.eventos;
+        }
+        const e = localStorage.getItem(STORAGE_KEYS.EVENTOS);
+        if (e) return JSON.parse(e);
+      } catch {}
+    }
+    return initialEventos;
+  });
+
+  const [notificacoes, setNotificacoes] = useState<Notificacao[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cachedWs = localStorage.getItem('@eco-solucoes:user_workspace');
+        if (cachedWs) {
+          const parsed = JSON.parse(cachedWs);
+          if (parsed.notificacoes && parsed.notificacoes.length > 0) return parsed.notificacoes;
+        }
+        const n = localStorage.getItem(STORAGE_KEYS.NOTIFICACOES);
+        if (n) return JSON.parse(n);
+      } catch {}
+    }
+    return initialNotificacoes;
+  });
 
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [funcionariosLoading, setFuncionariosLoading] = useState(false);
@@ -114,12 +214,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
-      setAuthLoading(true);
       const res = await fetch('/api/auth/me');
       const data = await res.json();
 
       if (data.authenticated && data.user) {
         setUser(data.user);
+        try {
+          localStorage.setItem('@eco-solucoes:auth_user', JSON.stringify(data.user));
+        } catch {}
+
         refreshFuncionarios();
 
         try {
@@ -132,6 +235,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             setPublicacoes(userData.mural || []);
             setEventos(userData.eventos || []);
             setNotificacoes(userData.notificacoes || []);
+            try {
+              localStorage.setItem('@eco-solucoes:user_workspace', JSON.stringify(userData));
+            } catch {}
           }
         } catch {
           setSetores([]);
@@ -143,6 +249,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         setUser(null);
+        try {
+          localStorage.removeItem('@eco-solucoes:auth_user');
+          localStorage.removeItem('@eco-solucoes:user_workspace');
+        } catch {}
+
         const s = localStorage.getItem(STORAGE_KEYS.SETORES);
         setSetores(s ? JSON.parse(s) : initialSetores);
 
@@ -166,6 +277,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {
       setUser(null);
+      try {
+        localStorage.removeItem('@eco-solucoes:auth_user');
+        localStorage.removeItem('@eco-solucoes:user_workspace');
+      } catch {}
       setSetores(initialSetores);
       setTarefasSemanais(initialTarefas);
       setMetasMensais(initialMetas);
@@ -223,6 +338,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setFuncionarios([]);
     try {
+      localStorage.removeItem('@eco-solucoes:auth_user');
+      localStorage.removeItem('@eco-solucoes:user_workspace');
       localStorage.removeItem('@eco-solucoes:perfil');
       sessionStorage.clear();
       window.dispatchEvent(new CustomEvent('perfilUpdated', { detail: {} }));
