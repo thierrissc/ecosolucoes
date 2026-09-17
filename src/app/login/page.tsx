@@ -52,6 +52,12 @@ export default function LoginPage() {
         return;
       }
 
+      if (data.user) {
+        try {
+          localStorage.setItem('@eco-solucoes:auth_user', JSON.stringify(data.user));
+        } catch {}
+      }
+
       await checkAuth();
       router.push('/');
     } catch {
@@ -84,6 +90,12 @@ export default function LoginPage() {
         setError(data.error || 'Código de acesso inválido ou expirado.');
         setLoading(false);
         return;
+      }
+
+      if (data.user) {
+        try {
+          localStorage.setItem('@eco-solucoes:auth_user', JSON.stringify(data.user));
+        } catch {}
       }
 
       await checkAuth();
