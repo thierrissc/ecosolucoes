@@ -1,3 +1,5 @@
+import { PermissoesFuncionario } from '@/types';
+
 // Autenticação Criptográfica com Web Crypto API nativa
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ecosolucoes_default_secure_key_2026';
@@ -8,6 +10,10 @@ export interface AuthUser {
   email: string;
   companyName: string;
   avatar?: string;
+  role?: 'owner' | 'funcionario';
+  companyId?: string;
+  cargo?: string;
+  permissoes?: PermissoesFuncionario;
 }
 
 // ─── Hash e Verificação de Senha (PBKDF2 com Salt) ───
@@ -158,6 +164,10 @@ export async function verifySessionToken(token: string): Promise<AuthUser | null
       email: data.email,
       companyName: data.companyName,
       avatar: data.avatar,
+      role: data.role || 'owner',
+      companyId: data.companyId,
+      cargo: data.cargo,
+      permissoes: data.permissoes,
     };
   } catch {
     return null;
